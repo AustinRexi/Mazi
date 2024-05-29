@@ -38,10 +38,9 @@ const Adminbar = () => {
               background: "#white",
               height: "50px",
               display: "flex",
-              flexDirection: "inherit",
+
               gap: 10,
-              border: "1px solid red",
-              boxShadow: " 0 0 10px rgba(0, 0, 0, 0.1)",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
             }}
           >
             <img src={menu} alt="" srcset="" />
@@ -67,6 +66,7 @@ const Adminbar = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
               }}
             >
               <div style={{ padding: 8 }}>
