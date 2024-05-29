@@ -5,8 +5,8 @@ import Adminbar from "./Adminnavbar/Adminbar";
 function layout() {
   return (
     <nav>
-      <Sidebar />
       <Adminbar />
+      {/* <Sidebar /> */}
       <Outlet />
     </nav>
   );

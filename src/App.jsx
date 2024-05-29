@@ -12,6 +12,7 @@ import Wallet from "./views/Wallet/Wallet";
 import Support from "./views/Support/Support";
 import Settings from "./views/Settings/Settings";
 import Sidebar from "./Layout/Sidebar/Sidebar";
+import Adminbar from "./Layout/Adminnavbar/Adminbar";
 function App() {
   // const theme = themeConfig.token;
   const router = createBrowserRouter([
@@ -61,6 +62,7 @@ function App() {
 
   return (
     <>
+      <Adminbar />
       <Sidebar />
       {/* <RouterProvider router={router} /> */}
     </>
