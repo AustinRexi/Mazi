@@ -38,8 +38,10 @@ const Adminbar = () => {
               background: "#white",
               height: "50px",
               display: "flex",
+              flexDirection: "inherit",
               gap: 10,
-              padding: 0,
+              border: "1px solid red",
+              boxShadow: " 0 0 10px rgba(0, 0, 0, 0.1)",
             }}
           >
             <img src={menu} alt="" srcset="" />
@@ -68,7 +70,7 @@ const Adminbar = () => {
               }}
             >
               <div style={{ padding: 8 }}>
-                <Select style={{ width: 200 }}>
+                <Select defaultValue="Nigeria" style={{ width: 200 }}>
                   {optionsWithImages.map((option) => (
                     <Option
                       key={option.value}
