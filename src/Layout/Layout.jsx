@@ -1,15 +1,16 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./Sidebar/Sidebar";
-import Adminbar from "./Adminnavbar/Adminbar";
 
-function layout() {
+import Navbar from "./Adminnavbar/Adminbar";
+import Sidebar from "./Adminnavbar/Sidebar";
+
+function Layout() {
   return (
     <nav>
-      <Adminbar />
-      {/* <Sidebar /> */}
+      <Navbar />
+      <Sidebar />
       <Outlet />
     </nav>
   );
 }
 
-export default layout;
+export default Layout;

@@ -1,15 +1,15 @@
 import React from "react";
 import { Row, Col } from "antd";
-import { Menu, Select, Button, Flex } from "antd";
+import { Select, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import cart from "../../utils/icons/cart.svg";
-import notification from "../../utils/icons/notification.svg";
-import avatar from "../../utils/icons/avatar.svg";
-import flag from "../../utils/icons/flag.svg";
-import menu from "../../utils/icons/menu.svg";
-import logo from "../../utils/icons/logo.svg";
+import cart from "../utils/icons/cart.svg";
+import notification from "../utils/icons/notification.svg";
+import avatar from "../utils/icons/avatar.svg";
+import flag from "../utils/icons/flag.svg";
+import menu from "../utils/icons/menu.svg";
+import logo from "../utils/icons/logo.svg";
 
-const Adminbar = () => {
+const Navbar = () => {
   const { Option } = Select;
 
   const optionsWithImages = [
@@ -38,8 +38,6 @@ const Adminbar = () => {
               background: "#white",
               height: "50px",
               display: "flex",
-
-              gap: 10,
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
             }}
           >
@@ -117,40 +115,4 @@ const Adminbar = () => {
     </div>
   );
 };
-export default Adminbar;
-
-/* <Menu
-theme="white"
-mode="horizontal"
-width="10px"
-style={{
-  display: "flex",
-  justifyContent: "space-between",
-  height: 72,
-}}
->
-
-{
-  <Select
-    defaultValue="lucy"
-    options={[
-      { value: "jack", label: "Jack" },
-      { value: "lucy", label: "Lucy" },
-      { value: "Yiminghe", label: "yiminghe" },
-      { value: "disabled", label: "Disabled", disabled: true },
-    ]}
-  ></Select>
-
-  <Menu.Item key="home" icon={<ShoppingCartOutlined />}>
-    Home
-  </Menu.Item>
-  <Menu.Item key="home" icon={<BellOutlined />}>
-    Home
-  </Menu.Item>
-  <Menu.Item key="profile" icon={<UserOutlined />}>
-    Profile
-  </Menu.Item>
-  <Flex gap="small" wrap>
- 
-  </Flex>
-</Menu> */
+export default Navbar;
