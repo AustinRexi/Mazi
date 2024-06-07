@@ -59,29 +59,14 @@ const Sidebar = () => {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
         }}
       >
-        {/* <Space
-          style={{
-            gap: 1.5,
-            padding: 10,
-            display: "flex",
-            alignmentBaseline: "baseline",
-          }}
-          // align="center"
-        >
-          <img src={home} alt="" />
-          <Title level={5}>Dashboard</Title>
-        </Space> */}
-        <Space
-          style={{
-            gap: 1.5,
-            padding: 10,
-            display: "block",
-          }}
-        >
+        <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
           {side.map((item, index) => (
-            <div key={index}>
+            <div key={index} style={{ display: "flex" }}>
               <img src={item.icon} alt="" />
-              <Title level={5}>{item.name}</Title>
+
+              <Title level={5} style={{ marginLeft: "8px", fontWeight: 200 }}>
+                {item.name}
+              </Title>
             </div>
           ))}
         </Space>
