@@ -1,4 +1,3 @@
-import React from "react";
 import { Space, Typography } from "antd";
 import homeIcon from "../utils/icons/home.svg";
 import productIcon from "../utils/icons/product.svg";
@@ -55,16 +54,23 @@ const Sidebar = () => {
       <div
         style={{
           width: "39vh",
-          height: "auto",
+          minHeight: "100vh",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
         }}
       >
         <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
           {side.map((item, index) => (
-            <div key={index} style={{ display: "flex" }}>
-              <img src={item.icon} alt="" />
+            <div key={index} style={{ display: "flex", marginBottom: 0 }}>
+              <img src={item.icon} alt="" style={{ marginTop: "12px" }} />
 
-              <Title level={5} style={{ marginLeft: "8px", fontWeight: 200 }}>
+              <Title
+                level={5}
+                style={{
+                  marginLeft: "8px",
+                  fontWeight: 200,
+                  marginBottom: 0,
+                }}
+              >
                 {item.name}
               </Title>
             </div>
