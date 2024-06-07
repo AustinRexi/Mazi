@@ -58,7 +58,11 @@ const Sidebar = () => {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
         }}
       >
-        <Space direction="vertical" style={{ width: "100%", padding: 12 }}>
+        <Space
+          direction="vertical"
+          size="6"
+          style={{ width: "100%", padding: 12 }}
+        >
           {side.map((item, index) => (
             <div key={index} style={{ display: "flex", marginBottom: 0 }}>
               <img src={item.icon} alt="" style={{ marginTop: "12px" }} />
