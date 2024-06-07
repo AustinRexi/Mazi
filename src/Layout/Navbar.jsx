@@ -56,8 +56,6 @@ const Navbar = () => {
               height: "50px",
               alignItems: "center",
               padding: 0,
-              // justifyContent: "center",
-              // flexDirection: "column",
             }}
           >
             <div
@@ -103,7 +101,7 @@ const Navbar = () => {
               >
                 <img src={cart} alt="" srcset="" />
                 <img src={notification} alt="" srcset="" />
-                <Button type="primary" style={{ height: 30 }}>
+                <Button type="primary" style={{ height: 32 }}>
                   Add store {<PlusOutlined />}
                 </Button>
                 <img
