@@ -103,10 +103,15 @@ const Navbar = () => {
               >
                 <img src={cart} alt="" srcset="" />
                 <img src={notification} alt="" srcset="" />
-                <Button type="primary" style={{ height: 28 }}>
+                <Button type="primary" style={{ height: 30 }}>
                   Add store {<PlusOutlined />}
                 </Button>
-                <img src={avatar} alt="" srcset="" />
+                <img
+                  src={avatar}
+                  alt=""
+                  srcset=""
+                  style={{ paddingRight: "6px" }}
+                />
                 {/* <Button type="primary">Add store {<PlusOutlined />}</Button> */}
               </div>
             </div>
