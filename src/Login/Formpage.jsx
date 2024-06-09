@@ -22,6 +22,7 @@ function Formpage() {
         width: "50vh",
         alignContent: "center",
         justifyContent: "center",
+        marginLeft: "40px",
       }}
     >
       <div style={{ marginLeft: "100px" }}>
@@ -72,10 +73,16 @@ function Formpage() {
         >
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
+            type={passwordVisible ? "text" : "password"}
             placeholder="Password"
-            iconRender={(visible) =>
-              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            suffix={
+              passwordVisible ? (
+                <EyeTwoTone onClick={() => setPasswordVisible(false)} />
+              ) : (
+                <EyeInvisibleOutlined
+                  onClick={() => setPasswordVisible(true)}
+                />
+              )
             }
           />
         </Form.Item>
@@ -85,7 +92,7 @@ function Formpage() {
             <Button
               style={{
                 width: "43vh",
-                marginTop: "10px",
+                marginTop: "8px",
                 backgroundColor: "#034147",
                 color: "white",
               }}

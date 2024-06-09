@@ -6,10 +6,10 @@ function Login() {
   return (
     <div>
       <Row>
-        <Col span={12} style={{ padding: "30px" }}>
+        <Col span={12}>
           <Imagepage />
         </Col>
-        <Col span={12}>
+        <Col span={12} style={{ marginTop: "30px" }}>
           <Formpage />
         </Col>
       </Row>

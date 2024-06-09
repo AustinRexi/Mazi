@@ -13,7 +13,7 @@ function Imagepage() {
           backgroundImage: `url(${image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+
           backgroundColor: "#034147",
           position: "relative",
           marginBottom: "20px",
@@ -22,10 +22,10 @@ function Imagepage() {
         <div
           style={{
             position: "absolute",
-            marginTop: "630px",
+            marginTop: "650px",
             left: "50%",
             transform: "translateX(-50%)",
-            padding: "10px",
+
             textAlign: "center",
           }}
         >
