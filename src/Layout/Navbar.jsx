@@ -31,10 +31,11 @@ const Navbar = () => {
   ];
   return (
     <div>
-      <Row gutter={[16, 16]}>
-        <Col span={5}>
+      <Row>
+        <Col>
           <div
             style={{
+              width: "39vh",
               background: "#white",
               height: "50px",
               display: "flex",
@@ -55,8 +56,6 @@ const Navbar = () => {
               height: "50px",
               alignItems: "center",
               padding: 0,
-              // justifyContent: "center",
-              // flexDirection: "column",
             }}
           >
             <div
@@ -102,10 +101,15 @@ const Navbar = () => {
               >
                 <img src={cart} alt="" srcset="" />
                 <img src={notification} alt="" srcset="" />
-                <Button type="primary" style={{ height: 28 }}>
+                <Button type="primary" style={{ height: 32 }}>
                   Add store {<PlusOutlined />}
                 </Button>
-                <img src={avatar} alt="" srcset="" />
+                <img
+                  src={avatar}
+                  alt=""
+                  srcset=""
+                  style={{ paddingRight: "6px" }}
+                />
                 {/* <Button type="primary">Add store {<PlusOutlined />}</Button> */}
               </div>
             </div>
