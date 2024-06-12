@@ -4,6 +4,8 @@ import chartIcon from "../../utils/icons/chart.svg";
 import upArrowIcon from "../../utils/icons/arrow.svg";
 import waveIcon from "../../utils/icons/emoji-wave.svg";
 import dayjs from "dayjs";
+import { CalendarOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const Board = () => {
   const onChange = (date) => {
@@ -12,11 +14,12 @@ const Board = () => {
     } else {
       console.log("Clear");
     }
-
-    // const finDetails = [];
-    const { Title } = Typography;
-    return (
-      <>
+  };
+  // const finDetails = [];
+  const { Title } = Typography;
+  return (
+    <>
+      <Link to="Board">
         <div
           style={{
             display: "flex",
@@ -30,22 +33,23 @@ const Board = () => {
 
             <img src={waveIcon} alt="" srcset="" />
           </div>
-          {/* <div style={{ padding: 8 }}>
+          <div style={{ padding: 8 }}>
             <Space direction="vertical" size={4}>
               <DatePicker
+                suffixIcon={<CalendarOutlined />}
                 placeholder="This Month"
                 presets={[
                   {
                     label: "This Month",
-                    value: dayjs().add(-1, "d"),
+                    value: dayjs().add(-1, "month"),
                   },
                   {
                     label: "Three Months",
-                    value: dayjs().add(-7, "d"),
+                    value: dayjs().subtract(3, "month"),
                   },
                   {
                     label: "Six Months",
-                    value: dayjs().add(-1, "month"),
+                    value: dayjs().subtract(6, "month"),
                   },
                   {
                     label: "One Year",
@@ -55,7 +59,7 @@ const Board = () => {
                 onChange={onChange}
               />
             </Space>
-          </div> */}
+          </div>
         </div>
 
         <Card
@@ -110,9 +114,9 @@ const Board = () => {
             </div>
           </div>
         </Card>
-      </>
-    );
-  };
+      </Link>
+    </>
+  );
 };
 
 export default Board;
