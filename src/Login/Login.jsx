@@ -4,8 +4,8 @@ import Formpage from "./Formpage";
 
 function Login() {
   return (
-    <div>
-      <Row>
+    <div style={{ height: "100vh" }}>
+      <Row style={{ padding: 0, marginBottom: 5, height: "100vh" }}>
         <Col span={12}>
           <Imagepage />
         </Col>

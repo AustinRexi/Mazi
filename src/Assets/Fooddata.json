@@ -1,0 +1,72 @@
+[
+  {
+    "icon": "./Foodicons/Riceicons.svg",
+    "description": "Better Food wey make sense Die",
+    "ratings": "'./Foodicons/Star.svg' 5.0|154",
+    "store": "Chicken rep",
+    "category": "Jollof",
+    "date": "Feb 13 2024",
+    "quantity": "139",
+    "amount": "#28,980"
+  },
+  {
+    "icon": "./Foodicons/Burger.svg",
+    "description": "Better Food wey make sense Die",
+    "ratings": "'./Foodicons/Star.svg' 5.0|154",
+    "store": "Chicken rep",
+    "category": "Jollof",
+    "date": "Feb 13 2024",
+    "quantity": "139",
+    "amount": "#28,980"
+  },
+  {
+    "icon": "./Foodicons/Pizza.svg",
+    "description": "Better Food wey make sense Die",
+    "ratings": "'./Foodicons/Star.svg' 5.0|154",
+    "store": "Chicken rep",
+    "category": "Jollof",
+    "date": "Feb 13 2024",
+    "quantity": "139",
+    "amount": "#28,980"
+  },
+  {
+    "icon": "./Foodicons/Fish.svg",
+    "description": "Better Food wey make sense Die",
+    "ratings": "'./Foodicons/Star.svg' 5.0|154",
+    "store": "Chicken rep",
+    "category": "Jollof",
+    "date": "Feb 13 2024",
+    "quantity": "139",
+    "amount": "#28,980"
+  },
+  {
+    "icon": "./Foodicons/Bread.svg",
+    "description": "Better Food wey make sense Die",
+    "ratings": "'./Foodicons/Star.svg' 5.0|154",
+    "store": "Chicken rep",
+    "category": "Jollof",
+    "date": "Feb 13 2024",
+    "quantity": "139",
+    "amount": "#28,980"
+  },
+  {
+    "icon": "./Foodicons/Salad.svg",
+    "description": "Better Food wey make sense Die",
+    "ratings": "'./Foodicons/Star.svg' 5.0|154",
+    "store": "Chicken rep",
+    "category": "Jollof",
+    "date": "Feb 13 2024",
+    "quantity": "139",
+    "amount": "#28,980"
+  },
+  {
+    "icon": "./Foodicons/Platter.svg",
+    "description": "Better Food wey make sense Die",
+    "ratings": "'./Foodicons/Star.svg' 5.0|154",
+    "store": "Chicken rep",
+    "category": "Jollof",
+    "date": "Feb 13 2024",
+    "quantity": "139",
+    "amount": "#28,980"
+  }
+]

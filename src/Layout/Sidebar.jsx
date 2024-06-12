@@ -8,6 +8,7 @@ import courierIcon from "../utils/icons/courier.svg";
 import walletIcon from "../utils/icons/wallet.svg";
 import supportIcon from "../utils/icons/support.svg";
 import settingIcon from "../utils/icons/settings.svg";
+
 const { Title } = Typography;
 
 const Sidebar = () => {
