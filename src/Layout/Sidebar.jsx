@@ -8,10 +8,17 @@ import courierIcon from "../utils/icons/courier.svg";
 import walletIcon from "../utils/icons/wallet.svg";
 import supportIcon from "../utils/icons/support.svg";
 import settingIcon from "../utils/icons/settings.svg";
+import { NavLink } from "react-router-dom";
 const { Title } = Typography;
 // const active=
 
 const Sidebar = () => {
+  const navLinkStyles = ({ isActive }) => {
+    return {
+      fontWeight: isActive ? "bold" : "normal",
+      color: "red",
+    };
+  };
   const side = [
     {
       name: "Dashboard",
@@ -61,22 +68,6 @@ const Sidebar = () => {
   ];
   return (
     <>
-      {/* <ul>
-        {side.map((item, index) => {
-          return (
-            <li
-              key={index}
-              onClick={() => {
-                window.location.pathname = item.link;
-              }}
-            >
-              <img src={item.icon} alt="" />
-              <div>{item.name}</div>
-            </li>
-          );
-        })}
-      </ul> */}
-
       <div
         style={{
           width: "39vh",
@@ -90,27 +81,24 @@ const Sidebar = () => {
           style={{ width: "100%", padding: 12 }}
         >
           {side.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                window.location.pathname = item.link;
-              }}
-              style={{ display: "flex", marginBottom: 0, cursor: "pointer" }}
-              id={window.location.pathname == item.link ? "active" : ""}
-            >
-              <img src={item.icon} alt="" style={{ marginTop: "12px" }} />
-
-              <Title
-                level={5}
-                style={{
-                  marginLeft: "8px",
-                  fontWeight: 200,
-                  marginBottom: 0,
-                }}
+            <NavLink key={item.name} to={item.link} style={navLinkStyles}>
+              <div
+                style={{ display: "flex", marginBottom: 0, cursor: "pointer" }}
               >
-                {item.name}
-              </Title>
-            </div>
+                <img src={item.icon} alt="" style={{ marginTop: "12px" }} />
+
+                <Title
+                  level={5}
+                  style={{
+                    marginLeft: "8px",
+                    fontWeight: 200,
+                    marginBottom: 0,
+                  }}
+                >
+                  {item.name}
+                </Title>
+              </div>
+            </NavLink>
           ))}
         </Space>
       </div>

@@ -35,7 +35,7 @@ const Navbar = () => {
         <Col>
           <div
             style={{
-              width: "39vh",
+              width: "32vh",
               background: "#white",
               height: "50px",
               display: "flex",
@@ -56,6 +56,7 @@ const Navbar = () => {
               height: "50px",
               alignItems: "center",
               padding: 0,
+              width: "auto",
             }}
           >
             <div
@@ -110,7 +111,6 @@ const Navbar = () => {
                   srcset=""
                   style={{ paddingRight: "6px" }}
                 />
-                {/* <Button type="primary">Add store {<PlusOutlined />}</Button> */}
               </div>
             </div>
           </div>
