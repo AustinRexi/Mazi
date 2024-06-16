@@ -1,16 +1,21 @@
 // import themeConfig from "./theme.cofig";
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Dashboard from "./views/Dashboard/Dashboard";
-import Product from "./views/Product/Product";
-import Orders from "./views/Orders/Orders";
-import Customers from "./views/Customers/Customers";
-import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
-import Courier from "./views/Courier/Courier";
-import Wallet from "./views/Wallet/Wallet";
-import Support from "./views/Support/Support";
-import Settings from "./views/Settings/Settings";
-import Login from "./Login/Login";
+import Tabledata from "./Components/Table/Tabledata";
+
+// import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import Headers from "./Components/Product/Headers";
+// import Board from "./views/Dashboard/Board";
+// import Dashboard from "./views/Dashboard/Dashboard";
+// import Dashboard from "./views/Dashboard/Dashboard";
+// import Product from "./views/Product/Product";
+// import Orders from "./views/Orders/Orders";
+// import Customers from "./views/Customers/Customers";
+// import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
+// import Courier from "./views/Courier/Courier";
+// import Wallet from "./views/Wallet/Wallet";
+// import Support from "./views/Support/Support";
+// import Settings from "./views/Settings/Settings";
+// import Login from "./Login/Login";
 
 function App() {
   // const theme = themeConfig.token;
@@ -61,7 +66,9 @@ function App() {
 
   return (
     <>
-      <Dashboard />
+      <Tabledata />
+      {/* <Headers /> */}
+      {/* <Dashboard /> */}
       {/* <Login /> */}
     </>
   );

@@ -12,7 +12,12 @@ function Search() {
             <img
               src={Searchicon}
               alt="Searchicon"
-              style={{ width: 16, height: 20, marginTop: "4px" }}
+              style={{
+                width: "7vh",
+                height: 24,
+                marginTop: "4px",
+                border: "1px  #B5C3C3",
+              }}
             />
             <img
               src={Line}
@@ -21,7 +26,6 @@ function Search() {
                 width: 16,
                 height: 20,
                 marginTop: "4px",
-                marginLeft: "4px",
               }}
             />
           </span>

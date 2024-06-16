@@ -13,17 +13,19 @@ function Headers() {
             <h2> Products</h2>
             <Flex
               style={{
-                padding: 0,
+                gap: "8px",
+                padding: "2px,8px,2px,8px",
                 marginLeft: "36px",
                 marginTop: "18px",
-                border: "1px solid black",
+                border: "1px solid #B5B6B5",
                 borderRadius: "16px",
-                height: "5vh",
+                height: "7vh",
+                width: "177px",
               }}
               wrap
             >
-              <Tabbutton />
-              <Tabbutton />
+              <Tabbutton> Food</Tabbutton>
+              <Tabbutton> Groceries </Tabbutton>
             </Flex>
             <Addbutton />
             <Search />
