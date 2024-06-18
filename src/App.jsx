@@ -37,7 +37,7 @@ const router = createBrowserRouter([
         element: <CurrencyExchange />,
       },
       {
-        path: "Couriers",
+        path: "Courier",
         element: <Courier />,
       },
       {

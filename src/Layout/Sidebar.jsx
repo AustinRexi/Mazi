@@ -15,8 +15,12 @@ const { Title } = Typography;
 const Sidebar = () => {
   const navLinkStyles = ({ isActive }) => {
     return {
-      fontWeight: isActive ? "bold" : "normal",
-      color: "red",
+      fontWeight: isActive ? 200 : 100,
+      textDecoration: isActive ? "none" : "underline",
+      color: isActive ? "cyan" : "orange",
+      borderLeft: isActive ? "5px solid " : "none",
+      hover: isActive ? "brown" : "green",
+      borderRadiusLeft: isActive ? "50px" : "0",
     };
   };
   const side = [
@@ -82,8 +86,13 @@ const Sidebar = () => {
         >
           {side.map((item, index) => (
             <NavLink key={item.name} to={item.link} style={navLinkStyles}>
-              <div
-                style={{ display: "flex", marginBottom: 0, cursor: "pointer" }}
+              <nav
+                style={{
+                  display: "flex",
+                  marginBottom: 0,
+                  cursor: "pointer",
+                  justifyItems: "center",
+                }}
               >
                 <img src={item.icon} alt="" style={{ marginTop: "12px" }} />
 
@@ -91,13 +100,13 @@ const Sidebar = () => {
                   level={5}
                   style={{
                     marginLeft: "8px",
-                    fontWeight: 200,
+                    // fontWeight: 200,
                     marginBottom: 0,
                   }}
                 >
                   {item.name}
                 </Title>
-              </div>
+              </nav>
             </NavLink>
           ))}
         </Space>

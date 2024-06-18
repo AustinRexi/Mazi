@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Typography, DatePicker, Space } from "antd";
 import chartIcon from "../../utils/icons/chart.svg";
 import upArrowIcon from "../../utils/icons/arrow.svg";
+import downArrowIcon from "../../utils/icons/downarrow.svg";
 import waveIcon from "../../utils/icons/emoji-wave.svg";
 import dayjs from "dayjs";
 import { CalendarOutlined } from "@ant-design/icons";
@@ -14,7 +15,24 @@ const Board = () => {
       console.log("Clear");
     }
   };
-  // const finDetails = [];
+  const finDetails = [
+    {
+      Detail: "Revenue",
+      DetailIcon: "chartIcon",
+      net: "N150.456",
+      price: "N132.77m",
+      percentage: "15.4%",
+      icon: "upArrowIcon",
+    },
+    {
+      Detail: "Gross Profit",
+      DetailIcon: "profitIcon",
+      net: "N150.456",
+      price: "N162.77m",
+      percentage: "25.4%",
+      icon: "downArrowIcon",
+    },
+  ];
   const { Title } = Typography;
   return (
     <>
@@ -65,58 +83,64 @@ const Board = () => {
         </div>
       </div>
 
-      <Card
-        style={{
-          width: 300,
-          height: 250,
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          padding: 0,
-        }}
-      >
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <img
-            style={{ backgroundColor: "#E5F8EC", height: "fit-content" }}
-            src={chartIcon}
-            alt=""
-            srcset=""
-          />
-          <div>
-            <Title style={{ fontWeight: 100 }} level={5}>
-              Revenue
-            </Title>
-            <Title level={5}>N150.456M</Title>
-          </div>
-        </div>
-        <div
+      {finDetails.map((detail, index) => (
+        <Card
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            width: 300,
+            height: 250,
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            padding: 0,
           }}
         >
-          <div>
-            <Title style={{ fontWeight: 100 }} level={5}>
-              Previous
-            </Title>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <img
+              style={{
+                backgroundColor: "#E5F8EC",
+                height: "fit-content",
+                borderRadius: 5,
+              }}
+              src={detail.DetailIcon}
+              alt=""
+              srcset=""
+            />
+            <div>
+              <Title style={{ fontWeight: 100 }} level={5}>
+                Revenue
+              </Title>
+              <Title level={5}>{detail.net}</Title>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <Title style={{ fontWeight: 100 }} level={5}>
+                Previous
+              </Title>
 
-            <Title level={5}>N132.77M</Title>
+              <Title level={5}>{detail.price}</Title>
+            </div>
+            <div>
+              <Title style={{ fontWeight: 100 }} level={5}>
+                Difference
+              </Title>
+              <Title level={5}>15.4%</Title>
+            </div>
+            <div>
+              <Title style={{ fontWeight: 100 }} level={5}>
+                Trend
+              </Title>
+              <Title level={5}>
+                <img src={upArrowIcon} alt="" srcset="" />
+              </Title>
+            </div>
           </div>
-          <div>
-            <Title style={{ fontWeight: 100 }} level={5}>
-              Difference
-            </Title>
-            <Title level={5}>15.4%</Title>
-          </div>
-          <div>
-            <Title style={{ fontWeight: 100 }} level={5}>
-              Trend
-            </Title>
-            <Title level={5}>
-              <img src={upArrowIcon} alt="" srcset="" />
-            </Title>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      ))}
     </>
   );
 };
