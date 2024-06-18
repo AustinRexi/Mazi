@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Typography, DatePicker, Space } from "antd";
 import chartIcon from "../../utils/icons/chart.svg";
 import upArrowIcon from "../../utils/icons/arrow.svg";
