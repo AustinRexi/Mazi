@@ -1,6 +1,8 @@
 import Navbar from "../../Layout/Navbar";
 import Sidebar from "../../Layout/Sidebar";
-// import Board from "../Dashboard/Board";
+import Board from "../Dashboard/Board";
+import CurrencyExchange from "../CurrencyExchange/CurrencyExchange";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const Dashboard = () => {
   return (

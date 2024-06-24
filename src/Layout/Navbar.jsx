@@ -1,4 +1,3 @@
-import React from "react";
 import { Row, Col } from "antd";
 import { Select, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
@@ -42,8 +41,8 @@ const Navbar = () => {
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
             }}
           >
-            <img src={menu} alt="" srcset="" />
-            <img src={logo} alt="" srcset="" />
+            <img src={menu} alt="" />
+            <img src={logo} alt="" />
           </div>
         </Col>
         <Col
@@ -99,17 +98,12 @@ const Navbar = () => {
                   gap: 10,
                 }}
               >
-                <img src={cart} alt="" srcset="" />
-                <img src={notification} alt="" srcset="" />
+                <img src={cart} alt="" />
+                <img src={notification} alt="" />
                 <Button type="primary" style={{ height: 32 }}>
                   Add store {<PlusOutlined />}
                 </Button>
-                <img
-                  src={avatar}
-                  alt=""
-                  srcset=""
-                  style={{ paddingRight: "6px" }}
-                />
+                <img src={avatar} alt="" style={{ paddingRight: "6px" }} />
                 {/* <Button type="primary">Add store {<PlusOutlined />}</Button> */}
               </div>
             </div>
