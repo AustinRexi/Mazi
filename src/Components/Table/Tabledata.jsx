@@ -1,5 +1,6 @@
 import { Table } from "antd";
-import data from "../../Assets/Fooddata";
+// import data from "../../Assets/Fooddata";
+
 const columns = [
   {
     title: "ITEMS",
@@ -8,10 +9,10 @@ const columns = [
       <span
         style={{
           display: "flex",
-          alignItems: "center",
+          // alignItems: "center",
           gap: "20px",
           width: "338px",
-          height: "72px",
+          height: "85px",
         }}
       >
         <img
@@ -96,58 +97,17 @@ const columns = [
     },
   },
 ];
-// const data = [
-//   {
-//     key: "1",
-//     items: "John Brown",
-//     rating: 98,
-//     store: 60,
-//     subcategory: 70,
-//     dateadded: "Feb 13 2024",
-//     quantity: "134",
-//     amount: "#28,900",
-//   },
-//   {
-//     key: "2",
-//     items: "Jim Green",
-//     rating: 98,
-//     store: 66,
-//     subcategory: 89,
-//     dateadded: "Feb 13 2024",
-//     quantity: "134",
-//     amount: "#28,900",
-//   },
-//   {
-//     key: "3",
-//     items: "Joe Black",
-//     rating: 98,
-//     store: 90,
-//     subcategory: 70,
-//     dateadded: "Feb 13 2024",
-//     quantity: "134",
-//     amount: "#28,900",
-//   },
-//   {
-//     key: "4",
-//     items: "Jim Red",
-//     rating: 88,
-//     store: 99,
-//     subcategory: 89,
-//     dateadded: "Feb 13 2024",
-//     quantity: "134",
-//     amount: "#28,900",
-//   },
-// ];
+
 const onChange = (pagination, filters, sorter, extra) => {
   console.log("params", pagination, filters, sorter, extra);
 };
-const Tabledata = () => (
+const Tabledata = ({ data }) => (
   <Table
     columns={columns}
     dataSource={data}
     onChange={onChange}
     style={{
-      width: "1104px",
+      width: "1280px",
       height: "5px",
       borderRadius: "8px",
       justify: "space-between",

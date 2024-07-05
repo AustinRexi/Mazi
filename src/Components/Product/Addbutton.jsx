@@ -6,12 +6,13 @@ function Addbutton() {
       <Button
         type="primary"
         shape="round"
+        size="large"
         style={{
           gap: "12px",
           borderRadius: "24px",
           marginTop: "16px",
           marginLeft: "6px",
-          //   width: "25vh",
+          // width: "176px",
           height: "7vh",
           width: "177px",
           fontSize: "17px",

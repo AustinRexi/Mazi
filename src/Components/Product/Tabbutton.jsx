@@ -12,6 +12,7 @@ function Tabbutton({ children }) {
           fontWeight: 600,
           lineHeight: "24px",
         }}
+        wrap
       >
         {children}
       </Button>

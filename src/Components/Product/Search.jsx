@@ -6,6 +6,12 @@ function Search() {
   return (
     <div>
       <Input
+        style={{
+          height: 55,
+          marginTop: "15px",
+          marginLeft: "15px",
+          borderRadius: "16px",
+        }}
         status=""
         prefix={
           <span>
@@ -31,7 +37,7 @@ function Search() {
           </span>
         }
         placeholder="Search food or kitchen"
-        style={{ marginTop: "15px", marginLeft: "15px", borderRadius: "8px" }}
+        // style={{ marginTop: "15px", marginLeft: "15px", borderRadius: "8px" }}
       />
     </div>
   );
