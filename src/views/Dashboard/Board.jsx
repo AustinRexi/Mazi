@@ -1,38 +1,58 @@
-import { Card, Typography, DatePicker, Space } from "antd";
+import React from "react";
+import { Card, Typography, Row, Col } from "antd";
 import chartIcon from "../../utils/icons/chart.svg";
 import upArrowIcon from "../../utils/icons/arrow.svg";
 import downArrowIcon from "../../utils/icons/downarrow.svg";
+import profitIcon from "../../utils/icons/profit.svg";
 import waveIcon from "../../utils/icons/emoji-wave.svg";
-import dayjs from "dayjs";
-import { CalendarOutlined } from "@ant-design/icons";
+import peopleIcon from "../../utils/icons/people.svg";
+import heartIcon from "../../utils/icons/heart.svg";
+
+import Calender from "./Calender";
+import ChartDetail from "./ChartDetail";
+
+const { Title } = Typography;
 
 const Board = () => {
-  const onChange = (date) => {
-    if (date) {
-      console.log("Date: ", date);
-    } else {
-      console.log("Clear");
-    }
-  };
   const finDetails = [
     {
-      Detail: "Revenue",
-      DetailIcon: "chartIcon",
+      Detail: "Previous",
+      DetailIcon: chartIcon,
       net: "N150.456",
       price: "N132.77m",
       percentage: "15.4%",
-      icon: "upArrowIcon",
+      icon: upArrowIcon,
+      color: "#E5F7F8",
     },
     {
-      Detail: "Gross Profit",
-      DetailIcon: "profitIcon",
-      net: "N150.456",
+      Detail: "New Customers",
+      DetailIcon: peopleIcon,
+      net: "5,456",
       price: "N162.77m",
       percentage: "25.4%",
-      icon: "downArrowIcon",
+      icon: downArrowIcon,
+      color: "#F6E9D7",
+    },
+    {
+      Detail: "Revenue",
+      DetailIcon: profitIcon,
+      net: "N150.456",
+      price: "N132.77m",
+      percentage: "15.4%",
+      icon: upArrowIcon,
+      color: "#E5F8EC",
+    },
+    {
+      Detail: "Product Rating",
+      DetailIcon: heartIcon,
+      net: "4.8",
+      // price: "N132.77m",
+      // percentage: "15.4%",
+      // icon: upArrowIcon,
+      color: "#FEEEEE",
     },
   ];
-  const { Title } = Typography;
+
   return (
     <>
       <div
@@ -41,105 +61,117 @@ const Board = () => {
           background: "white",
           alignContent: "center",
           justifyContent: "space-between",
+          width: "100%",
+          padding: "24px 0px",
         }}
       >
-        <div style={{ display: "flex", alignContent: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Title level={5}>Hello Tunde</Title>
-
           <img
             style={{ height: "fit-content" }}
             src={waveIcon}
-            alt=""
-            srcset=""
+            alt="wave icon"
           />
         </div>
-        <div style={{ padding: 8 }}>
-          <Space direction="vertical" size={4}>
-            <DatePicker
-              suffixIcon={<CalendarOutlined />}
-              placeholder="This Month"
-              presets={[
-                {
-                  label: "This Month",
-                  value: dayjs().add(-1, "month"),
-                },
-                {
-                  label: "Three Months",
-                  value: dayjs().subtract(3, "month"),
-                },
-                {
-                  label: "Six Months",
-                  value: dayjs().subtract(6, "month"),
-                },
-                {
-                  label: "One Year",
-                  value: dayjs().add(-1, "month"),
-                },
-              ]}
-              onChange={onChange}
-            />
-          </Space>
-        </div>
+        <Calender />
       </div>
 
-      {finDetails.map((detail, index) => (
-        <Card
-          style={{
-            width: 300,
-            height: 250,
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-            padding: 0,
-          }}
-        >
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <img
-              style={{
-                backgroundColor: "#E5F8EC",
-                height: "fit-content",
-                borderRadius: 5,
-              }}
-              src={detail.DetailIcon}
-              alt=""
-              srcset=""
-            />
-            <div>
-              <Title style={{ fontWeight: 100 }} level={5}>
-                Revenue
-              </Title>
-              <Title level={5}>{detail.net}</Title>
-            </div>
-          </div>
-          <div
+      <div
+        style={{ display: "flex", justifyContent: "space-between", gap: 16 }}
+      >
+        {finDetails.map((detail, index) => (
+          <Card
+            key={index}
             style={{
+              width: "260px",
+              height: "156px",
               display: "flex",
+              flexDirection: "column",
               justifyContent: "space-between",
-              alignItems: "center",
+              padding: "10px",
             }}
           >
-            <div>
-              <Title style={{ fontWeight: 100 }} level={5}>
-                Previous
-              </Title>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <img
+                style={{
+                  backgroundColor: detail.color,
+                  height: "40px",
+                  width: "40px",
+                  borderRadius: "5px",
+                }}
+                src={detail.DetailIcon}
+                alt="detail icon"
+              />
+              <div style={{ flex: 1 }}>
+                <Title
+                  style={{ fontWeight: 100, margin: 0, fontSize: "14px" }}
+                  level={5}
+                >
+                  {detail.Detail}
+                </Title>
+                <Title style={{ margin: 0, fontSize: "14px" }} level={5}>
+                  {detail.net}
+                </Title>
+              </div>
+            </div>
+            <div
+              style={{
+                width: "100%",
+                height: "48px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Row
+                gutter={[4, 0]}
+                justify="center"
+                align="middle"
+                style={{ width: "100%" }}
+              >
+                <Col span={8} style={{ textAlign: "center", padding: 0 }}>
+                  <div style={{ fontSize: "10px" }}>
+                    <span>Previous</span>
+                    <Title level={5} style={{ margin: 0, fontSize: "12px" }}>
+                      {detail.price}
+                    </Title>
+                  </div>
+                </Col>
+                <Col span={8} style={{ textAlign: "center", padding: 0 }}>
+                  <div style={{ fontSize: "10px" }}>
+                    <span>Difference</span>
+                    <Title level={5} style={{ margin: 0, fontSize: "12px" }}>
+                      {detail.percentage}
+                    </Title>
+                  </div>
+                </Col>
+                <Col span={8} style={{ textAlign: "center", padding: 0 }}>
+                  <div style={{ fontSize: "10px" }}>
+                    <span>Trend</span>
+                    <Title level={5} style={{ margin: 0, fontSize: "12px" }}>
+                      <img
+                        src={detail.icon}
+                        style={{ width: "12px", height: "12px" }}
+                      />
+                    </Title>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          </Card>
+        ))}
+      </div>
 
-              <Title level={5}>{detail.price}</Title>
-            </div>
-            <div>
-              <Title style={{ fontWeight: 100 }} level={5}>
-                Difference
-              </Title>
-              <Title level={5}>15.4%</Title>
-            </div>
-            <div>
-              <Title style={{ fontWeight: 100 }} level={5}>
-                Trend
-              </Title>
-              <Title level={5}>
-                <img src={upArrowIcon} alt="" srcset="" />
-              </Title>
-            </div>
-          </div>
-        </Card>
-      ))}
+      <div
+        style={{
+          gap: "10px",
+          alignItems: "center",
+          width: "100%",
+          marginTop: "24px",
+        }}
+      >
+        <ChartDetail />
+      </div>
     </>
   );
 };

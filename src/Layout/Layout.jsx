@@ -9,7 +9,7 @@ const Layout = () => (
     {/* <div className="container"> */}
     <div style={{ display: "flex" }}>
       <Sidebar />
-      <div style={{ paddingLeft: 40, width: "100%" }}>
+      <div style={{ paddingLeft: 30, width: "100%" }}>
         <Outlet />
       </div>
     </div>

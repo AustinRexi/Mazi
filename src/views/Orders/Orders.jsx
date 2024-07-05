@@ -1,39 +1,57 @@
 import React from "react";
-import { DatePicker, Space } from "antd";
-import dayjs from "dayjs";
+import { Avatar, List, Typography } from "antd";
+import chicken from "../../utils/icons/chickenRepublic.svg";
+import food from "../../utils/icons/Food.svg";
+import diet from "../../utils/icons/diet.svg";
+import healthy from "../../utils/icons/healthy.svg";
+import { Card } from "antd";
+import "./Global.css";
 
-const onChange = (date) => {
-  if (date) {
-    console.log("Date: ", date);
-  } else {
-    console.log("Clear");
-  }
-};
-
-const Board = () => (
-  <Space direction="vertical" size={4}>
-    <DatePicker
-      placeholder="This Month"
-      presets={[
-        {
-          label: "This Month",
-          value: dayjs().add(-1, "d"),
-        },
-        {
-          label: "Three Months",
-          value: dayjs().add(-7, "d"),
-        },
-        {
-          label: "Six Months",
-          value: dayjs().add(-1, "month"),
-        },
-        {
-          label: "One Year",
-          value: dayjs().add(-1, "month"),
-        },
-      ]}
-      onChange={onChange}
+const { Title } = Typography;
+const data = [
+  {
+    title: "Chicken Republic",
+    price: "N56,789",
+    image: chicken,
+  },
+  {
+    title: "ETPL Foods",
+    price: "N56,789",
+    image: food,
+  },
+  {
+    title: "Diet Click",
+    price: "N56,789",
+    image: diet,
+  },
+  {
+    title: "Eat Healthy",
+    price: "N56,789",
+    image: healthy,
+  },
+];
+const { Meta } = Card;
+const Orders = () => (
+  <Card
+    hoverable
+    style={{
+      width: 240,
+    }}
+  >
+    <header>Top Stores</header>
+    <List
+      itemLayout="horizontal"
+      dataSource={data}
+      renderItem={(item, index) => (
+        <List.Item>
+          <List.Item.Meta
+            avatar={<Avatar src={item.image} />}
+            title={item.title}
+            description={item.price}
+          />
+        </List.Item>
+      )}
     />
-  </Space>
+  </Card>
 );
-export default Board;
+export default Orders;

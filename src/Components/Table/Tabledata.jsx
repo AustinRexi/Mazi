@@ -10,7 +10,7 @@ const columns = [
           display: "flex",
           alignItems: "center",
           gap: "20px",
-          width: "338px",
+          width: "max-content",
           height: "72px",
         }}
       >
@@ -18,7 +18,7 @@ const columns = [
           src={items.icon}
           alt="icon"
           style={{
-            width: "112px",
+            width: "max-content",
             marginRight: "8px",
             height: "72px",
             borderRadius: "6px",
@@ -31,6 +31,7 @@ const columns = [
             lineHeight: "24px",
             whiteSpace: "normal",
             wordBreak: "break-word",
+            width: "50%",
           }}
         >
           {items.description}
@@ -147,7 +148,7 @@ const Tabledata = () => (
     dataSource={data}
     onChange={onChange}
     style={{
-      width: "1104px",
+      width: "max-content",
       height: "5px",
       borderRadius: "8px",
       justify: "space-between",

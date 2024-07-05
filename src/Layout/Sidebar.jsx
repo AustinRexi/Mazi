@@ -16,7 +16,7 @@ const Sidebar = () => {
   const navLinkStyles = ({ isActive }) => {
     return {
       fontWeight: isActive ? 200 : 100,
-      textDecoration: isActive ? "none" : "underline",
+      textDecoration: isActive ? "underline" : "none",
       color: isActive ? "cyan" : "orange",
       borderLeft: isActive ? "5px solid " : "none",
       hover: isActive ? "brown" : "green",
@@ -82,7 +82,7 @@ const Sidebar = () => {
         <Space
           direction="vertical"
           size="6"
-          style={{ width: "100%", padding: 12 }}
+          style={{ width: "max-content", padding: 12 }}
         >
           {side.map((item, index) => (
             <NavLink key={item.name} to={item.link} style={navLinkStyles}>

@@ -8,7 +8,7 @@ function Headers() {
   return (
     <div>
       <div>
-        <Flex gap="middle" align="start" vertical>
+        <Flex gap="middle" align="start" vertical style={{ width: "auto" }}>
           <Flex gap="small">
             <h2> Products</h2>
             <Flex
@@ -20,7 +20,7 @@ function Headers() {
                 border: "1px solid #B5B6B5",
                 borderRadius: "16px",
                 height: "7vh",
-                width: "177px",
+                width: "auto",
               }}
               wrap
             >

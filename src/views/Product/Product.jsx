@@ -1,5 +1,12 @@
+import Headers from "../../Components/Product/Headers";
+import Tabledata from "../../Components/Table/Tabledata";
 function Product() {
-  return <div>Product</div>;
+  return (
+    <>
+      <Headers />
+      <Tabledata />
+    </>
+  );
 }
 
 export default Product;
