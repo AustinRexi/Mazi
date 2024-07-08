@@ -8,11 +8,21 @@ import courierIcon from "../utils/icons/courier.svg";
 import walletIcon from "../utils/icons/wallet.svg";
 import supportIcon from "../utils/icons/support.svg";
 import settingIcon from "../utils/icons/settings.svg";
-
+import { NavLink } from "react-router-dom";
 const { Title } = Typography;
 // const active=
 
 const Sidebar = () => {
+  const navLinkStyles = ({ isActive }) => {
+    return {
+      fontWeight: isActive ? 200 : 100,
+      textDecoration: isActive ? "underline" : "none",
+      color: isActive ? "cyan" : "orange",
+      borderLeft: isActive ? "5px solid " : "none",
+      hover: isActive ? "brown" : "green",
+      borderRadiusLeft: isActive ? "50px" : "0",
+    };
+  };
   const side = [
     {
       name: "Dashboard",
@@ -62,22 +72,6 @@ const Sidebar = () => {
   ];
   return (
     <>
-      {/* <ul>
-        {side.map((item, index) => {
-          return (
-            <li
-              key={index}
-              onClick={() => {
-                window.location.pathname = item.link;
-              }}
-            >
-              <img src={item.icon} alt="" />
-              <div>{item.name}</div>
-            </li>
-          );
-        })}
-      </ul> */}
-
       <div
         style={{
           width: "39vh",
@@ -88,30 +82,32 @@ const Sidebar = () => {
         <Space
           direction="vertical"
           size="6"
-          style={{ width: "100%", padding: 12 }}
+          style={{ width: "max-content", padding: 12 }}
         >
           {side.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                window.location.pathname = item.link;
-              }}
-              style={{ display: "flex", marginBottom: 0, cursor: "pointer" }}
-              id={window.location.pathname == item.link ? "active" : ""}
-            >
-              <img src={item.icon} alt="" style={{ marginTop: "12px" }} />
-
-              <Title
-                level={5}
+            <NavLink key={item.name} to={item.link} style={navLinkStyles}>
+              <nav
                 style={{
-                  marginLeft: "8px",
-                  fontWeight: 200,
+                  display: "flex",
                   marginBottom: 0,
+                  cursor: "pointer",
+                  justifyItems: "center",
                 }}
               >
-                {item.name}
-              </Title>
-            </div>
+                <img src={item.icon} alt="" style={{ marginTop: "12px" }} />
+
+                <Title
+                  level={5}
+                  style={{
+                    marginLeft: "8px",
+                    // fontWeight: 200,
+                    marginBottom: 0,
+                  }}
+                >
+                  {item.name}
+                </Title>
+              </nav>
+            </NavLink>
           ))}
         </Space>
       </div>
