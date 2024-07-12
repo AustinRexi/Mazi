@@ -1,5 +1,10 @@
+import Tabswitch from "./Tabswitch";
 function Product() {
-  return <div>Product</div>;
+  return (
+    <div>
+      <Tabswitch />
+    </div>
+  );
 }
 
 export default Product;

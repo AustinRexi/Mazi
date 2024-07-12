@@ -1,9 +1,10 @@
 // import themeConfig from "./theme.cofig";
 import "./App.css";
+// import Product from "./views/Product/Product";
 // import Uploadimage from "./views/Product/Uploadimage";
-// import Tabswitch from "./views/Product/Tabswitch";
+import Tabswitch from "./views/Product/Tabswitch";
 // import Pageignition from "./Components/Product/Pageignition";
-import Addproduct from "./views/Product/Addproduct";
+// import Addproduct from "./views/Product/Addproduct";
 // import Tabledata from "./Components/Table/Tabledata";
 
 // import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -72,11 +73,12 @@ function App() {
 
   return (
     <>
+      {/* <Product /> */}
       {/* <Uploadimage /> */}
       {/* <Settings /> */}
-      {/* <Tabswitch /> */}
+      <Tabswitch />
       {/* <Pageignition /> */}
-      <Addproduct />
+      {/* <Addproduct /> */}
       {/* <Filter /> */}
       {/* <Tabledata /> */}
       {/* <Headers /> */}

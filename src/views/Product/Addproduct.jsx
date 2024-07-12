@@ -1,33 +1,9 @@
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  Switch,
-  Upload,
-  Divider,
-  InputNumber,
-  Col,
-  Row,
-} from "antd";
-// import { UploadOutlined } from "@ant-design/icons";
-import { PlusOutlined } from "@ant-design/icons";
+import { Form, Col, Row } from "antd";
+import { Card } from "antd";
+
 import Uploadimage from "./Uploadimage";
 import Formfile from "./Formfile";
-
-const { TextArea } = Input;
-const { Option } = Select;
-const subcategories = [
-  "Chicken",
-  "Jollof",
-  "Burgers",
-  "Nigerian",
-  "Alcohol",
-  "Breakfast",
-  "Pasta",
-  "Chinese",
-  "International",
-];
+import Editor from "./Edit";
 
 const AddProduct = () => {
   const onFinish = (values) => {
@@ -42,32 +18,36 @@ const AddProduct = () => {
     <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
       <Row style={{ backgroundColor: "green" }}>
         <Col span={8} style={{}}>
-          <div style={{ width: "70%" }}>
-            <Formfile />
+          <div style={{ width: "95%" }}>
+            <Card
+              style={{
+                // width: 352,
+                marginLeft: "18px",
+              }}
+            >
+              <Formfile />
+            </Card>
           </div>
         </Col>
         <Col span={8}>
           {" "}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ width: "50%", marginLeft: "100px" }}>
-              <Divider>Product Image</Divider>
-              <Form.Item label="Cover Image Here">
-                <Uploadimage />
-              </Form.Item>
-            </div>{" "}
-          </div>
+          <div style={{ width: "95%", marginLeft: "10px" }}>
+            <Card
+              style={{
+                // width: 352,
+                marginRight: "10px",
+                height: "172vh",
+              }}
+            >
+              <Uploadimage />
+            </Card>
+          </div>{" "}
         </Col>
         <Col span={8}>
-          {" "}
-          <div style={{ width: "50%", marginLeft: "10px" }}>
-            <Divider>About Product</Divider>
-            <Form.Item name="description" label="Product Description">
-              <TextArea rows={4} />
-            </Form.Item>
-
-            <Form.Item name="specifications" label="Product Specification">
-              <TextArea rows={4} />
-            </Form.Item>
+          <div style={{ width: "95%", marginRight: "10px" }}>
+            <Card style={{}}>
+              <Editor />
+            </Card>
           </div>
         </Col>
       </Row>
