@@ -1,5 +1,4 @@
 import { Table } from "antd";
-// import data from "../../Assets/Fooddata";
 
 const columns = [
   {

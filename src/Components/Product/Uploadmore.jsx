@@ -39,6 +39,7 @@ const Uploadmore = () => {
         backgroundColor: "white",
         gap: "9px",
         width: "100%",
+        marginLeft: "12px",
       }}
       type="button"
     >
@@ -47,7 +48,7 @@ const Uploadmore = () => {
           display: "flex",
           alignItems: "center",
           gap: "4px",
-          width: "21vw",
+          width: "23vw",
           marginLeft: "5px",
           backgroundColor: "#F1F7F4",
           height: "60px",
