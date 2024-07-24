@@ -10,10 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@ant-design/charts": "^2.1.1",
-    "antd": "^5.17.2",
-=======
+    "antd": "^5.19.1",
     "@ckeditor/ckeditor5-alignment": "^42.0.0",
     "@ckeditor/ckeditor5-autoformat": "^42.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^42.0.0",
@@ -35,9 +33,7 @@
     "@ckeditor/ckeditor5-remove-format": "^42.0.0",
     "@ckeditor/ckeditor5-table": "^42.0.0",
     "@tinymce/tinymce-react": "^5.1.1",
-    "antd": "^5.19.1",
     "ckeditor5": "^42.0.0",
->>>>>>> dev-rex
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1"
