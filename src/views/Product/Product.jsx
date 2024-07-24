@@ -1,20 +1,12 @@
-<<<<<<< HEAD
+
 import Headers from "../../Components/Product/Headers";
-import Tabledata from "../../Components/Table/Tabledata";
-function Product() {
-  return (
-    <>
-      <Headers />
-      <Tabledata />
-    </>
-=======
-import Tabswitch from "./Tabswitch";
+
 function Product() {
   return (
     <div>
-      <Tabswitch />
+      <Headers />
     </div>
->>>>>>> dev-rex
+
   );
 }
 

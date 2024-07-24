@@ -12,14 +12,8 @@ import Filterbutton from "../../Components/Product/Filterbutton";
 const { TabPane } = Tabs;
 
 const tabList = [
-  {
-    key: "tab1",
-    tab: "Food",
-  },
-  {
-    key: "tab2",
-    tab: "Groceries",
-  },
+  { text: "Product", key: "tab1", tab: "Food" },
+  { text: "Product", key: "tab2", tab: "Groceries" },
 ];
 
 const contentList = {
@@ -44,6 +38,7 @@ function Tabswitch() {
           marginBottom: "18px",
         }}
       >
+        <h2>prdr</h2>
         <Tabs
           activeKey={activeTabKey}
           onChange={onTabChange}
@@ -58,7 +53,7 @@ function Tabswitch() {
           }}
         >
           {tabList.map((tab) => (
-            <TabPane tab={tab.tab} key={tab.key} style={{ width: "185vh" }}>
+            <TabPane tab={tab.tab} key={tab.key} style={{ width: "190vh" }}>
               <Pageignition />
               {contentList[tab.key]}
             </TabPane>

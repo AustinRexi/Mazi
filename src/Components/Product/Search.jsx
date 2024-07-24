@@ -1,8 +1,8 @@
 import { Input } from "antd";
-
 import Line from "../../Assets/Lineicons/Line.svg";
 import Searchicon from "../../Assets/Lineicons/Searchicon.svg";
-function Search() {
+
+function Search({ placeholder }) {
   return (
     <div>
       <Input
@@ -36,8 +36,7 @@ function Search() {
             />
           </span>
         }
-        placeholder="Search food or kitchen"
-        // style={{ marginTop: "15px", marginLeft: "15px", borderRadius: "8px" }}
+        placeholder={placeholder}
       />
     </div>
   );

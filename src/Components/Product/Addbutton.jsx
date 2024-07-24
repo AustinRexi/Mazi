@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import Addicon from "../../Assets/Lineicons/Addicon.svg";
-function Addbutton() {
+
+function Addbutton({ onClick }) {
   return (
     <div>
       <Button
@@ -19,6 +20,7 @@ function Addbutton() {
           fontWeight: 500,
           padding: "14px,28px,14px,28px",
         }}
+        onClick={onClick}
       >
         Add product
         <img

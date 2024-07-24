@@ -10,9 +10,9 @@ const editorConfiguration = {
   },
 };
 
-const Editor = () => {
+const Edit = () => {
   return (
-    <div className="container">
+    <div className="container" style={{ height: "985px" }}>
       <h2>About Product</h2>
       <div className="editor-container">
         <div className="editor-section">
@@ -36,4 +36,4 @@ const Editor = () => {
   );
 };
 
-export default Editor;
+export default Edit;

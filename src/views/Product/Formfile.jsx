@@ -162,11 +162,11 @@ function Formfile() {
               Product Stock
             </h3>
             <Switch
-              style={{ left: "90px", marginTop: "32px" }}
+              style={{ left: "90px", marginTop: "12px" }}
               defaultChecked
             />
           </div>
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", marginTop: "8px" }}>
             <Form.Item name="stock">
               <InputNumber
                 placeholder="No.In Stock"
