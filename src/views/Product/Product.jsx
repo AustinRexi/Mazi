@@ -1,8 +1,8 @@
-import Tabswitch from "./Tabswitch";
+import Headers from "../../Components/Product/Headers";
 function Product() {
   return (
     <div>
-      <Tabswitch />
+      <Headers />
     </div>
   );
 }
