@@ -12,7 +12,7 @@ const editorConfiguration = {
 
 const Edit = () => {
   return (
-    <div className="container" style={{ height: "985px" }}>
+    <div className="container">
       <h2>About Product</h2>
       <div className="editor-container">
         <div className="editor-section">

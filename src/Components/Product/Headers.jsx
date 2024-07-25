@@ -50,7 +50,6 @@ function Headers() {
                   fontWeight: 600,
                   fontSize: "24px",
                   lineHeight: "32px",
-                  marginLeft: "16px",
                 }}
               >
                 Products
@@ -59,7 +58,7 @@ function Headers() {
                 style={{
                   gap: "8px",
                   padding: "2px,8px,2px,8px",
-                  marginLeft: "300px",
+                  marginLeft: "80px",
                   marginTop: "18px",
                   border: "1px solid #B5B6B5",
                   borderRadius: "16px",

@@ -13,7 +13,7 @@ function Filter({ data }) {
   ];
 
   return (
-    <Space size={16} direction="vertical" style={{}}>
+    <Space size={18} direction="vertical">
       <Card
         size="small"
         title={<div style={{ fontWeight: 500, fontSize: "24px" }}>Sort by</div>}
@@ -31,12 +31,11 @@ function Filter({ data }) {
           color: "#121515",
           fontSize: "16px",
           lineHeight: "24px",
-          width: "448px",
-          height: "700px",
+          width: "380px",
+          height: "900px",
+          right: "10px",
           borderRadius: "12px",
           padding: "24px",
-          right: "60px",
-          gap: "16px",
           backgroundColor: "#FFFFFF",
           boxShadow: "0px 9px 18px 0px #AAAAAA26",
         }}
@@ -86,16 +85,24 @@ function Filter({ data }) {
           </div>
           <Row gutter={[16, 16]}>
             {data.map((type, index) => (
-              <Col span={6} key={index} style={{ textAlign: "center" }}>
+              <Col
+                span={8}
+                key={index}
+                style={{ textAlign: "center", marginBottom: "12px" }}
+              >
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center",
-                    gap: "8px",
+                    // alignItems: "center",
                   }}
                 >
-                  <img src={type.icon} />
+                  <img
+                    src={type.icon}
+                    style={{ marginBottom: "8px" }}
+                    alt={`Restaurant type ${index}`}
+                  />
+                  {/* Add alt text for accessibility */}
                 </div>
               </Col>
             ))}

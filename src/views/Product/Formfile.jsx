@@ -19,11 +19,10 @@ function Formfile() {
     <div style={{ boxshadow: "0px 9px 18px 0px #AAAAAA26" }}>
       <div
         style={{
-          marginLeft: "7px",
+          marginLeft: "8px",
 
           backgroundColor: "#FFFFFF",
-          padding: "20px,   10px",
-          // gap: "20px",
+
           borderRadius: "12px",
         }}
       >
@@ -151,22 +150,34 @@ function Formfile() {
             <InputNumber
               placeholder="Sale Price"
               min={0}
-              style={{ width: "98%", height: "56px", borderRadius: "12px" }}
+              style={{
+                width: "98%",
+                height: "56px",
+                borderRadius: "12px",
+                marginLeft: "2px",
+              }}
             />
           </Form.Item>
         </div>
         <Divider />
-        <div style={{ padding: "4px" }}>
+        <div style={{ padding: "2px" }}>
           <div style={{ display: "flex" }}>
-            <h3 style={{ fontWeight: 600, fontSize: "24px", height: "32px" }}>
+            <h3
+              style={{
+                fontWeight: 600,
+                fontSize: "22px",
+                height: "24px",
+                whiteSpace: "wrap",
+              }}
+            >
               Product Stock
             </h3>
             <Switch
-              style={{ left: "90px", marginTop: "12px" }}
+              style={{ left: "50px", marginTop: "10px" }}
               defaultChecked
             />
           </div>
-          <div style={{ display: "flex", marginTop: "8px" }}>
+          <div style={{ display: "flex", marginTop: "18px" }}>
             <Form.Item name="stock">
               <InputNumber
                 placeholder="No.In Stock"
@@ -178,7 +189,12 @@ function Formfile() {
               <InputNumber
                 placeholder="Low stock range"
                 min={0}
-                style={{ width: "98%", height: "56px", borderRadius: "12px" }}
+                style={{
+                  width: "98%",
+                  height: "56px",
+                  borderRadius: "12px",
+                  marginLeft: "2px",
+                }}
               />
             </Form.Item>
           </div>

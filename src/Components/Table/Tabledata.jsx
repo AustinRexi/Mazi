@@ -107,7 +107,7 @@ const Tabledata = (props) => (
     dataSource={props.data}
     onChange={onChange}
     style={{
-      width: "1280px",
+      width: "800px",
       height: "5px",
       borderRadius: "8px",
       justify: "space-between",

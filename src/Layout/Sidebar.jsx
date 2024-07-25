@@ -15,14 +15,20 @@ const { Title } = Typography;
 const Sidebar = () => {
   const navLinkStyles = ({ isActive }) => {
     return {
-      fontWeight: isActive ? 200 : 100,
-      textDecoration: isActive ? "underline" : "none",
+      top: "12px",
+      marginTop: isActive ? "6px" : "",
+      display: "flex",
+      paddingLeft: "40px",
+      alignItems: "center",
+      textDecoration: isActive ? "" : "none",
       color: isActive ? "cyan" : "orange",
-      borderLeft: isActive ? "5px solid " : "none",
-      hover: isActive ? "brown" : "green",
-      borderRadiusLeft: isActive ? "50px" : "0",
+      borderLeft: isActive ? "5px solid #034147" : "none",
+      height: isActive ? "56px" : "auto", // Set height to "24px" when active, otherwise "auto"
+      borderRadius: isActive ? " 4px " : "0", // Adjust border-radius if necessary
+      backgroundColor: isActive ? "#F2FBFB" : "",
     };
   };
+
   const side = [
     {
       name: "Dashboard",
@@ -74,34 +80,37 @@ const Sidebar = () => {
     <>
       <div
         style={{
-          width: "39vh",
+          width: "50vh",
           minHeight: "100vh",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
         }}
       >
         <Space
           direction="vertical"
-          size="6"
-          style={{ width: "max-content", padding: 12 }}
+          size="8"
+          style={{ width: "max-content", padding: 12, height: "160vh" }}
         >
           {side.map((item, index) => (
             <NavLink key={item.name} to={item.link} style={navLinkStyles}>
               <nav
                 style={{
                   display: "flex",
-                  marginBottom: 0,
+                  marginTop: "4px",
                   cursor: "pointer",
                   justifyItems: "center",
                 }}
               >
-                <img src={item.icon} alt="" style={{ marginTop: "12px" }} />
+                {navLinkStyles}
+                <img src={item.icon} alt="" style={{ marginBottom: "12px" }} />
 
                 <Title
-                  level={5}
+                  level={4}
                   style={{
                     marginLeft: "8px",
-                    // fontWeight: 200,
-                    marginBottom: 0,
+                    marginTop: "12px",
+                    size: "16px",
+                    fontWeight: 500,
+                    lineHeight: "24px",
                   }}
                 >
                   {item.name}

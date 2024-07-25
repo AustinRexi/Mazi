@@ -1,12 +1,10 @@
-
 import Headers from "../../Components/Product/Headers";
 
 function Product() {
   return (
-    <div>
+    <div style={{ padding: 8 }}>
       <Headers />
     </div>
-
   );
 }
 

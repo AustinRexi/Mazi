@@ -34,7 +34,7 @@ const Navbar = () => {
         <Col>
           <div
             style={{
-              width: "32vh",
+              width: "40vh",
               background: "#white",
               height: "50px",
               display: "flex",
@@ -45,10 +45,7 @@ const Navbar = () => {
             <img src={logo} alt="" />
           </div>
         </Col>
-        <Col
-          span={19}
-          // style={{ display: "flex", justifyContent: "space-between" }}
-        >
+        <Col span={19}>
           <div
             style={{
               background: "white",
@@ -66,7 +63,7 @@ const Navbar = () => {
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
               }}
             >
-              <div style={{ padding: 8 }}>
+              <div style={{ padding: 10 }}>
                 <Select defaultValue="Nigeria" style={{ width: 200 }}>
                   {optionsWithImages.map((option) => (
                     <Option

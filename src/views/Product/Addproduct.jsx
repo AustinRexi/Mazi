@@ -20,7 +20,7 @@ const AddProduct = () => {
         layout="vertical"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-        style={{ padding: 20, marginTop: "10px", backgroundColor: "#F0F7F8" }}
+        style={{ marginTop: "3px", backgroundColor: "#F0F7F8" }}
       >
         <div
           style={{
@@ -37,37 +37,39 @@ const AddProduct = () => {
               type="primary"
               htmlType="submit"
               style={{
-                height: "48px",
+                height: "44px",
                 backgroundColor: "#F58B3F",
                 color: "white",
                 borderRadius: "24px",
-                gap: "12px",
+                gap: "10px",
                 padding: "14px 28px 14px 28px",
-                marginBottom: "14px",
+                marginBottom: "4px",
+                width: "120px",
+                right: "20px",
               }}
             >
               Publish <img src={flower} />
             </Button>
           </Form.Item>
         </div>
-        <Row style={{ marginTop: "6px" }}>
+        <Row style={{ marginTop: "3px" }}>
           <Col span={8}>
-            <div style={{ width: "95%", marginLeft: "18px", height: "160vh" }}>
-              <Card style={{ height: "158vh" }}>
+            <div style={{ width: "90%", marginLeft: "10px", height: "200vh" }}>
+              <Card style={{ height: "167vh" }}>
                 <Formfile />
               </Card>
             </div>
           </Col>
           <Col span={8}>
-            <div style={{ width: "95%", marginLeft: "10px" }}>
-              <Card style={{ height: "158vh", marginRight: "10px" }}>
+            <div style={{ width: "90%", marginLeft: "8px" }}>
+              <Card style={{ height: "167vh", marginRight: "10px" }}>
                 <Uploadimage />
               </Card>
             </div>
           </Col>
           <Col span={8}>
-            <div style={{ width: "95%", marginRight: "10px" }}>
-              <Card style={{}}>
+            <div style={{ width: "97%", marginRight: "10px" }}>
+              <Card style={{ height: "167vh" }}>
                 <Edit />
               </Card>
             </div>
