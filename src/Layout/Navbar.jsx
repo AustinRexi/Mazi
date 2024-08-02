@@ -101,12 +101,7 @@ const Navbar = () => {
                 <Button type="primary" style={{ height: 32 }}>
                   Add store {<PlusOutlined />}
                 </Button>
-                <img
-                  src={avatar}
-                  alt=""
-                  srcset=""
-                  style={{ paddingRight: "6px" }}
-                />
+                <img src={avatar} alt="" style={{ paddingRight: "6px" }} />
               </div>
             </div>
           </div>

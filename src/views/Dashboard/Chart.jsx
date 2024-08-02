@@ -74,10 +74,10 @@ const Chart = () => {
   return (
     <div
       style={{
-        width: "400px",
-        height: "200px",
-        paddingTop: "25px",
-        gap: "0px",
+        width: "530px",
+        height: "250px",
+        // marginBottom: "16px",
+        gap: "6px",
         opacity: "1", // Ensure the chart is visible
         overflow: "hidden",
       }}

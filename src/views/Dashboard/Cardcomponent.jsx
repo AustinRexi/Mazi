@@ -43,24 +43,21 @@ function Cardcomponent() {
   return (
     <div
       style={{
-        marginTop: "6px",
         display: "flex",
         justifyContent: "space-between",
-        gap: 4,
-        width: "700px",
-        marginLeft: "6px",
+        width: "1033px",
+        marginLeft: "8px",
       }}
     >
       {finDetails.map((detail, index) => (
         <Card
           key={index}
           style={{
-            width: "250px",
+            width: "252px",
             height: "156px",
             display: "flex",
             flexDirection: "column",
-
-            marginLeft: "4px",
+            right: "4px",
             borderRadius: "12px",
             boxShadow: " 0px 4px 8px 0px #AAAAAA14",
             border: "1px solid #DEEAEA",
@@ -200,7 +197,7 @@ function Cardcomponent() {
           width: "250px",
           height: "156px",
           gap: 8,
-          marginLeft: "4px",
+          right: "4px",
           borderRadius: "12px",
           boxShadow: "0px 4px 8px 0px #AAAAAA14",
           border: "1px solid #DEEAEA",

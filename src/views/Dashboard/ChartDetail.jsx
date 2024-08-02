@@ -1,14 +1,13 @@
-import React from "react";
-import { Row, Col, Typography, Card } from "antd";
-import Calender from "../Dashboard/Calender";
+import { Card } from "antd";
 import listIcon1 from "../../utils/icons/listIcon1.svg";
 import listIcon2 from "../../utils/icons/listIcon2.svg";
 import listIcon3 from "../../utils/icons/listIcon3.svg";
 import Chart from "../../views/Dashboard/Chart";
-import Orders from "../Orders/Orders";
-const { Title } = Typography;
+import Card2 from "./Card2";
+import Topstores from "./Topstores";
+
 const ChartDetail = () => {
-  const chartsDetail = [
+  const items = [
     {
       icon: listIcon1,
       detail: "Total Earning",
@@ -19,98 +18,105 @@ const ChartDetail = () => {
       detail: "Total order",
       total: "7453",
     },
-
     {
       icon: listIcon3,
       detail: "Total Refund",
       total: "N150.456M",
     },
   ];
-  return (
-    <Card
-      hoverable
-      style={{
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
 
-        height: "340px",
+  return (
+    <div
+      style={{
+        marginLeft: "10px",
         display: "flex",
-        width: "721px",
         justifyContent: "space-between",
-        color: "white",
-        borderRadius: "8px",
       }}
     >
-      <div
+      <Card
+        hoverable
         style={{
+          gap: "24px",
+          height: "340px",
           display: "flex",
+          width: "725px",
           justifyContent: "space-between",
-          width: "70%",
-          padding: 0,
-
-          margin: 10,
-          alignItems: "center",
-          position: "absolute",
+          background: "#FFFFFF",
+          borderRadius: "8px",
+          border: "1px solid #DEEAEA",
         }}
       >
-        <h5 style={{ fontSize: 13, color: "black" }}>Sales Report</h5>
-
-        <nav
+        <div
           style={{
             display: "flex",
-            justifyContent: "space-evenly",
-            gap: 15,
-            fontSize: 12,
-            color: "#055961",
+            justifyContent: "space-between",
+            width: "100%",
           }}
         >
-          {chartsDetail.map((list) => (
-            <div style={{ display: "flex", gap: 5, fontWeight: 200 }}>
-              <img src={list.icon} alt="" />
-              <h6>{list.detail}</h6>
-            </div>
-          ))}
-        </nav>
-      </div>
-
-      <div
-        style={{
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          padding: "8px",
-          borderRadius: "4px",
-          color: "white",
-          position: "absolute",
-          right: "8px",
-          bottom: "8px",
-          justifyItems: "center",
-          alignItems: "center",
-          margin: 10,
-          width: "18%",
-        }}
-      >
-        <Calender />
-        {chartsDetail.map((list) => (
           <div
             style={{
-              fontSize: "10px",
-              color: "black",
-              margin: 10,
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-              borderRadius: 5,
-              padding: 6,
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              marginBottom: "20px",
+              width: "100%",
             }}
           >
-            <Title level={5} style={{ margin: 0, fontSize: "8px" }}>
-              {list.total}
-            </Title>
-            <span>{list.detail}</span>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "80%",
+                alignItems: "flex-start",
+                gap: "20px",
+              }}
+            >
+              <h5
+                style={{
+                  fontSize: "24px",
+                  fontWeight: 600,
+                  lineHeight: "32px",
+                  marginBottom: "10px",
+                }}
+              >
+                Sales Report
+              </h5>
+
+              <nav
+                style={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  gap: "20px",
+                  marginTop: "13px",
+                  marginLeft: "12px",
+                }}
+              >
+                {items.map((list) => (
+                  <div
+                    key={list.detail} // Ensure unique key for list items
+                    style={{
+                      fontSize: "14px",
+                      display: "flex",
+                      gap: "5px",
+                      fontWeight: 500,
+                      lineHeight: "20px",
+                    }}
+                  >
+                    <img src={list.icon} alt={list.detail} />
+                    <h6>{list.detail}</h6>
+                  </div>
+                ))}
+              </nav>
+            </div>
+
+            <Chart />
           </div>
-        ))}
-      </div>
-      <div style={{ padding: "24px" }}>
-        <Chart />
-      </div>
-      {/* <Orders /> */}
-    </Card>
+          <Card2 data={items} /> {/* Pass items correctly as data */}
+        </div>
+      </Card>
+      <Topstores />
+    </div>
   );
 };
+
 export default ChartDetail;

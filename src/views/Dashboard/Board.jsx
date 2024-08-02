@@ -7,15 +7,14 @@ const { Title } = Typography;
 
 const Board = () => {
   return (
-    <>
+    <section style={{ backgroundColor: "#F5F5F5", padding: 1 }}>
       <div
         style={{
           display: "flex",
-
           alignContent: "center",
           justifyContent: "space-between",
           width: "1050px",
-          padding: 20,
+          padding: 10,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -31,17 +30,10 @@ const Board = () => {
       </div>
 
       <Cardcomponent />
-      <div
-        style={{
-          gap: "10px",
-          alignItems: "center",
-          width: "100%",
-          marginTop: "24px",
-        }}
-      >
+      <div style={{ marginTop: "20px" }}>
         <ChartDetail />
       </div>
-    </>
+    </section>
   );
 };
 
