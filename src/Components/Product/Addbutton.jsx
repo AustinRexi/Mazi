@@ -9,13 +9,13 @@ function Addbutton({ onClick }) {
         shape="round"
         size="large"
         style={{
-          gap: "12px",
+          gap: "1px",
           borderRadius: "24px",
           marginTop: "16px",
           marginLeft: "6px",
-          // width: "176px",
+
           height: "8vh",
-          width: "180px",
+          width: "160px",
           fontSize: "17px",
           fontWeight: 500,
           padding: "14px,28px,14px,28px",
@@ -26,7 +26,7 @@ function Addbutton({ onClick }) {
         <img
           src={Addicon}
           alt="add"
-          style={{ marginTop: "5px", marginLeft: "12px", paddingRight: "8px" }}
+          style={{ marginTop: "5px", marginLeft: "10px", paddingRight: "8px" }}
         />
       </Button>
     </div>

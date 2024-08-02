@@ -10,7 +10,6 @@ import supportIcon from "../utils/icons/support.svg";
 import settingIcon from "../utils/icons/settings.svg";
 import { NavLink } from "react-router-dom";
 const { Title } = Typography;
-// const active=
 
 const Sidebar = () => {
   const navLinkStyles = ({ isActive }) => {
@@ -19,13 +18,15 @@ const Sidebar = () => {
       marginTop: isActive ? "6px" : "",
       display: "flex",
       paddingLeft: "40px",
-      alignItems: "center",
-      textDecoration: isActive ? "" : "none",
+
+      alignItems: "start",
+
       color: isActive ? "cyan" : "orange",
       borderLeft: isActive ? "5px solid #034147" : "none",
       height: isActive ? "56px" : "auto", // Set height to "24px" when active, otherwise "auto"
-      borderRadius: isActive ? " 4px " : "0", // Adjust border-radius if necessary
+      borderRadius: isActive ? " 6px " : "0", // Adjust border-radius if necessary
       backgroundColor: isActive ? "#F2FBFB" : "",
+      paddingBotom: "10px",
     };
   };
 
@@ -80,7 +81,7 @@ const Sidebar = () => {
     <>
       <div
         style={{
-          width: "50vh",
+          width: "40vh",
           minHeight: "100vh",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
         }}
@@ -88,29 +89,30 @@ const Sidebar = () => {
         <Space
           direction="vertical"
           size="8"
-          style={{ width: "max-content", padding: 12, height: "160vh" }}
+          style={{ width: "max-content", padding: 7, height: "160vh" }}
         >
-          {side.map((item, index) => (
+          {side.map((item) => (
             <NavLink key={item.name} to={item.link} style={navLinkStyles}>
               <nav
                 style={{
                   display: "flex",
                   marginTop: "4px",
+                  gap: "6px",
                   cursor: "pointer",
-                  justifyItems: "center",
+                  justifyItems: "flex-start",
                 }}
               >
                 {navLinkStyles}
-                <img src={item.icon} alt="" style={{ marginBottom: "12px" }} />
+                <img src={item.icon} alt="" />
 
                 <Title
                   level={4}
                   style={{
-                    marginLeft: "8px",
+                    marginLeft: "4px",
                     marginTop: "12px",
-                    size: "16px",
-                    fontWeight: 500,
-                    lineHeight: "24px",
+                    size: "12px",
+                    fontWeight: 400,
+                    lineHeight: "22px",
                   }}
                 >
                   {item.name}

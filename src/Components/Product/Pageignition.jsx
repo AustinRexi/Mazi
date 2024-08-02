@@ -19,7 +19,7 @@ const Pageignition = ({ data }) => {
           fontWeight: 400,
           lineHeight: "16px",
           color: "#687182",
-          padding: "20px",
+          padding: 25,
         }}
       >
         <div>

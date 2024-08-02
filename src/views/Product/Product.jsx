@@ -1,8 +1,7 @@
 import Headers from "../../Components/Product/Headers";
-
 function Product() {
   return (
-    <div style={{ padding: 8 }}>
+    <div>
       <Headers />
     </div>
   );

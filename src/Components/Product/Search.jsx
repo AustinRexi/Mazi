@@ -19,7 +19,7 @@ function Search({ placeholder }) {
               src={Searchicon}
               alt="Searchicon"
               style={{
-                width: "7vh",
+                width: "5vh",
                 height: 24,
                 marginTop: "4px",
                 border: "1px  #B5C3C3",
@@ -29,7 +29,7 @@ function Search({ placeholder }) {
               src={Line}
               alt="Line Icon"
               style={{
-                width: 16,
+                width: 10,
                 height: 20,
                 marginTop: "4px",
               }}

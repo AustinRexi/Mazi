@@ -9,8 +9,8 @@ const columns = [
         style={{
           display: "flex",
           // alignItems: "center",
-          gap: "20px",
-          width: "338px",
+          gap: "15px",
+          width: "250px",
           height: "85px",
         }}
       >
@@ -107,13 +107,15 @@ const Tabledata = (props) => (
     dataSource={props.data}
     onChange={onChange}
     style={{
-      width: "800px",
+      width: "1015px",
       height: "5px",
       borderRadius: "8px",
       justify: "space-between",
       border: "0px 0px 1px 0px",
       boxshadow: "0px 4px 8px 0px #AAAAAA14",
+      padding: 8,
     }}
+    wrap
   />
 );
 export default Tabledata;

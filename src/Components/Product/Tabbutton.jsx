@@ -12,8 +12,8 @@ function Tabbutton({ children, handleClick, id, activeTabKey }) {
           fontSize: "16px",
           fontWeight: 600,
           lineHeight: "24px",
-          width: "70px",
-          borderRadius: "6px",
+          width: "60px",
+          borderRadius: "2px",
         }}
         wrap
       >
