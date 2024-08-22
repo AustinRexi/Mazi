@@ -155,7 +155,7 @@ const Tabledata = (props) => (
     onChange={onChange}
     pagination={false}
     style={{
-      width: "1000px",
+      width: "1050px",
       borderRadius: "8px",
       border: "0px 0px 1px 0px",
       boxShadow: "0px 4px 8px 0px #AAAAAA14",

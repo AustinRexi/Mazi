@@ -7,7 +7,12 @@ const { Title } = Typography;
 
 const Board = () => {
   return (
-    <section style={{ backgroundColor: "#F8FBFB" }}>
+    <section
+      style={{
+        backgroundColor: "#F8FBFB",
+        paddingLeft: 20,
+      }}
+    >
       <div
         style={{
           display: "flex",

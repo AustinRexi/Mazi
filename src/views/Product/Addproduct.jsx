@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Form, Col, Row } from "antd";
-import { Card, Button } from "antd";
+import { Form, Col, Row, Card, Button, Modal } from "antd";
 import flower from "../../utils/icons/flower.svg";
 import Uploadimage from "./Uploadimage";
 import Formfile from "./Formfile";
@@ -21,80 +20,83 @@ const AddProduct = () => {
 
   return (
     <div>
-      {isSubmitted ? (
+      <Modal
+        visible={isSubmitted}
+        footer={null}
+        onCancel={() => setIsSubmitted(false)}
+        centered
+      >
         <CongratulationsCard />
-      ) : (
-        <Form
-          layout="vertical"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          style={{ marginTop: "8px", backgroundColor: "#F8FBFB" }}
+      </Modal>
+
+      <Form
+        layout="vertical"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        style={{ marginTop: "8px", backgroundColor: "#F8FBFB" }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          <div
+          <h2
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              fontWeight: 600,
+              fontSize: "24px",
+              lineHeight: "32px",
+              padding: 2,
+              marginLeft: "5px",
             }}
           >
-            <h2
+            AddProduct
+          </h2>
+          <Form.Item style={{ margin: 0 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
               style={{
-                fontWeight: 600,
-                fontSize: "24px",
-                lineHeight: "32px",
-                padding: 2,
-                marginLeft: "5px",
+                height: "44px",
+                backgroundColor: "#F58B3F",
+                color: "white",
+                borderRadius: "24px",
+                gap: "10px",
+                padding: "14px 28px 14px 28px",
+                marginBottom: "4px",
+                width: "120px",
+                right: "20px",
               }}
             >
-              AddProduct
-            </h2>
-            <Form.Item style={{ margin: 0 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{
-                  height: "44px",
-                  backgroundColor: "#F58B3F",
-                  color: "white",
-                  borderRadius: "24px",
-                  gap: "10px",
-                  padding: "14px 28px 14px 28px",
-                  marginBottom: "4px",
-                  width: "120px",
-                  right: "20px",
-                }}
-              >
-                Publish <img src={flower} alt="flower icon" />
-              </Button>
-            </Form.Item>
-          </div>
-          <Row style={{ marginTop: "3px" }}>
-            <Col span={8}>
-              <div
-                style={{ width: "90%", marginLeft: "10px", height: "200vh" }}
-              >
-                <Card style={{ height: "167vh" }}>
-                  <Formfile />
-                </Card>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div style={{ width: "90%", marginLeft: "8px" }}>
-                <Card style={{ height: "167vh", marginRight: "10px" }}>
-                  <Uploadimage />
-                </Card>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div style={{ width: "97%", marginRight: "10px" }}>
-                <Card style={{ height: "167vh" }}>
-                  <Edit />
-                </Card>
-              </div>
-            </Col>
-          </Row>
-        </Form>
-      )}
+              Publish <img src={flower} alt="flower icon" />
+            </Button>
+          </Form.Item>
+        </div>
+        <Row style={{ marginTop: "3px" }}>
+          <Col span={8}>
+            <div style={{ width: "90%", marginLeft: "10px", height: "200vh" }}>
+              <Card style={{ height: "167vh" }}>
+                <Formfile />
+              </Card>
+            </div>
+          </Col>
+          <Col span={8}>
+            <div style={{ width: "90%", marginLeft: "8px" }}>
+              <Card style={{ height: "167vh", marginRight: "10px" }}>
+                <Uploadimage />
+              </Card>
+            </div>
+          </Col>
+          <Col span={8}>
+            <div style={{ width: "97%", marginRight: "10px" }}>
+              <Card style={{ height: "167vh" }}>
+                <Edit />
+              </Card>
+            </div>
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 };

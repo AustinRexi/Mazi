@@ -34,7 +34,7 @@ const Topstores = () => (
       width: 240,
       height: "340px",
       margin: 4,
-      right: "12px",
+      right: "50px",
     }}
   >
     <header

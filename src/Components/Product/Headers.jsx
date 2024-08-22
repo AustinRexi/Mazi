@@ -43,7 +43,7 @@ function Headers() {
       ) : (
         <div>
           <Flex gap="middle" align="start" vertical>
-            <Flex gap="middle" style={{ display: "flex" }}>
+            <Flex gap="middle" style={{ display: "flex", gap: 24 }}>
               <h2
                 style={{
                   marginTop: "20px",
@@ -51,7 +51,7 @@ function Headers() {
                   fontWeight: 600,
                   fontSize: "24px",
                   lineHeight: "32px",
-                  marginLeft: 10,
+                  marginLeft: 25,
                 }}
               >
                 Products
