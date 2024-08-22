@@ -28,7 +28,7 @@ const ChartDetail = () => {
   return (
     <div
       style={{
-        marginLeft: "10px",
+        marginLeft: "14px",
         display: "flex",
         justifyContent: "space-between",
       }}
@@ -86,20 +86,20 @@ const ChartDetail = () => {
                   display: "flex",
                   justifyContent: "space-evenly",
                   alignItems: "center",
-                  gap: "20px",
+                  gap: "10px",
                   marginTop: "13px",
-                  marginLeft: "12px",
+                  marginLeft: "16px",
                 }}
               >
                 {items.map((list) => (
                   <div
                     key={list.detail} // Ensure unique key for list items
                     style={{
-                      fontSize: "14px",
+                      fontSize: "16px",
                       display: "flex",
                       gap: "5px",
                       fontWeight: 500,
-                      lineHeight: "20px",
+                      lineHeight: "24px",
                     }}
                   >
                     <img src={list.icon} alt={list.detail} />

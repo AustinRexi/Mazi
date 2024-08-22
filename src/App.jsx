@@ -1,9 +1,16 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import Chat from "./Components/Courier/Chat";
+
+// import Courier from "./views/Courier/Courier";
+
+// import CourierCard from "./Components/Courier/CourierCard";
+
+// import UserCard from "./Components/Courier/UserCard";
 
 //Default Home
 import Layout from "./Layout/Layout";
 
-//Navigations from sidebar
+// //Navigations from sidebar
 import Board from "./views/Dashboard/Board";
 import Product from "./views/Product/Product";
 import Orders from "./views/Orders/Orders";
@@ -63,6 +70,11 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <>
+      {/* <Chat /> */}
+      {/* <ProfileCard /> */}
+      {/* <Courier /> */}
+      {/* <CourierCard /> */}
+      {/* <UserCard /> */}
       <RouterProvider router={router} />;
     </>
   );

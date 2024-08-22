@@ -3,17 +3,16 @@ import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => (
-  <>
-    <Navbar />
-    {/* <div className="container"> */}
+  <section>
+    <Navbar style={{ position: "fixed" }} />
+
     <div style={{ display: "flex" }}>
-      <Sidebar />
-      <div style={{ paddingLeft: 0, width: "100%" }}>
+      <Sidebar style={{ position: "fixed" }} />
+      <div style={{ width: "100%" }}>
         <Outlet />
       </div>
     </div>
-    {/* </div> */}
-  </>
+  </section>
 );
 
 export default Layout;

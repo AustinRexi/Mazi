@@ -32,7 +32,7 @@ const Uploadimage = () => (
     <Dragger
       {...props}
       className="custom-dragger"
-      style={{ border: "none", backgroundColor: "white" }}
+      style={{ border: "none", backgroundColor: "white", right: "14px" }}
     >
       <div
         style={{

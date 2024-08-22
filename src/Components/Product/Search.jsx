@@ -2,35 +2,34 @@ import { Input } from "antd";
 import Line from "../../Assets/Lineicons/Line.svg";
 import Searchicon from "../../Assets/Lineicons/Searchicon.svg";
 
-function Search({ placeholder }) {
+function Search({ placeholder, style }) {
   return (
     <div>
       <Input
         style={{
-          height: 55,
+          height: "55px",
           marginTop: "15px",
           marginLeft: "15px",
           borderRadius: "16px",
+          ...style,
         }}
-        status=""
         prefix={
-          <span>
+          <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <img
               src={Searchicon}
               alt="Searchicon"
               style={{
-                width: "5vh",
-                height: 24,
+                width: "22px",
+                height: "24px",
                 marginTop: "4px",
-                border: "1px  #B5C3C3",
               }}
             />
             <img
               src={Line}
               alt="Line Icon"
               style={{
-                width: 10,
-                height: 20,
+                width: "10px",
+                height: "20px",
                 marginTop: "4px",
               }}
             />

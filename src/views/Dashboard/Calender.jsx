@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { CalendarOutlined, DownOutlined } from "@ant-design/icons";
 import { Space, DatePicker } from "antd";
 
-const Calender = () => {
+const Calender = ({ data, placeholder, style }) => {
   const onChange = (date) => {
     if (date) {
       console.log("Date: ", date);
@@ -10,6 +10,28 @@ const Calender = () => {
       console.log("Clear");
     }
   };
+
+  const defaultPresets = [
+    {
+      label: "This Month",
+      value: dayjs(),
+    },
+    {
+      label: "Three Months",
+      value: dayjs().subtract(3, "month"),
+    },
+    {
+      label: "Six Months",
+      value: dayjs().subtract(6, "month"),
+    },
+    {
+      label: "One Year",
+      value: dayjs().subtract(1, "year"),
+    },
+  ];
+
+  const presets = data || defaultPresets;
+
   return (
     <div style={{ padding: 6 }}>
       <Space direction="vertical" size={4}>
@@ -22,6 +44,7 @@ const Calender = () => {
             borderRadius: "8px",
             padding: "4px 11px",
             backgroundColor: "white",
+            ...style,
           }}
         >
           <CalendarOutlined />
@@ -32,26 +55,9 @@ const Calender = () => {
               boxShadow: "none",
               padding: 2,
             }}
-            placeholder="This Month"
+            placeholder={placeholder || "Select Date"}
             suffixIcon={<DownOutlined />}
-            presets={[
-              {
-                label: "This Month",
-                value: dayjs().add(-1, "month"),
-              },
-              {
-                label: "Three Months",
-                value: dayjs().subtract(3, "month"),
-              },
-              {
-                label: "Six Months",
-                value: dayjs().subtract(6, "month"),
-              },
-              {
-                label: "One Year",
-                value: dayjs().add(-1, "month"),
-              },
-            ]}
+            presets={presets}
             onChange={onChange}
           />
         </div>

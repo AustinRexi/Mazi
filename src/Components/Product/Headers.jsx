@@ -10,6 +10,7 @@ import Grocerydata from "../../Assets/Grocerydata";
 import Restauranttypes from "../../Assets/Restauranttypes";
 import Groceriescategories from "../../Assets/Groceriescategories";
 import AddProduct from "../../views/Product/Addproduct";
+import Bottompageignition from "./Bottompageigition";
 
 const dataRefrence = { tab1: Fooddata, tab2: Grocerydata };
 
@@ -50,7 +51,7 @@ function Headers() {
                   fontWeight: 600,
                   fontSize: "24px",
                   lineHeight: "32px",
-                  marginLeft: 4,
+                  marginLeft: 10,
                 }}
               >
                 Products
@@ -64,7 +65,7 @@ function Headers() {
                   border: "1px solid #B5B6B5",
                   borderRadius: "16px",
                   height: "8vh",
-                  width: "167px",
+                  width: "170px",
                 }}
                 wrap
               >
@@ -89,6 +90,7 @@ function Headers() {
             </Flex>
           </Flex>
           <Pageignition data={dataRefrence[activeTabKey]} />
+          <Bottompageignition />
         </div>
       )}
     </div>

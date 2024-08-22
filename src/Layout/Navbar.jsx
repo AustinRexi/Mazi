@@ -34,11 +34,16 @@ const Navbar = () => {
         <Col>
           <div
             style={{
-              width: "40vh",
+              gap: "24px",
+              width: "256px",
               background: "#white",
-              height: "50px",
+              height: "72px",
               display: "flex",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+              marginBottom: "1px",
+              marginLeft: "1px",
+              border: "0px 1px 0px 0px",
+              opacity: "0px",
             }}
           >
             <img src={menu} alt="" />
@@ -49,7 +54,7 @@ const Navbar = () => {
           <div
             style={{
               background: "white",
-              height: "50px",
+              height: "72px",
               alignItems: "center",
               padding: 0,
               width: "auto",
@@ -57,6 +62,7 @@ const Navbar = () => {
           >
             <div
               style={{
+                padding: 10,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",

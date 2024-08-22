@@ -7,14 +7,14 @@ const { Title } = Typography;
 
 const Board = () => {
   return (
-    <section style={{ backgroundColor: "#F5F5F5", padding: 1 }}>
+    <section style={{ backgroundColor: "#F8FBFB" }}>
       <div
         style={{
           display: "flex",
           alignContent: "center",
           justifyContent: "space-between",
-          width: "1050px",
-          padding: 10,
+          width: "1030px",
+          padding: 8,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

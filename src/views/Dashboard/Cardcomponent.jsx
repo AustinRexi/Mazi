@@ -45,22 +45,25 @@ function Cardcomponent() {
       style={{
         display: "flex",
         justifyContent: "space-between",
-        width: "1033px",
-        marginLeft: "8px",
+        width: "1000px",
+        marginLeft: "16px",
+        gap: 6,
       }}
     >
       {finDetails.map((detail, index) => (
         <Card
+          hoverable
           key={index}
           style={{
-            width: "252px",
+            width: "235px",
             height: "156px",
             display: "flex",
             flexDirection: "column",
-            right: "4px",
+            background: "#FFFFFF",
             borderRadius: "12px",
             boxShadow: " 0px 4px 8px 0px #AAAAAA14",
             border: "1px solid #DEEAEA",
+            justifyContent: "flex-start",
           }}
         >
           <div style={{ display: "flex", gap: "8px" }}>
@@ -78,7 +81,7 @@ function Cardcomponent() {
                   fontWeight: 500,
                   margin: 0,
                   fontSize: "14px",
-                  lineHeight: "24px",
+                  lineHeight: "20px",
                   color: "#545E5E",
                 }}
                 level={5}
@@ -87,10 +90,10 @@ function Cardcomponent() {
               </Title>
               <Title
                 style={{
-                  margin: 0,
-                  fontSize: "24px",
+                  margin: 2,
+                  fontSize: "20px",
                   fontWeight: 600,
-                  lineHeight: "32px",
+                  lineHeight: "26px",
                 }}
                 level={5}
               >
@@ -103,20 +106,18 @@ function Cardcomponent() {
               width: "100%",
               height: "48px",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "space-between",
             }}
           >
             <Row
               gutter={[4, 0]}
-              justify="center"
-              align="middle"
+              justify="space-between"
               style={{
                 width: "100%",
               }}
             >
-              <Col span={8} style={{ padding: 2, gap: "10px" }}>
-                <div style={{ fontSize: "10px" }}>
+              <Col span={8} style={{ gap: "10px" }}>
+                <div>
                   <span
                     style={{
                       fontWeight: 500,
@@ -131,10 +132,12 @@ function Cardcomponent() {
                     level={4}
                     style={{
                       margin: 0,
-                      fontSize: "13px",
-                      fontWeight: 700,
+                      fontSize: "14px",
+                      fontWeight: 500,
                       lineHeight: "12px",
-                      marginTop: "3px",
+                      whiteSpace: "nowrap",
+
+                      textOverflow: "ellipsis",
                     }}
                   >
                     {detail.price}
@@ -142,7 +145,7 @@ function Cardcomponent() {
                 </div>
               </Col>
               <Col span={8} style={{ textAlign: "center", padding: 0 }}>
-                <div style={{ fontSize: "10px" }}>
+                <div style={{ marginLeft: "5px" }}>
                   <span
                     style={{
                       fontWeight: 500,
@@ -167,8 +170,8 @@ function Cardcomponent() {
                   </Title>
                 </div>
               </Col>
-              <Col span={8} style={{ textAlign: "center", padding: 0 }}>
-                <div style={{}}>
+              <Col span={8} style={{ textAlign: "center" }}>
+                <div style={{ marginLeft: "14px", marginTop: "4px" }}>
                   <span
                     style={{
                       marginTop: "8px",
@@ -193,15 +196,15 @@ function Cardcomponent() {
         </Card>
       ))}
       <Card
+        hoverable
         style={{
-          width: "250px",
+          width: "235px",
           height: "156px",
-          gap: 8,
-          right: "4px",
+          marginLeft: "10px",
           borderRadius: "12px",
           boxShadow: "0px 4px 8px 0px #AAAAAA14",
           border: "1px solid #DEEAEA",
-          // padding: "16px", // Added padding for better spacing
+
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between", // Ensures the content is spaced out evenly

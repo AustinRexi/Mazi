@@ -8,7 +8,6 @@ const columns = [
       <span
         style={{
           display: "flex",
-          // alignItems: "center",
           gap: "15px",
           width: "250px",
           height: "85px",
@@ -38,8 +37,14 @@ const columns = [
       </span>
     ),
     sorter: (a, b) => a.items.description.localeCompare(b.items.description),
+    onHeaderCell: () => {
+      return {
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      };
+    },
   },
-
   {
     title: "RATING",
     dataIndex: "rating",
@@ -54,6 +59,13 @@ const columns = [
       </span>
     ),
     sorter: (a, b) => a.rating.ratings.localeCompare(b.rating.ratings),
+    onHeaderCell: () => {
+      return {
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      };
+    },
   },
   {
     title: "STORE",
@@ -61,6 +73,13 @@ const columns = [
     sorter: {
       compare: (a, b) => a.store - b.store,
       multiple: 2,
+    },
+    onHeaderCell: () => {
+      return {
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      };
     },
   },
   {
@@ -70,6 +89,13 @@ const columns = [
       compare: (a, b) => a.subcategory - b.subcategory,
       multiple: 1,
     },
+    onHeaderCell: () => {
+      return {
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      };
+    },
   },
   {
     title: "DATE ADDED",
@@ -77,6 +103,13 @@ const columns = [
     sorter: {
       compare: (a, b) => a.dateadded - b.dateadded,
       multiple: 1,
+    },
+    onHeaderCell: () => {
+      return {
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      };
     },
   },
   {
@@ -86,6 +119,13 @@ const columns = [
       compare: (a, b) => a.quantity - b.quantity,
       multiple: 1,
     },
+    onHeaderCell: () => {
+      return {
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      };
+    },
   },
   {
     title: "AMOUNT",
@@ -94,28 +134,34 @@ const columns = [
       compare: (a, b) => a.amount - b.amount,
       multiple: 1,
     },
+    onHeaderCell: () => {
+      return {
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      };
+    },
   },
 ];
 
 const onChange = (pagination, filters, sorter, extra) => {
   console.log("params", pagination, filters, sorter, extra);
 };
+
 const Tabledata = (props) => (
   <Table
     columns={columns}
-    s
     dataSource={props.data}
     onChange={onChange}
+    pagination={false}
     style={{
-      width: "1015px",
-      height: "5px",
+      width: "1000px",
       borderRadius: "8px",
-      justify: "space-between",
       border: "0px 0px 1px 0px",
-      boxshadow: "0px 4px 8px 0px #AAAAAA14",
-      padding: 8,
+      boxShadow: "0px 4px 8px 0px #AAAAAA14",
+      margin: 16,
     }}
-    wrap
   />
 );
+
 export default Tabledata;

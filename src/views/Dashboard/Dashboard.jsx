@@ -8,7 +8,6 @@ const Dashboard = () => {
   return (
     <BrowserRouter>
       <div>
-        {/* <Board /> */}
         <Navbar />
         <Sidebar />
       </div>

@@ -9,7 +9,7 @@ const Pageignition = ({ data }) => {
   const itemsPerPage = 10;
 
   return (
-    <div>
+    <div style={{ marginLeft: "4px" }}>
       <div
         style={{
           display: "flex",

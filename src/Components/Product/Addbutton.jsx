@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import Addicon from "../../Assets/Lineicons/Addicon.svg";
 
-function Addbutton({ onClick }) {
+function Addbutton({ onClick, text = "Add product" }) {
   return (
     <div>
       <Button
@@ -9,24 +9,26 @@ function Addbutton({ onClick }) {
         shape="round"
         size="large"
         style={{
-          gap: "1px",
           borderRadius: "24px",
           marginTop: "16px",
           marginLeft: "6px",
-
           height: "8vh",
           width: "160px",
           fontSize: "17px",
           fontWeight: 500,
-          padding: "14px,28px,14px,28px",
+          padding: "14px, 28px, 14px, 28px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
         }}
         onClick={onClick}
       >
-        Add product
+        {text}
         <img
           src={Addicon}
           alt="add"
-          style={{ marginTop: "5px", marginLeft: "10px", paddingRight: "8px" }}
+          style={{ marginTop: "2px", marginLeft: "10px", paddingRight: "8px" }}
         />
       </Button>
     </div>
