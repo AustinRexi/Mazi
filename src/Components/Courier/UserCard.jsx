@@ -1,36 +1,64 @@
-import React, { useState } from "react";
-import { Card, Avatar, Rate, Typography, Button, Modal } from "antd";
+import { useState } from "react";
+import { Card, Avatar, Typography, Button, Modal, Dropdown, Menu } from "antd";
 import call from "../../Assets/Couriericons/call.svg";
 import message from "../../Assets/Couriericons/message.svg";
-import CallingCard from "./CallingCard"; // Import the CallingCard component
+import CallingCard from "./CallingCard";
+import Chat from "../Courier/Chat";
+import options from "../../Assets/Couriericons/options.svg";
+import { DownOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
 
 const UserCard = ({ datas }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCallingModalVisible, setIsCallingModalVisible] = useState(false);
+  const [isChatModalVisible, setIsChatModalVisible] = useState(false);
+  const [isOptionsVisible, setIsOptionsVisible] = useState(false);
 
-  const showModal = () => {
-    setIsModalVisible(true);
+  const showCallingModal = () => {
+    setIsCallingModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const showChatModal = () => {
+    setIsChatModalVisible(true);
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const handleCallingOk = () => {
+    setIsCallingModalVisible(false);
   };
+
+  const handleCallingCancel = () => {
+    setIsCallingModalVisible(false);
+  };
+
+  const handleChatOk = () => {
+    setIsChatModalVisible(false);
+  };
+
+  const handleChatCancel = () => {
+    setIsChatModalVisible(false);
+  };
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1">View</Menu.Item>
+      <Menu.Item key="2">Remove</Menu.Item>
+      <Menu.Item key="3">Pay now</Menu.Item>
+    </Menu>
+  );
 
   return (
     <>
       <Card
         hoverable
         style={{
-          width: 299,
+          width: 250,
           borderRadius: "10px",
           borderColor: "#f0f0f0",
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          position: "relative",
         }}
+        onMouseEnter={() => setIsOptionsVisible(true)}
+        onMouseLeave={() => setIsOptionsVisible(false)}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <img src={datas.status} alt="status" />
@@ -45,6 +73,24 @@ const UserCard = ({ datas }) => {
           >
             {datas.title}
           </Text>
+          {isOptionsVisible && (
+            <Dropdown
+              overlay={menu}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <img
+                src={options}
+                alt="options"
+                style={{
+                  position: "absolute",
+                  top: 20,
+                  right: 3,
+                  cursor: "pointer",
+                }}
+              />
+            </Dropdown>
+          )}
         </div>
         <div
           style={{
@@ -67,7 +113,7 @@ const UserCard = ({ datas }) => {
               {datas.name}
             </Text>
             <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
-              <Rate disabled defaultValue={4} style={{ fontSize: "14px" }} />
+              <img src={datas.rating.icon} alt="rating-icon" />
               <strong
                 style={{
                   lineHeight: "24px",
@@ -89,7 +135,7 @@ const UserCard = ({ datas }) => {
             paddingTop: "10px",
           }}
         >
-          <Text style={{ display: "flex" }}>
+          <Text style={{ display: "flex", alignItems: "center" }}>
             <img
               src={datas.email.icon}
               alt="email-icon"
@@ -98,7 +144,7 @@ const UserCard = ({ datas }) => {
             {datas.email.address}
           </Text>
           <br />
-          <Text style={{ display: "flex" }}>
+          <Text style={{ display: "flex", alignItems: "center" }}>
             <img
               src={datas.phone.icon}
               alt="phone-icon"
@@ -110,7 +156,7 @@ const UserCard = ({ datas }) => {
             style={{
               marginTop: "15px",
               borderTop: "1px solid #f0f0f0",
-              paddingTop: "10px",
+              paddingTop: "14px",
             }}
           >
             <Text>
@@ -146,18 +192,26 @@ const UserCard = ({ datas }) => {
             </Text>
           </div>
         </div>
-        <div style={{ width: "229px", height: "36px", borderRadius: "4px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+            opacity: isOptionsVisible ? 1 : 0, // Show buttons on hover
+            transition: "opacity 0.3s ease-in-out",
+          }}
+        >
           <Button
             type="primary"
-            style={{ backgroundColor: "#055961", width: "114.5px" }}
-            onClick={showModal}
+            style={{ backgroundColor: "#055961", width: "52%" }}
+            onClick={showCallingModal}
           >
             <img src={call} alt="call-icon" />
           </Button>
           <Button
             type="primary"
-            href="sms:08160178711"
-            style={{ backgroundColor: "#067782", width: "114.5px" }}
+            style={{ backgroundColor: "#067782", width: "52%" }}
+            onClick={showChatModal}
           >
             <img src={message} alt="message-icon" />
           </Button>
@@ -165,9 +219,9 @@ const UserCard = ({ datas }) => {
       </Card>
 
       <Modal
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        open={isCallingModalVisible}
+        onOk={handleCallingOk}
+        onCancel={handleCallingCancel}
         footer={null}
         closable={false}
         style={{
@@ -177,6 +231,31 @@ const UserCard = ({ datas }) => {
         }}
       >
         <CallingCard />
+      </Modal>
+
+      <Modal
+        open={isChatModalVisible}
+        onOk={handleChatOk}
+        onCancel={handleChatCancel}
+        footer={null}
+        closable={true}
+        style={{
+          position: "absolute",
+          bottom: 20,
+          right: 20,
+          width: "550px",
+          maxWidth: "100%",
+          borderRadius: "8px",
+          padding: 0,
+        }}
+        bodyStyle={{
+          padding: "0px",
+          borderRadius: "8px",
+          overflow: "hidden",
+        }}
+        mask={false}
+      >
+        <Chat />
       </Modal>
     </>
   );

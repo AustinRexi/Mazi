@@ -3,7 +3,7 @@ import busy from "../../Assets/Couriericons/busy.svg";
 import dp from "../../Assets/Couriericons/dp.svg";
 import mail from "../../Assets/Couriericons/mail.svg";
 import phone from "../../Assets/Couriericons/phone.svg";
-import star from "../../Assets/Couriericons/star.svg";
+import star from "../../Assets/Foodicons/Star.svg";
 import offline from "../../Assets/Couriericons/offline.svg";
 export default [
   {
