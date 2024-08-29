@@ -1,86 +1,116 @@
-import { Avatar, Input, Button, List } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { Avatar, Space, Typography, Card, Input, Button } from "antd";
+import { CloseCircleOutlined, SendOutlined } from "@ant-design/icons";
+import options from "../../Assets/Couriericons/options.svg";
+import star from "../../Assets/Foodicons/Star.svg";
 
-const messages = [
-  {
-    id: 1,
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus.",
-    time: "12:03",
-    align: "left",
-  },
-  {
-    id: 2,
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus.",
-    time: "12:04",
-    align: "right",
-  },
-];
+const { TextArea } = Input;
 
 const Chat = () => {
+  const [position, setPosition] = useState("end");
+
   return (
     <div
       style={{
-        width: "350px",
+        maxWidth: "550px",
         margin: "0 auto",
-        backgroundColor: "#f0f0f0",
-        padding: "16px",
+        border: "1px solid #d9d9d9",
         borderRadius: "8px",
+
+        background: "#fff",
       }}
     >
-      <List
-        itemLayout="horizontal"
-        dataSource={messages}
-        renderItem={(message) => (
-          <List.Item
-            style={{
-              display: "flex",
-              justifyContent:
-                message.align === "right" ? "flex-end" : "flex-start",
-              marginBottom: "12px",
-            }}
-          >
-            <List.Item.Meta
-              description={
-                <div
-                  style={{
-                    backgroundColor:
-                      message.align === "right" ? "#f5f5f5" : "#e6f7ff",
-                    padding: "12px",
-                    borderRadius: "12px",
-                    maxWidth: "70%",
-                  }}
-                >
-                  <p>{message.content}</p>
-                  <span
-                    style={{
-                      display: "block",
-                      fontSize: "12px",
-                      marginTop: "8px",
-                      textAlign: "right",
-                    }}
-                  >
-                    {message.time}
-                  </span>
-                </div>
-              }
-            />
-          </List.Item>
-        )}
-      />
-      <div
+      <Card
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "16px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          width: "100%",
+          marginBottom: "10px",
         }}
       >
-        <Input
-          placeholder="Type your message here"
-          style={{ flex: 1, marginRight: "8px" }}
-        />
-        <Button type="primary">Send</Button>
+        <Space align="center" size="medium" style={{ gap: 17 }}>
+          <Avatar src="path_to_avatar_image" size={40} />
+          <Typography.Text strong>Tiamiyu Wasiu</Typography.Text>
+          <Typography.Text type="secondary">
+            Joined Mar. 16, 2024
+          </Typography.Text>
+          <img src={options} alt="options" />
+          <img src={star} alt="star" />
+          <CloseCircleOutlined style={{ fontSize: "24px" }} />
+        </Space>
+      </Card>
+
+      <div>
+        <div
+          style={{
+            marginBottom: "16px",
+            textAlign: "center",
+            color: "#bfbfbf",
+          }}
+        >
+          <Typography.Text>September 05, 2023</Typography.Text>
+        </div>
+
+        <div style={{ marginBottom: "16px" }}>
+          <div
+            style={{
+              background: "#e6f7ff",
+              padding: "10px 16px",
+              borderRadius: "12px",
+              marginBottom: "8px",
+              width: "350px",
+            }}
+          >
+            <Typography.Text>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
+              turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus
+              nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum
+              tellus elit sed risus. Maecenas eget condimentum velit, sit amet
+              feugiat lectus. Class aptent taciti sociosqu ad litora torquent
+              per conubia nostra, per inceptos himenaeos. Praesent auctor purus
+              luctus enim egestas, ac scelerisque ante.
+            </Typography.Text>
+          </div>
+          <Typography.Text style={{ color: "#bfbfbf" }}>12:03</Typography.Text>
+        </div>
+
+        <div style={{ marginBottom: "16px", textAlign: "right" }}>
+          <div
+            style={{
+              background: "#f5f5f5",
+              padding: "10px 16px",
+              borderRadius: "12px",
+              marginBottom: "8px",
+              width: "300px",
+              marginLeft: "auto",
+            }}
+          >
+            <Typography.Text>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
+              turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus
+              nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum
+              tellus elit sed risus.
+            </Typography.Text>
+          </div>
+          <Typography.Text style={{ color: "#bfbfbf" }}>12:04</Typography.Text>
+        </div>
+
+        <div style={{ borderTop: "1px solid #d9d9d9", paddingTop: "12px" }}>
+          <Space direction="horizontal" style={{ width: "100%" }}>
+            <TextArea
+              placeholder="Type your message here"
+              autoSize={{ minRows: 1, maxRows: 2 }}
+              style={{ width: "300px", border: "none" }}
+            />
+            <Button
+              type="primary"
+              iconPosition={position}
+              icon={<SendOutlined />}
+              style={{ marginBottom: "8px" }}
+            >
+              Send
+            </Button>
+          </Space>
+        </div>
       </div>
     </div>
   );
