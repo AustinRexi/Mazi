@@ -16,16 +16,16 @@ const Courier = () => {
   ];
 
   const styles = {
-    container: {
-      padding: "20px",
-    },
+    container: { width: "900px", padding: "40px" },
     header: {
       display: "flex",
       alignItems: "center",
-      gap: "10px",
+      gap: "19px",
+      marginLeft: "10px",
     },
     searchBox: {
-      width: "400px",
+      marginLeft: "42px",
+      width: "531px",
       height: "45px",
       borderRadius: "16px",
       border: "1px solid #B5C3C3",
@@ -33,29 +33,37 @@ const Courier = () => {
     },
     calendar: {
       marginTop: "12px",
-      height: "38px",
+      height: "44px",
     },
     listContainer: {
       display: "flex",
       flexDirection: "row",
-      gap: "10px",
-      marginTop: "20px",
-      width: "1000px",
+      gap: "16px",
+      marginTop: "40px",
+      width: "1030px",
       background: "#FFFFFF",
     },
     userCardGrid: {
+      width: "900px",
       marginTop: "10px",
       display: "grid",
       gridTemplateColumns: "repeat(4, 1fr)",
       gridTemplateRows: "repeat(4, auto)",
       gap: "10px",
     },
+    h: {
+      fontWeight: 600,
+      lineHeight: "32px",
+      textAlign: "left",
+      fontSize: "24px",
+      margin: "0",
+    },
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h3>Courier</h3>
+        <h3 style={styles.h}>Courier</h3>
         <Search placeholder="Search couriers" style={styles.searchBox} />
         <Addbutton text="Add Courier" />
         <Calender placeholder="Active" data={presets} style={styles.calendar} />
