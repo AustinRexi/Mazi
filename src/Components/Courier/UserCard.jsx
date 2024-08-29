@@ -5,7 +5,6 @@ import message from "../../Assets/Couriericons/message.svg";
 import CallingCard from "./CallingCard";
 import Chat from "../Courier/Chat";
 import options from "../../Assets/Couriericons/options.svg";
-import { DownOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
 
@@ -195,22 +194,23 @@ const UserCard = ({ datas }) => {
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-between",
             marginTop: "20px",
-            opacity: isOptionsVisible ? 1 : 0, // Show buttons on hover
+            gap: 2,
+            opacity: isOptionsVisible ? 1 : 0,
             transition: "opacity 0.3s ease-in-out",
           }}
         >
           <Button
             type="primary"
-            style={{ backgroundColor: "#055961", width: "52%" }}
+            style={{ backgroundColor: "#055961", width: "50%" }}
             onClick={showCallingModal}
           >
             <img src={call} alt="call-icon" />
           </Button>
           <Button
             type="primary"
-            style={{ backgroundColor: "#067782", width: "52%" }}
+            style={{ backgroundColor: "#067782", width: "50%" }}
             onClick={showChatModal}
           >
             <img src={message} alt="message-icon" />
