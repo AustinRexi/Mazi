@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
+import "./App.css";
 // Default Home
 import Layout from "./Layout/Layout";
 
