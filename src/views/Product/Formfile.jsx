@@ -31,7 +31,6 @@ function Formfile() {
         </h3>
         <Form.Item
           name="name"
-          // label="Name"
           rules={[
             { required: true, message: "Please input the product name!" },
           ]}

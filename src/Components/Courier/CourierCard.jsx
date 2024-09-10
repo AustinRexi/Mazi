@@ -14,26 +14,39 @@ const CourierCard = ({ item }) => {
         padding: "0px 12px",
         opacity: "0.9",
       }}
-      bodyStyle={{ padding: "0px" }} // Remove extra padding
+      bodyStyle={{ padding: "0px" }}
     >
       <Avatar
-        src={item.courier.icon}
+        src={item.icon}
         style={{
           backgroundColor: "#13c2c2",
           dropshadow: "16px ,16px",
         }}
-        size="large"
-        icon={!item.courier.icon && <UserOutlined />}
+        size="medium"
+        icon={!item.icon && <UserOutlined />}
       />
       <span
         style={{
           fontWeight: "500",
-          fontSize: "16px",
+          size: "16px",
+          lineHeight: 24,
           marginLeft: "20px",
           whiteSpace: "nowrap",
+          color: item.color,
         }}
       >
-        {item.courier.title}
+        {item.title}
+      </span>
+      <span
+        style={{
+          whiteSpace: "nowrap",
+          marginLeft: "14px",
+          fontWeight: 600,
+          size: 16,
+          lineHeight: 24,
+        }}
+      >
+        {item.amount}
       </span>
     </Card>
   );

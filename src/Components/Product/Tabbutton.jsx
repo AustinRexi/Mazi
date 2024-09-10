@@ -1,5 +1,5 @@
 import { Button } from "antd";
-function Tabbutton({ children, handleClick, id, activeTabKey }) {
+function Tabbutton({ children, handleClick, id, activeTabKey, style }) {
   return (
     <div>
       <Button
@@ -14,6 +14,7 @@ function Tabbutton({ children, handleClick, id, activeTabKey }) {
           lineHeight: "24px",
           width: "60px",
           borderRadius: "2px",
+          ...style,
         }}
         wrap
       >

@@ -32,7 +32,6 @@ const Courier = () => {
       padding: "0 16px",
     },
     calendar: {
-      marginTop: "12px",
       height: "44px",
     },
     listContainer: {

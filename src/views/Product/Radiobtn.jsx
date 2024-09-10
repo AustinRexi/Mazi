@@ -6,12 +6,19 @@ const Radiobtn = () => {
     console.log("radio checked", e.target.value);
     setValue(e.target.value);
   };
+  const options = [
+    { value: 1, label: "Do Not Allow" },
+    { value: 2, label: "Allow but notify customer" },
+    { value: 3, label: "Allow" },
+  ];
   return (
     <Radio.Group onChange={onChange} value={value}>
       <Space direction="vertical">
-        <Radio value={1}>Do Not Allow</Radio>
-        <Radio value={2}>Allow but notify customer</Radio>
-        <Radio value={3}>Allow</Radio>
+        {options.map((option) => (
+          <Radio key={option.value} value={option.value}>
+            {option.label}
+          </Radio>
+        ))}
       </Space>
     </Radio.Group>
   );

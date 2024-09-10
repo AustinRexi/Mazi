@@ -38,11 +38,13 @@ const UserCard = ({ datas }) => {
   };
 
   const menu = (
-    <Menu>
-      <Menu.Item key="1">View</Menu.Item>
-      <Menu.Item key="2">Remove</Menu.Item>
-      <Menu.Item key="3">Pay now</Menu.Item>
-    </Menu>
+    <Menu
+      items={[
+        { key: "1", label: "View" },
+        { key: "2", label: "Remove" },
+        { key: "3", label: "Pay now" },
+      ]}
+    />
   );
 
   return (

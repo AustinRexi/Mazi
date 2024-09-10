@@ -69,20 +69,19 @@ function Headers() {
                 }}
                 wrap
               >
-                <Tabbutton
-                  activeTabKey={activeTabKey}
-                  id="tab1"
-                  handleClick={(id) => onTabChange(id)}
-                >
-                  Food
-                </Tabbutton>
-                <Tabbutton
-                  activeTabKey={activeTabKey}
-                  id="tab2"
-                  handleClick={(id) => onTabChange(id)}
-                >
-                  Groceries
-                </Tabbutton>
+                {[
+                  { id: "tab1", label: "Food" },
+                  { id: "tab2", label: "Groceries" },
+                ].map(({ id, label }) => (
+                  <Tabbutton
+                    key={id}
+                    activeTabKey={activeTabKey}
+                    id={id}
+                    handleClick={onTabChange}
+                  >
+                    {label}
+                  </Tabbutton>
+                ))}
               </Flex>
               <Addbutton onClick={handleAddButtonClick} />
               <Search placeholder={getPlaceholderText()} />

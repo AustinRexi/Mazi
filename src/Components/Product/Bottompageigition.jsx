@@ -14,8 +14,13 @@ const Bottompageignition = () => {
 
   const handlePageSizeChange = (value) => {
     setPageSize(value);
-    setCurrentPage(1); // Reset to first page when page size changes
+    setCurrentPage(1);
   };
+  const options = [10, 20, 50].map((value) => (
+    <Option key={value} value={value}>
+      {value}
+    </Option>
+  ));
 
   return (
     <div
@@ -39,9 +44,7 @@ const Bottompageignition = () => {
         }}
         onChange={handlePageSizeChange}
       >
-        <Option value="10">10</Option>
-        <Option value="20">20</Option>
-        <Option value="50">50</Option>
+        {options}
       </Select>
       <span
         style={{

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form, Col, Row, Card, Button, Modal } from "antd";
 import flower from "../../utils/icons/flower.svg";
 import Uploadimage from "./Uploadimage";

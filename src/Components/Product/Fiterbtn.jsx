@@ -1,34 +1,3 @@
-// import { Button, ConfigProvider, Tooltip } from "antd";
-// import Filter from "../../views/Product/Filter";
-
-// const text = <Filter />;
-
-// const Fiterbtn = () => {
-//   return (
-//     <ConfigProvider
-//       button={{
-//         style: {
-//           margin: 4,
-//         },
-//       }}
-//     >
-//       <div className="demo">
-//         <div
-//           style={{
-//             clear: "both",
-//             whiteSpace: "wrap",
-//           }}
-//         >
-//           <Tooltip placement="bottomRight" title={text}>
-//             <Button>BR</Button>
-//           </Tooltip>
-//         </div>
-//       </div>
-//     </ConfigProvider>
-//   );
-// };
-// export default Fiterbtn;
-
 import Filter from "../../views/Product/Filter";
 import { Tooltip, Button } from "antd";
 

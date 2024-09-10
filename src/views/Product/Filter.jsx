@@ -1,4 +1,4 @@
-import { Card, Space, Divider, Slider, Row, Col } from "antd";
+import { Card, Space, Divider, Slider, Row, Col, Button } from "antd";
 
 function Filter({ data }) {
   const sortByItems = [
@@ -49,18 +49,20 @@ function Filter({ data }) {
           }}
         >
           {sortByItems.map((item, index) => (
-            <div
+            <Button
               key={index}
+              type="default"
               style={{
                 backgroundColor: "#F5F5F5",
                 borderRadius: "4px",
                 padding: "4px 8px",
                 fontSize: "14px",
                 color: "#333",
+                border: "none",
               }}
             >
               {item}
-            </div>
+            </Button>
           ))}
         </div>
         <Divider />
@@ -94,7 +96,6 @@ function Filter({ data }) {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    // alignItems: "center",
                   }}
                 >
                   <img
@@ -102,7 +103,6 @@ function Filter({ data }) {
                     style={{ marginBottom: "8px" }}
                     alt={`Restaurant type ${index}`}
                   />
-                  {/* Add alt text for accessibility */}
                 </div>
               </Col>
             ))}
