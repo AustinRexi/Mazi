@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Select, Button, Input } from "antd";
+import { Select, Button, Input, Row, Col, Space } from "antd";
 
 const { Option } = Select;
 
@@ -14,109 +15,82 @@ const Bottompageignition = () => {
 
   const handlePageSizeChange = (value) => {
     setPageSize(value);
-    setCurrentPage(1); // Reset to first page when page size changes
+    setCurrentPage(1);
   };
 
   return (
-    <div
+    <Row
       style={{
-        display: "flex",
-        alignItems: "center",
         backgroundColor: "#F8FBFB",
-        width: "1020px",
+        padding: "10px",
+        width: "100%",
+        maxWidth: "1020px",
       }}
+      align="middle"
+      justify="space-between"
+      gutter={[16, 16]}
     >
-      <Select
-        defaultValue="10"
-        style={{
-          marginLeft: "9px",
-          padding: 6,
-          borderRadius: "16px",
-          Padding: "10px, 14px, 10px, 14px",
-          gap: "8px",
-          height: "45px",
-          width: "72px",
-        }}
-        onChange={handlePageSizeChange}
-      >
-        <Option value="10">10</Option>
-        <Option value="20">20</Option>
-        <Option value="50">50</Option>
-      </Select>
-      <span
-        style={{
-          marginLeft: 8,
-          whiteSpace: "nowrap",
-          fontWeight: 500,
-          fontSize: "16px",
-          lineHeight: "24px",
-          color: "#8D8E8D",
-        }}
-      >
-        Showing {Math.min((currentPage - 1) * pageSize + 1, totalItems)} -{" "}
-        {Math.min(currentPage * pageSize, totalItems)} of {totalItems}
-      </span>
-      <div
-        style={{
-          marginLeft: "auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-          }}
+      <Col xs={24} sm={8} md={6} lg={4}>
+        <Select
+          defaultValue="10"
+          style={{ width: "100%" }}
+          onChange={handlePageSizeChange}
         >
-          <Button
-            style={{
-              height: "40px",
-              width: "108px",
-              marginRight: 8,
-              backgroundColor: "#D3D3D3",
-              color: "#FFFFFF",
-              borderRadius: "8px",
-              gap: "4px",
-              padding: "7px, 24px, 7px, 24px",
-            }}
-            disabled={currentPage === 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-          >
-            &laquo; Prev
-          </Button>
-          <Button
-            style={{
-              height: "40px",
-              width: "108px",
-              borderRadius: "8px",
-              gap: "4px",
-              padding: "7px, 24px, 7px, 24px",
-              marginRight: 8,
-              backgroundColor: "#034147",
-              color: "#FFFFFF",
-            }}
-            disabled={currentPage === Math.ceil(totalItems / pageSize)}
-            onClick={() => handlePageChange(currentPage + 1)}
-          >
-            Next &raquo;
-          </Button>
-        </div>
-        <span style={{ whiteSpace: "nowrap" }}>
-          Page{" "}
-          <Input
-            style={{ width: 50, textAlign: "center" }}
-            value={currentPage}
-            readOnly
-          />{" "}
-          of {Math.ceil(totalItems / pageSize)}
-        </span>
-      </div>
-    </div>
+          <Option value="10">10</Option>
+          <Option value="20">20</Option>
+          <Option value="50">50</Option>
+        </Select>
+      </Col>
+      <Col xs={24} sm={16} md={18} lg={20}>
+        <Row justify="space-between" align="middle">
+          <Col xs={24} md={12}>
+            <span style={{ whiteSpace: "nowrap", color: "#8D8E8D" }}>
+              Showing {Math.min((currentPage - 1) * pageSize + 1, totalItems)} -{" "}
+              {Math.min(currentPage * pageSize, totalItems)} of {totalItems}
+            </span>
+          </Col>
+          <Col xs={24} md={12}>
+            <Row justify="center" gutter={[8, 8]}>
+              <Col>
+                <Button
+                  style={{
+                    backgroundColor: "#D3D3D3",
+                    color: "#FFFFFF",
+                  }}
+                  disabled={currentPage === 1}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  &laquo; Prev
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  style={{
+                    backgroundColor: "#034147",
+                    color: "#FFFFFF",
+                  }}
+                  disabled={currentPage === Math.ceil(totalItems / pageSize)}
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  Next &raquo;
+                </Button>
+              </Col>
+              <Col>
+                <Space>
+                  <span>Page</span>
+                  <Input
+                    style={{ width: 50, textAlign: "center" }}
+                    value={currentPage}
+                    readOnly
+                  />
+                  <span>of {Math.ceil(totalItems / pageSize)}</span>
+                </Space>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   );
 };
 

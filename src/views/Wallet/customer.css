@@ -1,0 +1,48 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #001529;
+}
+
+.logo {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.desktopVisible {
+  display: none;
+}
+
+.mobileVisible {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .desktopVisible {
+    display: flex;
+  }
+  .mobileVisible {
+    display: none;
+  }
+}
+
+.ant-menu-horizontal {
+  border-bottom: none;
+  background-color: transparent;
+}
+
+.ant-menu-item {
+  color: white !important;
+}
+
+.ant-drawer-body {
+  padding: 0;
+}
+
+.ant-drawer-title {
+  font-size: 18px;
+  font-weight: bold;
+}

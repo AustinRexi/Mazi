@@ -1,16 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import Chat from "./Components/Courier/Chat";
-
-// import Courier from "./views/Courier/Courier";
-
-// import CourierCard from "./Components/Courier/CourierCard";
-
-// import UserCard from "./Components/Courier/UserCard";
-
-//Default Home
-import Layout from "./Layout/Layout";
-
-// //Navigations from sidebar
+// Ensure Layout is imported
 import Board from "./views/Dashboard/Board";
 import Product from "./views/Product/Product";
 import Orders from "./views/Orders/Orders";
@@ -20,49 +9,47 @@ import Support from "./views/Support/Support";
 import Wallet from "./views/Wallet/Wallet";
 import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
 import Courier from "./views/Courier/Courier";
+import MainLayout from "./Layout/Layout";
+import AuthLayout from "./Layout/AuthLayout";
+import { OrderLayout } from "./views/Orders/OrderLayout";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <MainLayout />,
     children: [
-      {
-        path: "Board",
-        element: <Board />,
-      },
-      {
-        path: "Products",
-        element: <Product />,
-      },
+      { path: "Board", element: <Board /> },
+      { path: "Products", element: <Product /> },
+
       {
         path: "Orders",
         element: <Orders />,
+        children: [
+          {
+            path: "OrderLayout",
+            element: <OrderLayout />,
+          },
+          // {
+          //   path: "Fufill",
+          //   element: <Fufill />,
+          // },
+          // {
+          //   path: "Cancel",
+          //   element: <Cancel />,
+          // },
+          // {
+          //   path: "Refund",
+          //   element: <Refund />,
+          // },
+        ],
       },
-
-      {
-        path: "CurrencyExchange",
-        element: <CurrencyExchange />,
-      },
-      {
-        path: "Courier",
-        element: <Courier />,
-      },
-      {
-        path: "Wallet",
-        element: <Wallet />,
-      },
-      {
-        path: "Support",
-        element: <Support />,
-      },
-      {
-        path: "Settings",
-        element: <Settings />,
-      },
-      {
-        path: "Customers",
-        element: <Customers />,
-      },
+      // { path: "Orders", element: <Orders /> },
+      { path: "CurrencyExchange", element: <CurrencyExchange /> },
+      { path: "Courier", element: <Courier /> },
+      { path: "Wallet", element: <Wallet /> },
+      { path: "Support", element: <Support /> },
+      { path: "Settings", element: <Settings /> },
+      { path: "Customers", element: <Customers /> },
     ],
   },
 ]);
@@ -70,11 +57,6 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <>
-      {/* <Chat /> */}
-      {/* <ProfileCard /> */}
-      {/* <Courier /> */}
-      {/* <CourierCard /> */}
-      {/* <UserCard /> */}
       <RouterProvider router={router} />;
     </>
   );

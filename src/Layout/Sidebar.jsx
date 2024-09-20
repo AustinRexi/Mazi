@@ -1,4 +1,5 @@
-import { Space, Typography } from "antd";
+import React from "react";
+import { NavLink } from "react-router-dom";
 import homeIcon from "../utils/icons/home.svg";
 import productIcon from "../utils/icons/product.svg";
 import orderIcon from "../utils/icons/orders.svg";
@@ -8,6 +9,8 @@ import courierIcon from "../utils/icons/courier.svg";
 import walletIcon from "../utils/icons/wallet.svg";
 import supportIcon from "../utils/icons/support.svg";
 import settingIcon from "../utils/icons/settings.svg";
+import menu from "../utils/icons/menu.svg";
+import logo from "../utils/icons/logo.svg";
 import homefilled from "../utils/icons/homefilled.svg";
 import productfilled from "../utils/icons/productfilled.svg";
 import orderfilled from "../utils/icons/ordersfilled.svg";
@@ -18,126 +21,168 @@ import walletfilled from "../utils/icons/walletfilled.svg";
 import supportfilled from "../utils/icons/supportfilled.svg";
 import settingsfilled from "../utils/icons/settingsfilled.svg";
 
-import { NavLink } from "react-router-dom";
-const { Title } = Typography;
+import { Divider } from "antd"; // Import Divider from Ant Design
 
 const Sidebar = () => {
-  const navLinkStyles = ({ isActive }) => ({
-    top: "12px",
-    marginTop: isActive ? "6px" : "",
-    display: "flex",
-    paddingLeft: "40px",
-    alignItems: "start",
-    color: isActive ? "cyan" : "orange",
-    borderLeft: isActive ? "5px solid #034147" : "none",
-    height: isActive ? "56px" : "auto",
-    borderRadius: isActive ? "6px" : "0",
-    backgroundColor: isActive ? "#F2FBFB" : "",
-    paddingBottom: "10px",
-  });
-
-  const side = [
+  const menuItems = [
     {
       name: "Dashboard",
       icon: homeIcon,
       activeIcon: homefilled,
-      link: "/Board",
+      path: "/Board",
     },
     {
       name: "Products",
       icon: productIcon,
       activeIcon: productfilled,
-      link: "/Products",
+      path: "/Products",
     },
     {
       name: "Orders",
       icon: orderIcon,
       activeIcon: orderfilled,
-      link: "/Orders",
+      path: "/Orders",
     },
     {
       name: "Customers",
       icon: customerIcon,
       activeIcon: customersfilled,
-      link: "/Customers",
+      path: "/Customers",
     },
     {
       name: "Currency Exchange",
       icon: currencyIcon,
       activeIcon: currencyfilled,
-      link: "/CurrencyExchange",
+      path: "/CurrencyExchange",
     },
     {
       name: "Couriers",
       icon: courierIcon,
       activeIcon: courierfilled,
-      link: "/Courier",
+      path: "/Courier",
     },
     {
       name: "Wallet",
       icon: walletIcon,
       activeIcon: walletfilled,
-      link: "/Wallet",
+      path: "/Wallet",
     },
     {
       name: "Support",
       icon: supportIcon,
       activeIcon: supportfilled,
-      link: "/Support",
+      path: "/Support",
     },
     {
       name: "Settings",
       icon: settingIcon,
       activeIcon: settingsfilled,
-      link: "/Settings",
+      path: "/Settings",
     },
   ];
 
   return (
-    <div
-      style={{
-        width: "272px",
-        minHeight: "100vh",
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-      }}
-    >
-      <Space
-        direction="vertical"
-        size="8"
-        style={{ width: "max-content", padding: 7, height: "160vh" }}
-      >
-        {side.map((item) => (
-          <NavLink key={item.name} to={item.link} style={navLinkStyles}>
+    <div className="sidebar" style={styles.sidebar}>
+      <img src={menu} style={styles.logoIcon} alt="menu" />
+      <img
+        src={logo}
+        style={{ ...styles.logoIcon, marginLeft: "10px" }}
+        alt="logo"
+      />
+
+      <Divider style={styles.divider} />
+      <nav>
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            style={({ isActive }) => ({
+              ...styles.navLink,
+              ...(isActive ? styles.activeNavLink : {}),
+            })}
+          >
             {({ isActive }) => (
-              <nav
-                style={{
-                  display: "flex",
-                  marginTop: "4px",
-                  gap: "6px",
-                  cursor: "pointer",
-                  justifyItems: "flex-start",
-                }}
-              >
-                <img src={isActive ? item.activeIcon : item.icon} alt="" />
-                <Title
-                  level={4}
-                  style={{
-                    marginLeft: "4px",
-                    marginTop: "12px",
-                    size: "12px",
-                    fontWeight: 400,
-                    lineHeight: "22px",
-                  }}
-                >
-                  {item.name}
-                </Title>
-              </nav>
+              <>
+                <img
+                  src={isActive ? item.activeIcon : item.icon}
+                  alt={item.name}
+                  style={styles.icon}
+                />
+                {item.name}
+                {item.notification && (
+                  <span style={styles.notification}>•</span>
+                )}
+              </>
             )}
           </NavLink>
         ))}
-      </Space>
+      </nav>
     </div>
   );
+};
+
+const styles = {
+  sidebar: {
+    width: "20%", // Changed from 250px to 20%
+    height: "100vh",
+    backgroundColor: "white",
+    color: "black",
+    padding: "20px",
+    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+    position: "fixed", // Added to keep sidebar in place
+    left: 0, // Added to align sidebar to the left
+    top: 0, // Added to align sidebar to the top
+    overflowY: "auto", // Added to allow scrolling if content overflows
+  },
+  logo: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "12px",
+    height: "72px", // Set height to 72px
+  },
+  logoIcon: {
+    height: "32px", // Set height to 100% to fill the div
+    width: "auto", // Maintain aspect ratio
+    color: "black",
+  },
+  logoText: {
+    fontSize: "24px",
+    fontWeight: "bold",
+    color: "black",
+  },
+  navLink: {
+    display: "flex",
+    alignItems: "center",
+    padding: "10px",
+    textDecoration: "none",
+    color: "black",
+    position: "relative",
+    borderRadius: "5px",
+    marginBottom: "5px",
+  },
+  activeNavLink: {
+    backgroundColor: "#F2FBFB",
+    color: "black",
+    fontWeight: "bold",
+  },
+  icon: {
+    width: "20px",
+    height: "20px",
+    marginRight: "10px",
+  },
+  divider: {
+    margin: "5px 0",
+    borderColor: "#e8e8e8", // Light grey color for the divider
+  },
+  notification: {
+    marginLeft: "auto",
+    color: "red",
+  },
+  "@media (max-width: 768px)": {
+    sidebar: {
+      display: "none",
+    },
+  },
 };
 
 export default Sidebar;

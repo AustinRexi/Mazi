@@ -4,7 +4,8 @@ import flower from "../../utils/icons/flower.svg";
 import Uploadimage from "./Uploadimage";
 import Formfile from "./Formfile";
 import Edit from "./Edit";
-import CongratulationsCard from "../../Components/Product/Congratulationscard";
+// import { CongratulationsCard } from "../../Components/Product/Congratulationscard";
+// import CongratulationsCard from "../../Components/Product/Congratulationscard";
 
 const AddProduct = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);

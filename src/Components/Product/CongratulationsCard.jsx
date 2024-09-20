@@ -3,7 +3,7 @@ import { Card, Button, Typography } from "antd";
 import congratulation from "../../utils/icons/congratulation.svg";
 const { Title, Text } = Typography;
 
-const CongratulationsCard = () => {
+export const CongratulationsCard = () => {
   return (
     <div
       style={{
@@ -70,5 +70,3 @@ const CongratulationsCard = () => {
     </div>
   );
 };
-
-export default CongratulationsCard;
