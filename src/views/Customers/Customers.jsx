@@ -1,5 +1,11 @@
+import Header from "./Header";
+
 function Customers() {
-  return <div>Customers</div>;
+  return (
+    <div>
+      <Header />
+    </div>
+  );
 }
 
 export default Customers;

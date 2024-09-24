@@ -240,7 +240,7 @@ const UserCard = ({ datas }) => {
         onOk={handleChatOk}
         onCancel={handleChatCancel}
         footer={null}
-        closable={true}
+        closable={false}
         style={{
           position: "absolute",
           bottom: 20,

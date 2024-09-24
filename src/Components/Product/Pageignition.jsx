@@ -2,9 +2,8 @@ import "antd/dist/reset.css"; // Import Ant Design styles
 import Dropicon from "../../utils/icons/Dropicon.svg";
 import { Pagination } from "antd";
 import "antd/dist/reset.css";
-import Tabledata from "../Table/Tabledata";
 
-const Pageignition = ({ data }) => {
+const Pageignition = () => {
   const totalItems = 12345;
   const itemsPerPage = 10;
 
@@ -50,7 +49,6 @@ const Pageignition = ({ data }) => {
           </div>
         </div>
       </div>
-      <Tabledata data={data} />
     </div>
   );
 };
