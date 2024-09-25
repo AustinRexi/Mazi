@@ -10,7 +10,8 @@ import CancelledIcon from "../../Assets/Ordericons/cancelstatus.svg";
 import PendingIcon from "../../Assets/Ordericons/pendingstatus.svg";
 import CompletedIcon from "../../Assets/Ordericons/completestatus.svg";
 import RefundedIcon from "../../Assets/Ordericons/refundedstatus.svg";
-import { OrderLayout } from "./OrderLayout";
+// import { OrderLayout } from "./OrderLayout";
+import OrderDropDown from "./OrderDropDown";
 const { Text } = Typography;
 const orderData = [
   {
@@ -115,7 +116,7 @@ const OrdersCard = () => {
                         transition: "visibility 0.3s",
                       }}
                     >
-                      <OrderLayout />
+                      <OrderDropDown />
                     </div>
                   </Space>
                 </Space>

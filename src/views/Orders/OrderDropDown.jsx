@@ -1,12 +1,13 @@
 import React from "react";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const orderActions = [
   {
     key: "1",
     label: "View",
-    path: "Order/OrderDetails",
+    path: "/OrderDetails",
   },
   {
     key: "2",
@@ -22,51 +23,51 @@ const orderActions = [
   },
 ];
 
-const OrderDropDown = ({ link }) => {
-  // const navigate = useNavigate();
+const OrderDropDown = () => {
+  const navigate = useNavigate();
 
-  // const handleMenuClick = ({ key }) => {
-  //   const selectedAction = orderActions.find((action) => action.key === key);
+  const handleMenuClick = ({ key }) => {
+    const selectedAction = orderActions.find((action) => action.key === key);
 
-  //   if (!selectedAction) return;
+    if (!selectedAction) return;
 
-  //   switch (key) {
-  //     case "1":
-  //       if (selectedAction.path) {
-  //         navigate(selectedAction.path);
-  //       }
-  //       break;
-  //     case "2":
-  //       handleFulfilOrder();
-  //       break;
-  //     case "3":
-  //       handleCancelOrder();
-  //       break;
-  //     case "4":
-  //       handleRefundOrder();
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
+    switch (key) {
+      case "1":
+        if (selectedAction.path) {
+          navigate(selectedAction.path);
+        }
+        break;
+      case "2":
+        handleFulfilOrder();
+        break;
+      case "3":
+        handleCancelOrder();
+        break;
+      case "4":
+        handleRefundOrder();
+        break;
+      default:
+        break;
+    }
+  };
 
-  // const handleFulfilOrder = () => {
-  //   // Logic to fulfil the order
-  // };
+  const handleFulfilOrder = () => {
+    // Logic to fulfil the order
+  };
 
-  // const handleCancelOrder = () => {
-  //   // Logic to cancel the order
-  // };
+  const handleCancelOrder = () => {
+    // Logic to cancel the order
+  };
 
-  // const handleRefundOrder = () => {
-  //   // Logic to refund the order
-  // };
+  const handleRefundOrder = () => {
+    // Logic to refund the order
+  };
 
   return (
     <Dropdown
       menu={{
-        items: link,
-        // onClick: handleMenuClick,
+        items: orderActions,
+        onClick: handleMenuClick,
         selectable: true,
       }}
       trigger={["click"]}

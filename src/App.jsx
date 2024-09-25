@@ -11,7 +11,6 @@ import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
 import Courier from "./views/Courier/Courier";
 import MainLayout from "./Layout/Layout";
 import AuthLayout from "./Layout/AuthLayout";
-import { OrderLayout } from "./views/Orders/OrderLayout";
 
 const router = createBrowserRouter([
   {
@@ -24,24 +23,6 @@ const router = createBrowserRouter([
       {
         path: "Orders",
         element: <Orders />,
-        children: [
-          {
-            path: "OrderLayout",
-            element: <OrderLayout />,
-          },
-          // {
-          //   path: "Fufill",
-          //   element: <Fufill />,
-          // },
-          // {
-          //   path: "Cancel",
-          //   element: <Cancel />,
-          // },
-          // {
-          //   path: "Refund",
-          //   element: <Refund />,
-          // },
-        ],
       },
       // { path: "Orders", element: <Orders /> },
       { path: "CurrencyExchange", element: <CurrencyExchange /> },
