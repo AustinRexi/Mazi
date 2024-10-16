@@ -11,12 +11,14 @@ import Restauranttypes from "../../Assets/Restauranttypes";
 import Groceriescategories from "../../Assets/Groceriescategories";
 import AddProduct from "../../views/Product/Addproduct";
 import Bottompageignition from "./Bottompageigition";
+import Tabledata from "../Table/Tabledata";
 
 const dataRefrence = { tab1: Fooddata, tab2: Grocerydata };
 
 function Headers() {
   const [activeTabKey, setActiveTabKey] = useState("tab1");
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const [activeProduct, setActiveProduct] = useState(null);
 
   const onTabChange = (key) => {
     setActiveTabKey(key);
@@ -42,54 +44,63 @@ function Headers() {
         <AddProduct />
       ) : (
         <div>
-          <Flex gap="middle" align="start" vertical>
-            <Flex gap="middle" style={{ display: "flex", gap: 24 }}>
-              <h2
-                style={{
-                  marginTop: "20px",
-                  color: "#000000",
-                  fontWeight: 600,
-                  fontSize: "24px",
-                  lineHeight: "32px",
-                  marginLeft: 25,
-                }}
-              >
-                Products
-              </h2>
-              <Flex
-                style={{
-                  gap: "8px",
-                  padding: "2px,8px,2px,8px",
-                  marginLeft: "118px",
-                  marginTop: "18px",
-                  border: "1px solid #B5B6B5",
-                  borderRadius: "16px",
-                  height: "8vh",
-                  width: "170px",
-                }}
-                wrap
-              >
-                {[
-                  { id: "tab1", label: "Food" },
-                  { id: "tab2", label: "Groceries" },
-                ].map(({ id, label }) => (
-                  <Tabbutton
-                    key={id}
-                    activeTabKey={activeTabKey}
-                    id={id}
-                    handleClick={onTabChange}
+          {!activeProduct && (
+            <>
+              <Flex gap="middle" align="start" vertical>
+                <Flex gap="middle" style={{ display: "flex", gap: 24 }}>
+                  <h2
+                    style={{
+                      marginTop: "20px",
+                      color: "#000000",
+                      fontWeight: 600,
+                      fontSize: "24px",
+                      lineHeight: "32px",
+                      marginLeft: 25,
+                    }}
                   >
-                    {label}
-                  </Tabbutton>
-                ))}
+                    Products
+                  </h2>
+                  <Flex
+                    style={{
+                      gap: "8px",
+                      padding: "2px,8px,2px,8px",
+                      marginLeft: "118px",
+                      marginTop: "18px",
+                      border: "1px solid #B5B6B5",
+                      borderRadius: "16px",
+                      height: "8vh",
+                      width: "170px",
+                    }}
+                    wrap
+                  >
+                    {[
+                      { id: "tab1", label: "Food" },
+                      { id: "tab2", label: "Groceries" },
+                    ].map(({ id, label }) => (
+                      <Tabbutton
+                        key={id}
+                        activeTabKey={activeTabKey}
+                        id={id}
+                        handleClick={onTabChange}
+                      >
+                        {label}
+                      </Tabbutton>
+                    ))}
+                  </Flex>
+                  <Addbutton onClick={handleAddButtonClick} />
+                  <Search placeholder={getPlaceholderText()} />
+                  <Filterbutton data={getFilterItems()} />
+                </Flex>
               </Flex>
-              <Addbutton onClick={handleAddButtonClick} />
-              <Search placeholder={getPlaceholderText()} />
-              <Filterbutton data={getFilterItems()} />
-            </Flex>
-          </Flex>
-          <Pageignition data={dataRefrence[activeTabKey]} />
-          <Bottompageignition />
+              <Pageignition />
+            </>
+          )}
+          <Tabledata
+            setActiveProduct={setActiveProduct}
+            activeProduct={activeProduct}
+            data={dataRefrence[activeTabKey]}
+          />
+          {!activeProduct && <Bottompageignition />}
         </div>
       )}
     </div>
