@@ -1,44 +1,21 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
-const orderActions = [
-  {
-    key: "1",
-    label: "View",
-    path: "/OrderDetails",
-  },
-  {
-    key: "2",
-    label: "Fulfil",
-  },
-  {
-    key: "3",
-    label: "Cancel",
-  },
-  {
-    key: "4",
-    label: "Refund",
-  },
-];
-
-const OrderDropDown = () => {
+const OrderDropDown = ({ handleFullFilModalState }) => {
   const navigate = useNavigate();
 
   const handleMenuClick = ({ key }) => {
-    const selectedAction = orderActions.find((action) => action.key === key);
+    console.log("handleFullFilModalState", handleFullFilModalState);
 
-    if (!selectedAction) return;
-
+    if (!key) return;
     switch (key) {
       case "1":
-        if (selectedAction.path) {
-          navigate(selectedAction.path);
-        }
+        navigate("/Orders/details");
         break;
       case "2":
-        handleFulfilOrder();
+        handleFullFilModalState(true);
         break;
       case "3":
         handleCancelOrder();
@@ -46,6 +23,7 @@ const OrderDropDown = () => {
       case "4":
         handleRefundOrder();
         break;
+
       default:
         break;
     }
@@ -53,6 +31,7 @@ const OrderDropDown = () => {
 
   const handleFulfilOrder = () => {
     // Logic to fulfil the order
+    handleFullFilModalState();
   };
 
   const handleCancelOrder = () => {
@@ -62,6 +41,25 @@ const OrderDropDown = () => {
   const handleRefundOrder = () => {
     // Logic to refund the order
   };
+
+  const orderActions = useMemo(() => [
+    {
+      key: "1",
+      label: "View",
+    },
+    {
+      key: "2",
+      label: "Fulfil",
+    },
+    {
+      key: "3",
+      label: "Cancel",
+    },
+    {
+      key: "4",
+      label: "Refund",
+    },
+  ]);
 
   return (
     <Dropdown

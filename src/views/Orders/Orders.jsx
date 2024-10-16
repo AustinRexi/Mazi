@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Layout,
   Typography,
@@ -28,12 +28,19 @@ import Bottompageignition from "../../Components/Product/Bottompageigition";
 
 import OrdersCard from "./OrdersCard";
 import OrdersHeader from "./OrderHeader";
+import Fufill from "./Subcomponent/Fufill";
 
 const { Content } = Layout;
 const { Text } = Typography;
 const { Option } = Select;
 
 const Orders = () => {
+  const [shoFullFilModal, setShoFullFilModal] = useState(false);
+
+  const handleFullFilModalState = (state) => {
+    setShoFullFilModal(state);
+  };
+
   const statusData = [
     { status: "Active", count: 12220, statusIcon: active },
     { status: "Pending", count: 12220, statusIcon: pending },
@@ -45,6 +52,10 @@ const Orders = () => {
   return (
     <Layout>
       <OrdersHeader />
+      <Fufill
+        showModal={shoFullFilModal}
+        handleCancel={() => handleFullFilModalState(false)}
+      />
 
       <Content style={{ padding: "10px" }}>
         <Card style={{ marginBottom: 10 }}>
@@ -79,7 +90,7 @@ const Orders = () => {
           </Space>
         </Card>
 
-        <OrdersCard />
+        <OrdersCard handleFullFilModalState={handleFullFilModalState} />
       </Content>
 
       <Bottompageignition />

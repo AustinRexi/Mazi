@@ -23,7 +23,7 @@ import active from "../../Assets/Ordericons/active.svg";
 import mastercard from "../../Assets/Ordericons/mastercard.svg";
 import OrderDetailsHeader from "../Wallet/OrderDetailsHeader";
 
-const OrderDetails = () => {
+export const OrderDetails = () => {
   const { Title, Text } = Typography;
   const { TextArea } = Input;
 
@@ -262,5 +262,3 @@ const OrderDetails = () => {
     </div>
   );
 };
-
-export default OrderDetails;

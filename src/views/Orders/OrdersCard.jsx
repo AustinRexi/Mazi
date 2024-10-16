@@ -80,7 +80,7 @@ const orderData = [
   },
 ];
 
-const OrdersCard = () => {
+const OrdersCard = ({ handleFullFilModalState }) => {
   const [hoveredCard, setHoveredCard] = useState(null);
 
   return (
@@ -116,7 +116,9 @@ const OrdersCard = () => {
                         transition: "visibility 0.3s",
                       }}
                     >
-                      <OrderDropDown />
+                      <OrderDropDown
+                        handleFullFilModalState={handleFullFilModalState}
+                      />
                     </div>
                   </Space>
                 </Space>
