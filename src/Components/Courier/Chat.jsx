@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Avatar, Space, Typography, Card, Input, Button } from "antd";
+import { Avatar, Space, Typography, Card, Input, Button, Divider } from "antd";
 import { CloseCircleOutlined, SendOutlined } from "@ant-design/icons";
 import options from "../../Assets/Couriericons/options.svg";
 import star from "../../Assets/Foodicons/Star.svg";
+import dp from "../../Assets/Ordericons/displayimageicon.svg";
 
 const { TextArea } = Input;
 
@@ -14,7 +15,7 @@ const Chat = () => {
       style={{
         maxWidth: "550px",
         margin: "0 auto",
-        border: "1px solid #d9d9d9",
+        border: "none",
         borderRadius: "8px",
 
         background: "#fff",
@@ -28,7 +29,7 @@ const Chat = () => {
         }}
       >
         <Space align="center" size="medium" style={{ gap: 17 }}>
-          <Avatar src="path_to_avatar_image" size={40} />
+          <Avatar src={dp} size={40} />
           <Typography.Text strong>Tiamiyu Wasiu</Typography.Text>
           <Typography.Text type="secondary">
             Joined Mar. 16, 2024
@@ -94,12 +95,18 @@ const Chat = () => {
           <Typography.Text style={{ color: "#bfbfbf" }}>12:04</Typography.Text>
         </div>
 
-        <div style={{ borderTop: "1px solid #d9d9d9", paddingTop: "12px" }}>
+        <div
+          style={{
+            borderTop: "1px solid #d9d9d9",
+            paddingTop: "12px",
+            borderBottom: "1px solid #d9d9d9",
+          }}
+        >
           <Space direction="horizontal" style={{ width: "100%" }}>
             <TextArea
               placeholder="Type your message here"
               autoSize={{ minRows: 1, maxRows: 2 }}
-              style={{ width: "300px", border: "none" }}
+              style={{ width: "300px", border: "none", marginLeft: 2 }}
             />
             <Button
               type="primary"
@@ -110,6 +117,7 @@ const Chat = () => {
               Send
             </Button>
           </Space>
+          {/* <Divider /> */}
         </div>
       </div>
     </div>

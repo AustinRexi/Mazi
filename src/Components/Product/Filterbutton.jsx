@@ -1,20 +1,42 @@
-import { Tooltip, Button } from "antd";
+import { Dropdown, Button } from "antd";
 import Filter from "../../views/Product/Filter";
 import Filtericon from "../../Assets/Lineicons/Filtericon.svg";
+import { useState } from "react";
 
-const Filterbutton = ({ data }) => {
+const Filterbutton = ({ data, onFilterApply, overlay }) => {
+  const [filterData, setFilterData] = useState(null);
+
+  const handleFilterClick = (selectedFilterData) => {
+    setFilterData(selectedFilterData);
+
+    if (onFilterApply) {
+      onFilterApply(selectedFilterData);
+    }
+  };
+
+  // Default filter menu, which will be used if 'overlay' prop is not passed
+  const filterMenu = (
+    <div
+      style={{
+        padding: "10px",
+        backgroundColor: "#fff",
+        borderRadius: "4px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+      }}
+    >
+      <Filter data={data} onFilterClick={handleFilterClick} />
+    </div>
+  );
+
   return (
     <div
       style={{ position: "relative", marginLeft: "10px", marginTop: "10px" }}
     >
-      <Tooltip
-        title={<Filter data={data} />}
+      <Dropdown
+        overlay={overlay || filterMenu}
+        trigger={["click"]}
         placement="bottomLeft"
-        color="white"
-        arrowPointAtCenter
-        mouseEnterDelay={0.5}
-        mouseLeaveDelay={0.9}
-        overlayInnerStyle={{ border: "none" }}
+        arrow
       >
         <Button
           type=""
@@ -50,7 +72,7 @@ const Filterbutton = ({ data }) => {
             />
           </span>
         </Button>
-      </Tooltip>
+      </Dropdown>
     </div>
   );
 };

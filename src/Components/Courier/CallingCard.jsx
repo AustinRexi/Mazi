@@ -22,6 +22,7 @@ const CallingCard = () => {
         borderRadius: "20px",
         textAlign: "center",
         backgroundColor: "#006D75",
+        border: "none",
       }}
     >
       <style>
@@ -35,7 +36,6 @@ const CallingCard = () => {
       <Text
         style={{
           lineHeight: "14px",
-
           fontSize: "16px",
           display: "block",
           marginBottom: 8,

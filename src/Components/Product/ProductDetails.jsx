@@ -7,13 +7,15 @@ import progress from "../../Assets/Lineicons/progress.svg";
 import stock from "../../Assets/Lineicons/stock.svg";
 import Comment from "./Comment";
 
-function ProductDetails() {
+function ProductDetails({ onClick }) {
   const description =
-    "Belleful meal is the new lovely jollof rice served with chicken dipped meal is the new lovely jollof rice served.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum augue sed urna consequat, vel dictum turpis malesuada. Nullam condimentum elementum accumsan. Nullam maximus purus ac mi maximus tristique. Integer ultricies vitae nibh pulvinar pulvinar.  ";
+    "Belleful meal is the new lovely jollof rice served with chicken dipped meal is the new lovely jollof rice served.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum augue sed urna consequat, vel dictum turpis malesuada. Nullam condimentum elementum accumsan. Nullam maximus purus ac mi maximus tristique. Integer ultricies vitae nibh pulvinar pulvinar.";
+
   return (
     <Card
       style={{
         width: 470,
+        marginTop: "60px",
       }}
       bodyStyle={{ margin: 6, padding: 6 }}
     >
@@ -30,7 +32,12 @@ function ProductDetails() {
         <span style={{ marginBottom: 20 }}>(198)</span>
         <Flex style={{ gap: 15, marginBottom: 20, marginLeft: 10 }}>
           <img src={promote} alt="Promote" style={{ width: 90 }} />
-          <img src={edith} alt="Edit" style={{ width: 70 }} />
+          <img
+            src={edith}
+            alt="Edit"
+            style={{ width: 70, cursor: "pointer" }}
+            onClick={onClick}
+          />
         </Flex>
       </Flex>
 
@@ -57,7 +64,9 @@ function ProductDetails() {
           <img src={stock} alt="Stock" style={{ display: "block" }} />
         </div>
       </div>
-      <p style={{ fontWeight: 500, size: 16, lineHeight: 2 }}>{description}</p>
+      <p style={{ fontWeight: 500, fontSize: 16, lineHeight: 2 }}>
+        {description}
+      </p>
       <Comment />
     </Card>
   );
