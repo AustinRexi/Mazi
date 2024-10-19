@@ -27,6 +27,7 @@ function Filter({ data }) {
           paddingBottom: "0px",
         }}
         style={{
+          border: "none",
           fontFamily: "Neue Haas Grotesk Display Pro",
           color: "#121515",
           fontSize: "16px",
@@ -37,7 +38,6 @@ function Filter({ data }) {
           borderRadius: "12px",
           padding: "24px",
           backgroundColor: "#FFFFFF",
-          boxShadow: "0px 9px 18px 0px #AAAAAA26",
         }}
       >
         <div

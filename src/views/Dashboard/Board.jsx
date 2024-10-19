@@ -3,6 +3,7 @@ import Calender from "./Calender";
 import ChartDetail from "./ChartDetail";
 import Cardcomponent from "./Cardcomponent";
 import waveIcon from "../../utils/icons/emoji-wave.svg";
+
 const { Title } = Typography;
 
 const Board = () => {
@@ -19,7 +20,7 @@ const Board = () => {
           alignContent: "center",
           justifyContent: "space-between",
           width: "1030px",
-          padding: 8,
+          padding: 10,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

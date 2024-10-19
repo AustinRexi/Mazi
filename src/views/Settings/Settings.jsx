@@ -1,10 +1,5 @@
-import Header from "../Orders/Header";
 function Settings() {
-  return (
-    <div>
-      <Header />
-    </div>
-  );
+  return <div>Settings</div>;
 }
 
 export default Settings;

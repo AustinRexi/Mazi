@@ -41,7 +41,7 @@ const Sidebar = () => {
       name: "Dashboard",
       icon: homeIcon,
       activeIcon: homefilled,
-      link: "/Board",
+      link: "/",
     },
     {
       name: "Products",

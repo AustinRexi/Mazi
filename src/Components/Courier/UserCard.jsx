@@ -13,29 +13,11 @@ const UserCard = ({ datas }) => {
   const [isChatModalVisible, setIsChatModalVisible] = useState(false);
   const [isOptionsVisible, setIsOptionsVisible] = useState(false);
 
-  const showCallingModal = () => {
-    setIsCallingModalVisible(true);
-  };
+  const showCallingModal = () => setIsCallingModalVisible(true);
+  const hideCallingModal = () => setIsCallingModalVisible(false);
 
-  const showChatModal = () => {
-    setIsChatModalVisible(true);
-  };
-
-  const handleCallingOk = () => {
-    setIsCallingModalVisible(false);
-  };
-
-  const handleCallingCancel = () => {
-    setIsCallingModalVisible(false);
-  };
-
-  const handleChatOk = () => {
-    setIsChatModalVisible(false);
-  };
-
-  const handleChatCancel = () => {
-    setIsChatModalVisible(false);
-  };
+  const showChatModal = () => setIsChatModalVisible(true);
+  const hideChatModal = () => setIsChatModalVisible(false);
 
   const menu = (
     <Menu
@@ -49,6 +31,17 @@ const UserCard = ({ datas }) => {
 
   return (
     <>
+      <style>
+        {`
+          @keyframes blink {
+            50% { opacity: 0; }
+          }
+          .green-modal .ant-modal-content {
+            background-color: #006D75 !important;
+          }
+        `}
+      </style>
+
       <Card
         hoverable
         style={{
@@ -93,12 +86,9 @@ const UserCard = ({ datas }) => {
             </Dropdown>
           )}
         </div>
+
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginTop: "10px",
-          }}
+          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >
           <Avatar size={64} src={datas.dp} style={{ marginRight: "15px" }} />
           <div>
@@ -129,6 +119,7 @@ const UserCard = ({ datas }) => {
             </div>
           </div>
         </div>
+
         <div
           style={{
             marginTop: "15px",
@@ -153,6 +144,7 @@ const UserCard = ({ datas }) => {
             />
             {datas.phone.mobile}
           </Text>
+
           <div
             style={{
               marginTop: "15px",
@@ -193,6 +185,7 @@ const UserCard = ({ datas }) => {
             </Text>
           </div>
         </div>
+
         <div
           style={{
             display: "flex",
@@ -222,8 +215,9 @@ const UserCard = ({ datas }) => {
 
       <Modal
         open={isCallingModalVisible}
-        onOk={handleCallingOk}
-        onCancel={handleCallingCancel}
+        onOk={hideCallingModal}
+        onCancel={hideCallingModal}
+        wrapClassName="green-modal"
         footer={null}
         closable={false}
         style={{
@@ -237,15 +231,15 @@ const UserCard = ({ datas }) => {
 
       <Modal
         open={isChatModalVisible}
-        onOk={handleChatOk}
-        onCancel={handleChatCancel}
+        onOk={hideChatModal}
+        onCancel={hideChatModal}
         footer={null}
         closable={false}
         style={{
           position: "absolute",
           bottom: 20,
           right: 20,
-          width: "550px",
+          width: "400px",
           maxWidth: "100%",
           borderRadius: "8px",
           padding: 0,

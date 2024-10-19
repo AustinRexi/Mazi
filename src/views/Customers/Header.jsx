@@ -1,16 +1,15 @@
-import { useMemo, useState } from "react";
-import dayjs from "dayjs";
+import { useState } from "react";
 import Dropicon from "../../utils/icons/Dropicon.svg";
 import { Pagination } from "antd";
 import MyTable from "./MyTable";
 import Search from "../../Components/Product/Search";
 import ActionButton from "./ActionButton";
-import Filterbutton from "../../Components/Product/Filterbutton";
 import Tabbutton from "../../Components/Product/Tabbutton";
 import { Flex } from "antd";
 import Bottompageignition from "../../Components/Product/Bottompageigition";
 import user from "./User";
 import store from "./stores";
+import FilteredItems from "./FilteredItems";
 
 const dataReference = { user: user, store: store };
 
@@ -22,16 +21,6 @@ function Header() {
   const onTabChange = (tab) => {
     setActiveTabKey(tab);
   };
-
-  const presets = useMemo(
-    () => [
-      { label: "Today", value: dayjs() },
-      { label: "Three Months", value: dayjs().subtract(3, "month") },
-      { label: "Six Months", value: dayjs().subtract(6, "month") },
-      { label: "One Year", value: dayjs().subtract(1, "year") },
-    ],
-    []
-  );
 
   const getPlaceholderText = "Search Users or Stores";
 
@@ -62,7 +51,7 @@ function Header() {
           }}
         />
         <ActionButton />
-        <Filterbutton data={presets} />
+        <FilteredItems />
       </div>
 
       <Flex

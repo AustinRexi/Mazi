@@ -22,6 +22,7 @@ const AddProduct = () => {
     <div>
       <Modal
         visible={isSubmitted}
+        closable={false}
         footer={null}
         onCancel={() => setIsSubmitted(false)}
         centered
@@ -33,7 +34,7 @@ const AddProduct = () => {
         layout="vertical"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-        style={{ marginTop: "8px", backgroundColor: "#F8FBFB" }}
+        style={{ padding: "10px", backgroundColor: "#F8FBFB" }}
       >
         <div
           style={{
