@@ -22,17 +22,21 @@ const props = {
   },
 };
 const Uploadimage = () => (
-  <div>
-    <h3 style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}>
+  <div 
+  
+>
+    <h3 style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px", textAlign: "center" }}>
       Product Image
     </h3>
-    <h4 style={{ fontWeight: 600, fontSize: "16px", lineHeight: "24px" }}>
+
+    <h4 style={{ fontWeight: 600, fontSize: "16px", lineHeight: "24px", textAlign: "center" }}>
       Cover Image Here
     </h4>
-    <Dragger
+
+    <Dragger 
       {...props}
       className="custom-dragger"
-      style={{ border: "none", backgroundColor: "white", right: "14px" }}
+      style={{ border: "none", backgroundColor: "white", }}
     >
       <div
         style={{
@@ -52,10 +56,9 @@ const Uploadimage = () => (
             fontSize: "16px",
             lineHeight: "20px",
             color: "#1D1D1D",
-
             height: "30px",
             borderRadius: "16px 16px 0px 0px",
-            textAlign: "center", // Center the text
+            textAlign: "center",
           }}
         >
           Drag and drop files here
@@ -79,16 +82,18 @@ const Uploadimage = () => (
         </p>
       </div>
     </Dragger>
+
     <h3
       style={{
         fontWeight: 600,
         fontSize: "16px",
         lineHeight: "24px",
-        marginLeft: "8px",
+         textAlign: "center"
       }}
     >
       Upload Other Images Here{" "}
     </h3>
+
     <Uploadmore />
   </div>
 );

@@ -29,6 +29,7 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
   );
 
   return (
+<<<<<<< HEAD
     <div
       style={{ position: "relative", marginLeft: "10px", marginTop: "10px" }}
     >
@@ -37,11 +38,31 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
         trigger={["click"]}
         placement="bottomLeft"
         arrow
+=======
+    <div style={{ position: "relative" }}>
+      <Tooltip
+        title={
+          <div style={{ padding: "0" }}>
+            <Filter data={data} />
+          </div>
+        }
+        placement="bottomLeft"
+        color="white"
+        arrowPointAtCenter
+        mouseEnterDelay={0.5}
+        mouseLeaveDelay={0.9}
+        overlayStyle={{ maxWidth: "300px" }}
+        overlayInnerStyle={{
+          padding: 0,
+          borderRadius: "12px",
+          boxShadow: "none",
+          border: "none",
+        }}
+>>>>>>> dev-meg
       >
         <Button
           type=""
           style={{
-            marginLeft: "10px",
             borderRadius: "18px",
             width: "119px",
             height: "56px",
@@ -58,18 +79,16 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
             style={{
               display: "flex",
               alignItems: "center",
-              lineHeight: "20px",
+              lineHeight: "10px",
               fontSize: "14px",
               fontWeight: 500,
               color: "#121515",
+              justifyContent: "center",
+              gap: "10px",
             }}
           >
             Filter
-            <img
-              src={Filtericon}
-              alt="Filter"
-              style={{ marginTop: "4px", marginLeft: "12px" }}
-            />
+            <img src={Filtericon} alt="Filter" />
           </span>
         </Button>
       </Dropdown>

@@ -32,11 +32,9 @@ function Filter({ data }) {
           color: "#121515",
           fontSize: "16px",
           lineHeight: "24px",
-          width: "380px",
-          height: "900px",
-          right: "10px",
+          width: "100%",
           borderRadius: "12px",
-          padding: "24px",
+          padding: "10px",
           backgroundColor: "#FFFFFF",
         }}
       >
@@ -65,7 +63,7 @@ function Filter({ data }) {
             </Button>
           ))}
         </div>
-        <Divider />
+        <Divider style={{ margin: "10px 0" }} />
         <div>
           <div
             style={{ fontWeight: 500, fontSize: "16px", marginBottom: "16px" }}
@@ -78,19 +76,19 @@ function Filter({ data }) {
             <span>N35,000</span>
           </div>
         </div>
-        <Divider />
+        <Divider style={{ margin: "8px 0" }} />
         <div>
           <div
             style={{ fontWeight: 500, fontSize: "16px", marginBottom: "16px" }}
           >
             Types of restaurant
           </div>
-          <Row gutter={[16, 16]}>
+          <Row gutter={[8, 8]}>
             {data.map((type, index) => (
               <Col
                 span={8}
                 key={index}
-                style={{ textAlign: "center", marginBottom: "12px" }}
+                style={{ textAlign: "center", marginBottom: "5px" }}
               >
                 <div
                   style={{

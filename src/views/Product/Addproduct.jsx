@@ -5,6 +5,10 @@ import Uploadimage from "./Uploadimage";
 import Formfile from "./Formfile";
 import Edit from "./Edit";
 import CongratulationsCard from "../../Components/Product/CongratulationsCard";
+<<<<<<< HEAD
+=======
+import "../../Mobile/Addproduct.css";
+>>>>>>> dev-meg
 
 const AddProduct = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -34,13 +38,18 @@ const AddProduct = () => {
         layout="vertical"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
+<<<<<<< HEAD
         style={{ padding: "10px", backgroundColor: "#F8FBFB" }}
+=======
+        style={{ padding: "20px", backgroundColor: "#F8FBFB",  }}
+>>>>>>> dev-meg
       >
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            
           }}
         >
           <h2
@@ -48,13 +57,12 @@ const AddProduct = () => {
               fontWeight: 600,
               fontSize: "24px",
               lineHeight: "32px",
-              padding: 2,
-              marginLeft: "5px",
             }}
           >
             AddProduct
           </h2>
-          <Form.Item style={{ margin: 0 }}>
+
+          <Form.Item >
             <Button
               type="primary"
               htmlType="submit"
@@ -64,39 +72,41 @@ const AddProduct = () => {
                 color: "white",
                 borderRadius: "24px",
                 gap: "10px",
-                padding: "14px 28px 14px 28px",
-                marginBottom: "4px",
+                padding: "14px 28px",
                 width: "120px",
-                right: "20px",
               }}
             >
               Publish <img src={flower} alt="flower icon" />
             </Button>
           </Form.Item>
         </div>
-        <Row style={{ marginTop: "3px" }}>
-          <Col span={8}>
-            <div style={{ width: "90%", marginLeft: "10px", height: "200vh" }}>
-              <Card style={{ height: "167vh" }}>
+
+        <Row style={{ marginTop: "0px" }} gutter={[16, 16]}>
+          <Col xs={24} sm={12} lg={8}  span={8}>
+            <div style={{ width: "100%", }}>
+              <Card className="card-height">
                 <Formfile />
               </Card>
             </div>
           </Col>
-          <Col span={8}>
-            <div style={{ width: "90%", marginLeft: "8px" }}>
-              <Card style={{ height: "167vh", marginRight: "10px" }}>
+
+          <Col xs={24} sm={12} lg={8} span={8} >
+            <div style={{ width: "100%", }}>
+              <Card className="card-height">
                 <Uploadimage />
               </Card>
             </div>
           </Col>
-          <Col span={8}>
-            <div style={{ width: "97%", marginRight: "10px" }}>
-              <Card style={{ height: "167vh" }}>
+
+          <Col xs={24} sm={12} lg={8} span={8}>
+            <div style={{ width: "100%", }}>
+              <Card className="card-height">
                 <Edit />
               </Card>
             </div>
           </Col>
         </Row>
+
       </Form>
     </div>
   );

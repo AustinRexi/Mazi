@@ -24,20 +24,20 @@ const Bottompageignition = () => {
 
   return (
     <div
+      className="buttom-page"
       style={{
         display: "flex",
         alignItems: "center",
         backgroundColor: "#F8FBFB",
-        width: "1020px",
+        width: "100%",
+        paddingTop: "10px",
       }}
     >
       <Select
         defaultValue="10"
         style={{
-          marginLeft: "9px",
-          padding: 6,
           borderRadius: "16px",
-          Padding: "10px, 14px, 10px, 14px",
+          Padding: "10px, 14px",
           gap: "8px",
           height: "45px",
           width: "72px",
@@ -46,6 +46,7 @@ const Bottompageignition = () => {
       >
         {options}
       </Select>
+
       <span
         style={{
           marginLeft: 8,
@@ -59,6 +60,7 @@ const Bottompageignition = () => {
         Showing {Math.min((currentPage - 1) * pageSize + 1, totalItems)} -{" "}
         {Math.min(currentPage * pageSize, totalItems)} of {totalItems}
       </span>
+
       <div
         style={{
           marginLeft: "auto",
@@ -119,6 +121,24 @@ const Bottompageignition = () => {
           of {Math.ceil(totalItems / pageSize)}
         </span>
       </div>
+
+      {/* Media Queries for Mobile Responsiveness */}
+      <style>
+        {`
+          @media (max-width: 540px) {
+            .buttom-page {
+              flex-wrap: wrap;
+              align-items: flex-start;
+               margin-bottom: 20px;
+            }
+
+            .ant-select {
+              margin-bottom: 10px;
+            }
+          }
+        `}
+      </style>
+      
     </div>
   );
 };

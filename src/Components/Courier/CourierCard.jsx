@@ -9,7 +9,7 @@ const CourierCard = ({ item }) => {
         backgroundColor: "#f5f5f5",
         display: "flex",
         alignItems: "center",
-        width: "200px",
+        width: "100%",
         height: "48px",
         padding: "0px 12px",
         opacity: "0.9",

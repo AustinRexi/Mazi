@@ -38,8 +38,8 @@ const Uploadmore = () => {
         border: 0,
         backgroundColor: "white",
         gap: "8px",
-
-        marginLeft: "4px",
+        alignItems: "center",
+        width: "100%",
       }}
       type="button"
     >
@@ -48,15 +48,14 @@ const Uploadmore = () => {
           display: "flex",
           alignItems: "center",
           gap: "4px",
-          width: "14vw",
-          marginLeft: "5px",
+          width: "100%",
           backgroundColor: "#F1F7F4",
           height: "60px",
           border: "1.5px dashed #3CBCE3",
           borderRadius: "8px",
           boxSizing: "border-box",
           justifyContent: "center",
-          padding: "6px 16px 6px 16px",
+          padding: "6px 16px",
         }}
       >
         <PlusOutlined style={{ fontSize: "16px" }} />
@@ -83,6 +82,7 @@ const Uploadmore = () => {
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
+        style={{ display: "block"  }} 
       >
         {fileList.length >= 4 ? null : uploadButton}
       </Upload>
@@ -90,7 +90,7 @@ const Uploadmore = () => {
         <Image
           wrapperStyle={{
             display: "block",
-            width: "100%px",
+            width: "100%",
             height: "180px",
             borderRadius: "12px",
             border: "1px solid #2F80ED",

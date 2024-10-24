@@ -21,7 +21,7 @@ import settingsfilled from "../utils/icons/settingsfilled.svg";
 import { NavLink } from "react-router-dom";
 const { Title } = Typography;
 
-const Sidebar = () => {
+const MobileSidebar = () => {
   const navLinkStyles = ({ isActive }) => ({
     top: "12px",
     marginTop: isActive ? "6px" : "",
@@ -41,7 +41,7 @@ const Sidebar = () => {
       name: "Dashboard",
       icon: homeIcon,
       activeIcon: homefilled,
-      link: "/",
+      link: "/Board",
     },
     {
       name: "Products",
@@ -94,18 +94,11 @@ const Sidebar = () => {
   ];
 
   return (
-    <div
-      className="sidebar"
-      style={{
-        width: "272px",
-        minHeight: "100vh",
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-      }}
-    >
+    <div>
       <Space
         direction="vertical"
         size="8"
-        style={{ width: "max-content", padding: 7, height: "160vh" }}
+        style={{ width: "max-content", height: "160vh" }}
       >
         {side.map((item) => (
           <NavLink key={item.name} to={item.link} style={navLinkStyles}>
@@ -141,4 +134,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default MobileSidebar;
