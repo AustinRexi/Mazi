@@ -6,6 +6,7 @@ import profitIcon from "../../utils/icons/profit.svg";
 import peopleIcon from "../../utils/icons/people.svg";
 import heartIcon from "../../utils/icons/heart.svg";
 import little from "../../utils/icons/little.svg";
+import "../../Mobile/Board.css";
 
 import Ratings from "./Ratings";
 const { Title } = Typography;
@@ -41,31 +42,9 @@ function Cardcomponent() {
     },
   ];
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        width: "1000px",
-        marginLeft: "16px",
-        gap: 6,
-      }}
-    >
+    <div className="card-container">
       {finDetails.map((detail, index) => (
-        <Card
-          hoverable
-          key={index}
-          style={{
-            width: "235px",
-            height: "156px",
-            display: "flex",
-            flexDirection: "column",
-            background: "#FFFFFF",
-            borderRadius: "12px",
-            boxShadow: " 0px 4px 8px 0px #AAAAAA14",
-            border: "1px solid #DEEAEA",
-            justifyContent: "flex-start",
-          }}
-        >
+        <Card className="card-item " hoverable key={index}>
           <div style={{ display: "flex", gap: "8px" }}>
             <img
               style={{
@@ -195,21 +174,7 @@ function Cardcomponent() {
           </div>
         </Card>
       ))}
-      <Card
-        hoverable
-        style={{
-          width: "235px",
-          height: "156px",
-          marginLeft: "10px",
-          borderRadius: "12px",
-          boxShadow: "0px 4px 8px 0px #AAAAAA14",
-          border: "1px solid #DEEAEA",
-
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between", // Ensures the content is spaced out evenly
-        }}
-      >
+      <Card className="card-item" hoverable>
         <div style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
           <img
             style={{

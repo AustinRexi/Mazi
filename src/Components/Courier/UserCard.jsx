@@ -5,6 +5,7 @@ import message from "../../Assets/Couriericons/message.svg";
 import CallingCard from "./CallingCard";
 import Chat from "../Courier/Chat";
 import options from "../../Assets/Couriericons/options.svg";
+import "../../Mobile/Courier.css";
 
 const { Text } = Typography;
 
@@ -50,18 +51,24 @@ const UserCard = ({ datas }) => {
   return (
     <>
       <Card
+      className="user-card"
         hoverable
+        
+        /*
         style={{
-          width: 250,
+          width: "250px",
+          maxWidth: "100%",
           borderRadius: "10px",
           borderColor: "#f0f0f0",
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
           position: "relative",
         }}
+        */
         onMouseEnter={() => setIsOptionsVisible(true)}
         onMouseLeave={() => setIsOptionsVisible(false)}
       >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div className="courier-card"
+        style={{ display: "flex", justifyContent: "space-between",}}>
           <img src={datas.status} alt="status" />
           <Text
             type="secondary"
@@ -70,6 +77,8 @@ const UserCard = ({ datas }) => {
               fontWeight: 600,
               lineHeight: "16px",
               color: "#838D8D",
+             
+
             }}
           >
             {datas.title}
@@ -93,7 +102,9 @@ const UserCard = ({ datas }) => {
             </Dropdown>
           )}
         </div>
+
         <div
+        className="courier-card"
           style={{
             display: "flex",
             alignItems: "center",
@@ -129,7 +140,9 @@ const UserCard = ({ datas }) => {
             </div>
           </div>
         </div>
+
         <div
+        className="courier-card"
           style={{
             marginTop: "15px",
             borderTop: "1px solid #f0f0f0",
@@ -193,7 +206,9 @@ const UserCard = ({ datas }) => {
             </Text>
           </div>
         </div>
+
         <div
+        className="courier-card"
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -201,6 +216,7 @@ const UserCard = ({ datas }) => {
             gap: 2,
             opacity: isOptionsVisible ? 1 : 0,
             transition: "opacity 0.3s ease-in-out",
+            
           }}
         >
           <Button

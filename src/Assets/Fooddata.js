@@ -11,7 +11,7 @@ export default [
     key: "1",
     items: {
       icon: Riceicons,
-      description: "Better Food wey make sense anything Die",
+      description: "Better Food wey make sense",
     },
     rating: {
       icon: star,
@@ -27,7 +27,7 @@ export default [
     key: "2",
     items: {
       icon: Burger,
-      description: "Better Food wey make sense anything Die",
+      description: "Better Food wey make sense",
     },
     rating: {
       icon: star,
@@ -43,7 +43,7 @@ export default [
     key: "3",
     items: {
       icon: Pizza,
-      description: "Better Food wey make sense anything Die",
+      description: "Better Food wey make sense",
     },
     rating: {
       icon: star,
@@ -59,7 +59,7 @@ export default [
     key: "4",
     items: {
       icon: Fish,
-      description: "Better Food wey make sense anything Die",
+      description: "Better Food wey make sense",
     },
     rating: {
       icon: star,
@@ -75,7 +75,7 @@ export default [
     key: "5",
     items: {
       icon: Bread,
-      description: "Better Food wey make sense anything Die",
+      description: "Better Food wey make sense",
     },
 
     rating: {
@@ -92,7 +92,7 @@ export default [
     key: "6",
     items: {
       icon: Salad,
-      description: "Better Food wey make sense anything Die",
+      description: "Better Food wey make sense",
     },
     rating: {
       icon: star,
@@ -108,7 +108,7 @@ export default [
     key: "7",
     items: {
       icon: Platter,
-      description: "Better Food wey make sense anything Die",
+      description: "Better Food wey make sense",
     },
     rating: {
       icon: star,

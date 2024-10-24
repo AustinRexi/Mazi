@@ -8,8 +8,7 @@ function Search({ placeholder, style }) {
       <Input
         style={{
           height: "55px",
-          marginTop: "15px",
-          marginLeft: "15px",
+         
           borderRadius: "16px",
           ...style,
         }}

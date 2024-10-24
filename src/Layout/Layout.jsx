@@ -6,9 +6,9 @@ const Layout = () => (
   <section>
     <Navbar style={{ position: "fixed" }} />
 
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex"}}>
       <Sidebar style={{ position: "fixed" }} />
-      <div style={{ width: "100%" }}>
+      <div style={{ width: "100%"}}>
         <Outlet />
       </div>
     </div>
