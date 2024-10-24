@@ -35,6 +35,7 @@ const styles = {
   calendar: {
     marginTop: "6px",
     height: "48px",
+    cursor: "pointer",
   },
   listContainer: {
     display: "flex",
