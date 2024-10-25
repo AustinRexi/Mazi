@@ -119,7 +119,7 @@ const Chat = () => {
               Send
             </Button>
           </Space>
-          {/* <Divider /> */}
+           <Divider /> 
         </div>
       </div>
     </div>

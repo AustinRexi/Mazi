@@ -97,16 +97,12 @@ const UserCard = ({ datas }) => {
         </div>
 
         <div
-<<<<<<< HEAD
-          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
-=======
         className="courier-card"
           style={{
             display: "flex",
             alignItems: "center",
             marginTop: "10px",
           }}
->>>>>>> dev-meg
         >
           <Avatar size={64} src={datas.dp} style={{ marginRight: "15px" }} />
           <div>

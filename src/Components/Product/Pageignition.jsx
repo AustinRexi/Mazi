@@ -1,11 +1,7 @@
 import "antd/dist/reset.css";
 import Dropicon from "../../utils/icons/Dropicon.svg";
 import { Pagination } from "antd";
-<<<<<<< HEAD
-import "antd/dist/reset.css";
-=======
-import Tabledata from "../Table/Tabledata";
->>>>>>> dev-meg
+// import Tabledata from "../Table/Tabledata";
 
 const Pageignition = () => {
   const totalItems = 12345;
@@ -38,9 +34,7 @@ const Pageignition = () => {
           </div>
         </div>
       </div>
-<<<<<<< HEAD
-=======
-      <Tabledata data={data} />
+      {/* <Tabledata data={data} /> */}
 
       {/** Media Querie for mobile view **/}
 
@@ -53,7 +47,6 @@ const Pageignition = () => {
        }
     `}
       </style>
->>>>>>> dev-meg
     </div>
   );
 };

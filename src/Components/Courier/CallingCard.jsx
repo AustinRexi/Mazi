@@ -18,35 +18,21 @@ const CallingCard = () => {
   return (
     <div
       style={{
-<<<<<<< HEAD
         width: 400,
         borderRadius: "20px",
         textAlign: "center",
         backgroundColor: "#006D75",
         border: "none",
-=======
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
->>>>>>> dev-meg
       }}
     >
       <Card
         style={{
-<<<<<<< HEAD
           lineHeight: "14px",
           fontSize: "16px",
           display: "block",
           marginBottom: 8,
           color: "#ffffff",
           animation: "blink 0.5s step-start infinite",
-=======
-          width: "100%",
-          maxWidth: "400px",
-          borderRadius: "20px",
-          textAlign: "center",
-          backgroundColor: "#006D75",
->>>>>>> dev-meg
         }}
       >
         <style>

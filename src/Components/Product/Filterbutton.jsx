@@ -29,7 +29,6 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
   );
 
   return (
-<<<<<<< HEAD
     <div
       style={{ position: "relative", marginLeft: "10px", marginTop: "10px" }}
     >
@@ -38,27 +37,6 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
         trigger={["click"]}
         placement="bottomLeft"
         arrow
-=======
-    <div style={{ position: "relative" }}>
-      <Tooltip
-        title={
-          <div style={{ padding: "0" }}>
-            <Filter data={data} />
-          </div>
-        }
-        placement="bottomLeft"
-        color="white"
-        arrowPointAtCenter
-        mouseEnterDelay={0.5}
-        mouseLeaveDelay={0.9}
-        overlayStyle={{ maxWidth: "300px" }}
-        overlayInnerStyle={{
-          padding: 0,
-          borderRadius: "12px",
-          boxShadow: "none",
-          border: "none",
-        }}
->>>>>>> dev-meg
       >
         <Button
           type=""

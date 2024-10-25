@@ -5,10 +5,7 @@ import Uploadimage from "./Uploadimage";
 import Formfile from "./Formfile";
 import Edit from "./Edit";
 import CongratulationsCard from "../../Components/Product/CongratulationsCard";
-<<<<<<< HEAD
-=======
 import "../../Mobile/Addproduct.css";
->>>>>>> dev-meg
 
 const AddProduct = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -38,11 +35,7 @@ const AddProduct = () => {
         layout="vertical"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-<<<<<<< HEAD
-        style={{ padding: "10px", backgroundColor: "#F8FBFB" }}
-=======
         style={{ padding: "20px", backgroundColor: "#F8FBFB",  }}
->>>>>>> dev-meg
       >
         <div
           style={{

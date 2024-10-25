@@ -14,12 +14,7 @@ const Board = () => {
           display: "flex",
           alignContent: "center",
           justifyContent: "space-between",
-<<<<<<< HEAD
-          width: "1030px",
-          padding: 10,
-=======
           padding: "8px 0",
->>>>>>> dev-meg
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
