@@ -8,19 +8,13 @@ const { Title } = Typography;
 
 const Board = () => {
   return (
-    <section
-      style={{
-        backgroundColor: "#F8FBFB",
-        paddingLeft: 20,
-      }}
-    >
+    <section className="board">
       <div
         style={{
           display: "flex",
           alignContent: "center",
           justifyContent: "space-between",
-          width: "1030px",
-          padding: 10,
+          padding: "8px 0",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -30,7 +24,11 @@ const Board = () => {
           >
             Hello Tunde
           </Title>
-          <img style={{ marginBottom: "6px" }} src={waveIcon} alt="wave icon" />
+          <img
+            style={{ marginBottom: "10px" }}
+            src={waveIcon}
+            alt="wave icon"
+          />
         </div>
         <Calender />
       </div>

@@ -16,7 +16,7 @@ const CallingCard = () => {
   };
 
   return (
-    <Card
+    <div
       style={{
         width: 400,
         borderRadius: "20px",
@@ -25,15 +25,7 @@ const CallingCard = () => {
         border: "none",
       }}
     >
-      <style>
-        {`
-          @keyframes blink {
-            50% { opacity: 0; }
-          }
-        `}
-      </style>
-      <Avatar size={64} src={calling} style={{ marginBottom: 20 }} />
-      <Text
+      <Card
         style={{
           lineHeight: "14px",
           fontSize: "16px",
@@ -43,52 +35,74 @@ const CallingCard = () => {
           animation: "blink 0.5s step-start infinite",
         }}
       >
-        Calling...
-      </Text>
-      <Text strong style={{ fontSize: 20, color: "#ffffff" }}>
-        Tiamiyu Wasiu
-      </Text>
+        <style>
+          {`
+            @keyframes blink {
+              50% { opacity: 0; }
+            }
+          `}
+        </style>
 
-      <div style={{ marginTop: 20 }}>
-        <Button
-          shape="circle"
-          icon={<SoundOutlined />}
-          size="large"
-          style={{
-            margin: "0 20px",
-            backgroundColor: "#13C2C2",
-            color: "#fff",
-          }}
-        />
-        <Button
-          shape="circle"
-          icon={<PhoneOutlined />}
-          size="large"
-          style={{
-            backgroundColor: "#F5222D",
-            color: "#fff",
-            margin: "0 20px",
-          }}
-        />
-        <Button
-          shape="circle"
-          icon={<AudioMutedOutlined />}
-          size="large"
-          style={{
-            margin: "0 20px",
-            backgroundColor: "#13C2C2",
-            color: "#fff",
-          }}
-        />
-      </div>
+        <Avatar size={64} src={calling} style={{ marginBottom: 20 }} />
 
-      <div style={{ marginTop: 10 }}>
-        <Text style={{ marginRight: "78px", paddingRight: "40px" }}>
-          Speaker
+        <Text
+          style={{
+            lineHeight: "14px",
+            fontSize: "16px",
+            display: "block",
+            marginBottom: 8,
+            color: "#ffffff",
+            animation: "blink 0.5s step-start infinite",
+          }}
+        >
+          Calling...
         </Text>
-        <Text>Mute</Text>
-      </div>
-    </Card>
+
+        <Text strong style={{ fontSize: 20, color: "#ffffff" }}>
+          Tiamiyu Wasiu
+        </Text>
+
+        <div style={{ marginTop: 20 }}>
+          <Button
+            shape="circle"
+            icon={<SoundOutlined />}
+            size="large"
+            style={{
+              margin: "0 20px",
+              backgroundColor: "#13C2C2",
+              color: "#fff",
+            }}
+          />
+          <Button
+            shape="circle"
+            icon={<PhoneOutlined />}
+            size="large"
+            style={{
+              backgroundColor: "#F5222D",
+              color: "#fff",
+              margin: "0 20px",
+            }}
+          />
+          <Button
+            shape="circle"
+            icon={<AudioMutedOutlined />}
+            size="large"
+            style={{
+              margin: "0 20px",
+              backgroundColor: "#13C2C2",
+              color: "#fff",
+            }}
+          />
+        </div>
+
+        <div style={{ marginTop: 10 }}>
+          <Text style={{ marginRight: "78px", paddingRight: "40px" }}>
+            Speaker
+          </Text>
+          <Text>Mute</Text>
+        </div>
+      </Card>
+    </div>
   );
 };
 

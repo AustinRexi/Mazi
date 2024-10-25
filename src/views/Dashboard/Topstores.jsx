@@ -29,13 +29,9 @@ const data = [
 
 const Topstores = () => (
   <Card
+  className="topstores"
     hoverable
-    style={{
-      width: 240,
-      height: "340px",
-      margin: 4,
-      right: "50px",
-    }}
+
   >
     <header
       style={{
@@ -51,7 +47,7 @@ const Topstores = () => (
       itemLayout="horizontal"
       dataSource={data}
       renderItem={(item) => (
-        <List.Item style={{ borderBottom: "none", padding: 4 }}>
+        <List.Item style={{ borderBottom: "none", padding: 4, alignItems: "center", justifyContent: "center"}}>
           <List.Item.Meta
             avatar={<Avatar src={item.image} />}
             title={

@@ -53,7 +53,7 @@ const Calender = ({ data, placeholder, style }) => {
               border: "none",
               outline: "none",
               boxShadow: "none",
-              padding: 2,
+              padding: 5,
             }}
             placeholder={placeholder || "Select Date"}
             suffixIcon={<DownOutlined />}

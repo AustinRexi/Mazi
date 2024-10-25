@@ -16,19 +16,20 @@ const subcategories = [
 
 function Formfile() {
   return (
-    <div style={{ boxshadow: "0px 9px 18px 0px #AAAAAA26" }}>
+    <div 
+    style={{ boxshadow: "0px 9px 18px 0px #AAAAAA26", 
+      
+    }}>
       <div
         style={{
-          marginLeft: "8px",
-
-          backgroundColor: "#FFFFFF",
-
-          borderRadius: "12px",
+       backgroundColor: "#FFFFFF",
+        borderRadius: "12px",
         }}
       >
         <h3 style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}>
           Main Information
         </h3>
+
         <Form.Item
           name="name"
           rules={[
@@ -39,7 +40,7 @@ function Formfile() {
             placeholder="Name"
             style={{
               gap: "8px",
-              width: "320",
+              width: "100%",
               height: "50px",
               borderRadius: "12px",
             }}
@@ -55,7 +56,7 @@ function Formfile() {
             placeholder="Category"
             style={{
               gap: "8px",
-              width: "320",
+              width: "100%",
               height: "50px",
               borderRadius: "12px",
             }}
@@ -70,7 +71,7 @@ function Formfile() {
             placeholder="Select a sub-category"
             style={{
               gap: "8px",
-              width: "320",
+              width: "100%",
               height: "50px",
               borderRadius: "12px",
             }}
@@ -82,6 +83,7 @@ function Formfile() {
             ))}
           </Select>
         </Form.Item>
+
         <Form.Item
           name="Tax"
           rules={[{ required: true, message: "Please select an option" }]}
@@ -90,7 +92,7 @@ function Formfile() {
             placeholder="Tax"
             style={{
               gap: "8px",
-              width: "320",
+              width: "100%",
               height: "50px",
               borderRadius: "12px",
             }}
@@ -105,7 +107,7 @@ function Formfile() {
             placeholder="Tags"
             style={{
               gap: "8px",
-              width: "320",
+              width: "100%",
               height: "50px",
               borderRadius: "12px",
             }}
@@ -117,7 +119,7 @@ function Formfile() {
             placeholder="Delivery"
             style={{
               gap: "8px",
-              width: "320",
+              width: "100%",
               height: "50px",
               borderRadius: "12px",
             }}
@@ -136,12 +138,13 @@ function Formfile() {
             }}
           />
         </Form.Item>
-        <div style={{ display: "flex" }}>
+
+        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
           <Form.Item name="price">
             <InputNumber
               placeholder="Price"
               min={0}
-              style={{ width: "95%", height: "56px", borderRadius: "12px" }}
+              style={{ width: "100%", height: "50px", borderRadius: "12px" }}
             />
           </Form.Item>
 
@@ -150,17 +153,17 @@ function Formfile() {
               placeholder="Sale Price"
               min={0}
               style={{
-                width: "98%",
-                height: "56px",
+                width: "100%",
+                height: "50px",
                 borderRadius: "12px",
-                marginLeft: "2px",
               }}
             />
           </Form.Item>
         </div>
-        <Divider />
-        <div style={{ padding: "2px" }}>
-          <div style={{ display: "flex" }}>
+        
+
+        <div >
+          <div style={{ display: "flex", alignItems: "center" }}>
             <h3
               style={{
                 fontWeight: 600,
@@ -172,16 +175,17 @@ function Formfile() {
               Product Stock
             </h3>
             <Switch
-              style={{ left: "50px", marginTop: "10px" }}
+              style={{ left: "50px",  }}
               defaultChecked
             />
           </div>
-          <div style={{ display: "flex", marginTop: "18px" }}>
+
+          <div style={{ display: "flex", marginTop: "18px", gap: "10px", justifyContent: "center"    }}>
             <Form.Item name="stock">
               <InputNumber
                 placeholder="No.In Stock"
                 min={0}
-                style={{ width: "95%", height: "56px", borderRadius: "12px" }}
+                style={{ width: "100%", height: "50px", borderRadius: "12px" }}
               />
             </Form.Item>
             <Form.Item name="low stock range">
@@ -189,16 +193,17 @@ function Formfile() {
                 placeholder="Low stock range"
                 min={0}
                 style={{
-                  width: "98%",
-                  height: "56px",
+                  width: "100%",
+                  height: "50px",
                   borderRadius: "12px",
-                  marginLeft: "2px",
                 }}
               />
             </Form.Item>
           </div>
         </div>
-        <Divider />
+
+       
+
         <h3 style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}>
           {" "}
           Allow Backorders?

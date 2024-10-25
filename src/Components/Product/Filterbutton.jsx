@@ -41,7 +41,6 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
         <Button
           type=""
           style={{
-            marginLeft: "10px",
             borderRadius: "18px",
             width: "119px",
             height: "56px",
@@ -58,18 +57,16 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
             style={{
               display: "flex",
               alignItems: "center",
-              lineHeight: "20px",
+              lineHeight: "10px",
               fontSize: "14px",
               fontWeight: 500,
               color: "#121515",
+              justifyContent: "center",
+              gap: "10px",
             }}
           >
             Filter
-            <img
-              src={Filtericon}
-              alt="Filter"
-              style={{ marginTop: "4px", marginLeft: "12px" }}
-            />
+            <img src={Filtericon} alt="Filter" />
           </span>
         </Button>
       </Dropdown>

@@ -1,0 +1,49 @@
+.desktop-header {
+  display: block;
+}
+
+.mobile-header,
+.ipad-header,
+.tablet-header {
+  display: none;
+}
+
+/* ipad view */
+@media (max-width: 912px) {
+  .desktop-header,
+  .mobile-header,
+  .tablet-header {
+    display: none;
+  }
+
+  .ipad-header {
+    display: block;
+  }
+}
+
+/* 540 view */
+@media (max-width: 540px) {
+  .desktop-header,
+  .mobile-header,
+  .ipad-header {
+    display: none;
+  }
+
+  .tablet-header {
+    display: block;
+    margin-bottom: 40px;
+  }
+}
+
+/* Mobile view */
+@media (max-width: 430px) {
+  .desktop-header,
+  .ipad-header,
+  .tablet-header {
+    display: none;
+  }
+
+  .mobile-header {
+    display: block;
+  }
+}

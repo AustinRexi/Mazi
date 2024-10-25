@@ -5,6 +5,7 @@ import message from "../../Assets/Couriericons/message.svg";
 import CallingCard from "./CallingCard";
 import Chat from "../Courier/Chat";
 import options from "../../Assets/Couriericons/options.svg";
+import "../../Mobile/Courier.css";
 
 const { Text } = Typography;
 
@@ -43,18 +44,25 @@ const UserCard = ({ datas }) => {
       </style>
 
       <Card
+        className="user-card"
         hoverable
+        /*
         style={{
-          width: 250,
+          width: "250px",
+          maxWidth: "100%",
           borderRadius: "10px",
           borderColor: "#f0f0f0",
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
           position: "relative",
         }}
+        */
         onMouseEnter={() => setIsOptionsVisible(true)}
         onMouseLeave={() => setIsOptionsVisible(false)}
       >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          className="courier-card"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
           <img src={datas.status} alt="status" />
           <Text
             type="secondary"
@@ -88,7 +96,12 @@ const UserCard = ({ datas }) => {
         </div>
 
         <div
-          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
+          className="courier-card"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginTop: "10px",
+          }}
         >
           <Avatar size={64} src={datas.dp} style={{ marginRight: "15px" }} />
           <div>
@@ -121,6 +134,7 @@ const UserCard = ({ datas }) => {
         </div>
 
         <div
+          className="courier-card"
           style={{
             marginTop: "15px",
             borderTop: "1px solid #f0f0f0",
@@ -187,6 +201,7 @@ const UserCard = ({ datas }) => {
         </div>
 
         <div
+          className="courier-card"
           style={{
             display: "flex",
             justifyContent: "space-between",

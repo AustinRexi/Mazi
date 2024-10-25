@@ -1,0 +1,192 @@
+/* Navbar.css */
+.desktop-nav {
+  display: flex;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+/*Board*/
+.board {
+  background: #f8fbfb;
+  padding: 20px;
+}
+
+/* Cardcomponent */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.card-item {
+  width: 235px;
+  height: 156px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px 0px #aaaaaa14;
+  border: 1px solid #deeaea;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff;
+}
+
+/*ChartDetail*/
+.chartDetail-container {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  height: auto;
+  max-width: 100%;
+  min-height: 250px;
+  overflow: hidden;
+}
+
+.chartDetail-card {
+  gap: 24px;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #deeaea;
+}
+
+.chartDetail-card2 {
+  display: flex;
+  justify-content: space-between;
+  width: 620px;
+}
+
+.chartDetail-card3 {
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.chartDetail-div4 {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/*Topstores*/
+.topstores {
+  width: 240px;
+  height: auto;
+  margin: 4px;
+}
+
+
+@media (max-width: 1024px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-nav {
+    display: block;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    display: none;
+  }
+
+  /*ChartDetail*/
+  .chartDetail-container {
+    display: flex;
+    margin: 0 auto;
+  }
+
+  .chartDetail-card2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chartDetail-div4 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+  }
+
+  /*Topstores*/
+  .topstores {
+    width: 240px;
+  }
+}
+
+
+@media (max-width: 820px) {
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 auto;
+  }
+
+  .chartDetail-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .chartDetail-card {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+   /*topstores*/
+   .topstores {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 540px) {
+.chartDetail-card2 {
+  width: 100%;
+}
+}
+
+@media (max-width: 450px) {
+  /*card*/
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 8px;
+  }
+
+  .card-item {
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  /*chartDetails*/
+  .chartDetail-container {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 auto;
+  }
+
+  .chartDetail-card {
+    display: none;
+  }
+
+
+}

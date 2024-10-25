@@ -51,11 +51,12 @@ const CongratulationsCard = () => {
         >
           Congratulations, your product has been added to the list successfully.
         </Text>
+
         <div style={{ marginTop: "20px" }}>
           <Button
             type="primary"
             style={{
-              width: "300px",
+              width: "100%",
               height: "40px",
               borderRadius: "24px",
               gap: 12,

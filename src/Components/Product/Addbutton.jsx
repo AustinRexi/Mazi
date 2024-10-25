@@ -10,8 +10,6 @@ function Addbutton({ onClick, text = "Add product" }) {
         size="large"
         style={{
           borderRadius: "24px",
-          marginTop: "16px",
-          marginLeft: "6px",
           height: "8vh",
           width: "160px",
           fontSize: "17px",

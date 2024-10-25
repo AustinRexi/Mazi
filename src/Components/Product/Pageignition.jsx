@@ -1,4 +1,4 @@
-import "antd/dist/reset.css"; // Import Ant Design styles
+import "antd/dist/reset.css";
 import Dropicon from "../../utils/icons/Dropicon.svg";
 import { Pagination } from "antd";
 import "antd/dist/reset.css";
@@ -8,35 +8,20 @@ const Pageignition = () => {
   const itemsPerPage = 10;
 
   return (
-    <div style={{ marginLeft: "4px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          fontFamily: "Aeonik",
-          fontWeight: 400,
-          lineHeight: "16px",
-          color: "#687182",
-          padding: 25,
-        }}
-      >
-        <div>
-          1-10 of {} {totalItems}
-        </div>
+    <div style={{ width: "100%" }}>
+      <div className="page">
+        <div>1-10 of {totalItems}</div>
 
         <div
           style={{
             display: "flex",
             alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <div style={{ marginRight: "8px" }}>
-            Rows per page: 10
-            <img
-              src={Dropicon}
-              style={{ marginBottom: "5px", marginLeft: "4px" }}
-            />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span>Rows per page: 10</span>
+            <img src={Dropicon} alt="Dropdown Icon" />
           </div>
           <div>
             <Pagination

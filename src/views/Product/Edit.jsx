@@ -12,7 +12,14 @@ const editorConfiguration = {
 
 const Edit = () => {
   return (
-    <div className="container">
+    <div      style={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100%",
+    }}
+>
       <h2>About Product</h2>
       <div className="editor-container">
         <div className="editor-section">

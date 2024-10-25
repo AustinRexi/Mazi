@@ -7,6 +7,8 @@ import avatar from "../utils/icons/avatar.svg";
 import flag from "../utils/icons/flag.svg";
 import menu from "../utils/icons/menu.svg";
 import logo from "../utils/icons/logo.svg";
+import MobileNav from "../Mobile/MobileNav";
+import "../Mobile/Board.css"
 
 const Navbar = () => {
   const { Option } = Select;
@@ -28,9 +30,10 @@ const Navbar = () => {
       image: flag,
     },
   ];
+
   return (
     <div>
-      <Row>
+      <Row className="desktop-nav">
         <Col>
           <div
             style={{
@@ -50,6 +53,7 @@ const Navbar = () => {
             <img src={logo} alt="" />
           </div>
         </Col>
+
         <Col span={19}>
           <div
             style={{
@@ -113,6 +117,10 @@ const Navbar = () => {
           </div>
         </Col>
       </Row>
+
+      <div className="mobile-nav">
+        <MobileNav />
+      </div>
     </div>
   );
 };
