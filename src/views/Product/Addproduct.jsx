@@ -35,7 +35,7 @@ const AddProduct = () => {
         layout="vertical"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-        style={{ padding: "10px", backgroundColor: "#F8FBFB" }}
+        style={{ padding: "20px", backgroundColor: "#F8FBFB" }}
       >
         <div
           style={{

@@ -4,10 +4,8 @@ import { MoreOutlined } from "@ant-design/icons";
 import OptionDetails from "../../views/Product/OptionDetails";
 
 const Tabledata = (props) => {
-  // State to track if OptionDetails should be shown
   const [showOptionDetails, setShowOptionDetails] = useState(false);
 
-  // Function to handle the MoreOutlined icon click
   const handleMoreClick = (product) => {
     setShowOptionDetails(true);
     console.log(product, "product");

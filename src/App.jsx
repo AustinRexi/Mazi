@@ -15,11 +15,11 @@ import Courier from "./views/Courier/Courier";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "",
     element: <Layout />,
     children: [
       {
-        path: "",
+        path: "/",
         element: <Board />,
       },
       {

@@ -60,7 +60,7 @@ const CongratulationsCard = () => {
               height: "40px",
               borderRadius: "24px",
               gap: 12,
-              padding: "14px 28px",
+              Padding: "14px, 28px",
               backgroundColor: "#055961",
             }}
             onClick={handleViewProducts}
