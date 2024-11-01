@@ -1,14 +1,13 @@
-
 import { Table } from "antd";
- import { useState } from "react";
+import { useState } from "react";
 import { MoreOutlined } from "@ant-design/icons";
 import OptionDetails from "../../views/Product/OptionDetails";
 
 const Tabledata = (props) => {
   const [showOptionDetails, setShowOptionDetails] = useState(false);
 
-   const handleMoreClick = (product) => {
-     setShowOptionDetails(true);
+  const handleMoreClick = (product) => {
+    setShowOptionDetails(true);
     console.log(product, "product");
 
     props.setActiveProduct(product);
@@ -200,7 +199,7 @@ const Tabledata = (props) => {
 };
 
 // const Tabledata = (props) => (
-  
+
 //   <div style={{ overflowX: "auto" }}>
 //   <Table
 //     columns={columns}
@@ -218,14 +217,14 @@ const Tabledata = (props) => {
 //   {/* <style>
 //     {`
 //       @media (max-width: 1280px) {
-     
+
 //         .ant-table-cell {
 //           white-space: nowrap;
 //         }
 //       }
 
 //        @media (max-width: 768px) {
-         
+
 //        }
 //     `}
 //   </style> */}
@@ -234,9 +233,6 @@ const Tabledata = (props) => {
 // );
 
 export default Tabledata;
-
-
-
 
 // import { Table } from "antd";
 
@@ -268,7 +264,7 @@ export default Tabledata;
 //             fontSize: "16px",
 //             lineHeight: "24px",
 //             whiteSpace: "normal",
-//             flexGrow: 1, 
+//             flexGrow: 1,
 //           }}
 //         >
 //           {items.description}
@@ -280,7 +276,7 @@ export default Tabledata;
 //       return {
 //         style: {
 //           backgroundColor: "#ECECEC",
-         
+
 //         },
 //       };
 //     },
@@ -303,7 +299,7 @@ export default Tabledata;
 //       return {
 //         style: {
 //           backgroundColor: "#ECECEC",
-         
+
 //         },
 //       };
 //     },
@@ -406,7 +402,7 @@ export default Tabledata;
 // };
 
 // const Tabledata = (props) => (
-  
+
 //   <div style={{ overflowX: "auto" }}>
 //   <Table
 //     columns={columns}
@@ -418,7 +414,7 @@ export default Tabledata;
 //       borderRadius: "8px",
 //       border: "0px 0px 1px 0px",
 //       boxShadow: "0px 4px 8px 0px #AAAAAA14",
-      
+
 //     }}
 //   />
 //   {/* Media Query for Mobile */}
@@ -431,7 +427,7 @@ export default Tabledata;
 //           }
 
 //           .ant-table-row > td {
-//             vertical-align: middle; 
+//             vertical-align: middle;
 //           }
 //         }
 //       `}
@@ -440,10 +436,10 @@ export default Tabledata;
 //     <style>
 //       {`
 //         /* Mobile-specific styling */
-        
+
 //         @media (max-width: 912px) {
 //             .ant-table {
-//             min-width: 920px; 
+//             min-width: 920px;
 //           }
 
 //           .ant-table-thead > tr > th {
@@ -452,7 +448,7 @@ export default Tabledata;
 //           }
 
 //           .ant-table-cell > div {
-//             text-align: center; 
+//             text-align: center;
 //           }
 
 //           :where(.css-dev-only-do-not-override-1k4ieme).ant-table-wrapper .ant-table-column-title {
@@ -460,7 +456,7 @@ export default Tabledata;
 //            z-index: 1;
 //            flex: 0;
 //            }
-        
+
 //       `}
 //     </style>
 // </div>
