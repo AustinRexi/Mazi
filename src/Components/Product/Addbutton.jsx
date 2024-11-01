@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import Addicon from "../../Assets/Lineicons/Addicon.svg";
 
-function Addbutton({ onClick, text = "Add product" }) {
+function  Addbutton({ onClick, text = "Add product" }) {
   return (
     <div>
       <Button

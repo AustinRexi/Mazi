@@ -35,14 +35,13 @@ const AddProduct = () => {
         layout="vertical"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-        style={{ padding: "20px", backgroundColor: "#F8FBFB",  }}
+        style={{ padding: "20px", backgroundColor: "#F8FBFB" }}
       >
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            
           }}
         >
           <h2
@@ -55,7 +54,7 @@ const AddProduct = () => {
             AddProduct
           </h2>
 
-          <Form.Item >
+          <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
@@ -75,16 +74,16 @@ const AddProduct = () => {
         </div>
 
         <Row style={{ marginTop: "0px" }} gutter={[16, 16]}>
-          <Col xs={24} sm={12} lg={8}  span={8}>
-            <div style={{ width: "100%", }}>
+          <Col xs={24} sm={12} lg={8} span={8}>
+            <div style={{ width: "100%" }}>
               <Card className="card-height">
                 <Formfile />
               </Card>
             </div>
           </Col>
 
-          <Col xs={24} sm={12} lg={8} span={8} >
-            <div style={{ width: "100%", }}>
+          <Col xs={24} sm={12} lg={8} span={8}>
+            <div style={{ width: "100%" }}>
               <Card className="card-height">
                 <Uploadimage />
               </Card>
@@ -92,14 +91,13 @@ const AddProduct = () => {
           </Col>
 
           <Col xs={24} sm={12} lg={8} span={8}>
-            <div style={{ width: "100%", }}>
+            <div style={{ width: "100%" }}>
               <Card className="card-height">
                 <Edit />
               </Card>
             </div>
           </Col>
         </Row>
-
       </Form>
     </div>
   );

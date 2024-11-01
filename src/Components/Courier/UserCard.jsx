@@ -44,9 +44,8 @@ const UserCard = ({ datas }) => {
       </style>
 
       <Card
-      className="user-card"
+        className="user-card"
         hoverable
-        
         /*
         style={{
           width: "250px",
@@ -60,8 +59,10 @@ const UserCard = ({ datas }) => {
         onMouseEnter={() => setIsOptionsVisible(true)}
         onMouseLeave={() => setIsOptionsVisible(false)}
       >
-        <div className="courier-card"
-        style={{ display: "flex", justifyContent: "space-between",}}>
+        <div
+          className="courier-card"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
           <img src={datas.status} alt="status" />
           <Text
             type="secondary"
@@ -70,8 +71,6 @@ const UserCard = ({ datas }) => {
               fontWeight: 600,
               lineHeight: "16px",
               color: "#838D8D",
-             
-
             }}
           >
             {datas.title}
@@ -97,7 +96,7 @@ const UserCard = ({ datas }) => {
         </div>
 
         <div
-        className="courier-card"
+          className="courier-card"
           style={{
             display: "flex",
             alignItems: "center",
@@ -135,7 +134,7 @@ const UserCard = ({ datas }) => {
         </div>
 
         <div
-        className="courier-card"
+          className="courier-card"
           style={{
             marginTop: "15px",
             borderTop: "1px solid #f0f0f0",
@@ -202,7 +201,7 @@ const UserCard = ({ datas }) => {
         </div>
 
         <div
-        className="courier-card"
+          className="courier-card"
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -210,7 +209,6 @@ const UserCard = ({ datas }) => {
             gap: 2,
             opacity: isOptionsVisible ? 1 : 0,
             transition: "opacity 0.3s ease-in-out",
-            
           }}
         >
           <Button

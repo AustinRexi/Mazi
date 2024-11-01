@@ -1,5 +1,11 @@
+import OrderHeader from "../Orders/Subfolder/Head/OrderHeader";
+
 function Settings() {
-  return <div>Settings</div>;
+  return (
+    <div>
+      <OrderHeader />
+    </div>
+  );
 }
 
 export default Settings;

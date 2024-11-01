@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Addbutton from "./Addbutton";
 import Filterbutton from "./Filterbutton";
@@ -13,7 +12,6 @@ import Groceriescategories from "../../Assets/Groceriescategories";
 import AddProduct from "../../views/Product/Addproduct";
 import Bottompageignition from "./Bottompageigition";
 import Tabledata from "../Table/Tabledata";
-
 
 const dataRefrence = { tab1: Fooddata, tab2: Grocerydata };
 
@@ -41,7 +39,7 @@ function Headers() {
   };
 
   return (
-    <div style={{background: "pink"}}>
+    <div style={{ background: "pink" }}>
       {showAddProduct ? (
         <AddProduct />
       ) : (
@@ -110,8 +108,6 @@ function Headers() {
 }
 
 export default Headers;
-
-
 
 // import { useState } from "react";
 // import Addbutton from "./Addbutton";

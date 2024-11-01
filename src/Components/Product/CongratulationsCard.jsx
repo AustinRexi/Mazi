@@ -51,7 +51,7 @@ const CongratulationsCard = () => {
         >
           Congratulations, your product has been added to the list successfully.
         </Text>
-        
+
         <div style={{ marginTop: "20px" }}>
           <Button
             type="primary"

@@ -1,5 +1,3 @@
-
-
 import dayjs from "dayjs";
 import { CalendarOutlined, DownOutlined } from "@ant-design/icons";
 import { Space, DatePicker } from "antd";
@@ -35,7 +33,7 @@ const Calender = ({ data, placeholder, style }) => {
   const presets = data || defaultPresets;
 
   return (
-    <div >
+    <div style={{ padding: 5, ...style }}>
       <Space direction="vertical" size={4}>
         <div
           style={{
