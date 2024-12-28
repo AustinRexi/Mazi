@@ -31,7 +31,9 @@ function Headers() {
   };
 
   const getFilterItems = () => {
-    return activeTabKey === "tab1" ? Restauranttypes : Groceriescategories;
+    return activeTabKey === "tab1"
+      ? { data: Restauranttypes, text: "Restaurant Types" }
+      : { data: Groceriescategories, text: "Grocery Categories" };
   };
 
   const handleAddButtonClick = () => {
@@ -62,14 +64,14 @@ function Headers() {
                   </h2>
                   <Flex
                     style={{
-                      gap: "8px",
+                      gap: "10px",
                       padding: "2px,8px,2px,8px",
                       marginLeft: "118px",
                       marginTop: "18px",
                       border: "1px solid #B5B6B5",
                       borderRadius: "16px",
                       height: "8vh",
-                      width: "170px",
+                      width: "175px",
                     }}
                     wrap
                   >
@@ -82,14 +84,33 @@ function Headers() {
                         activeTabKey={activeTabKey}
                         id={id}
                         handleClick={onTabChange}
+                        style={{
+                          color: "#494949",
+                          fontSize: "16px",
+                          lineHeight: "24px",
+                          width: "70px",
+                          borderRadius: "2px",
+                          marginTop: "8px",
+                        }}
                       >
                         {label}
                       </Tabbutton>
                     ))}
                   </Flex>
                   <Addbutton onClick={handleAddButtonClick} />
-                  <Search placeholder={getPlaceholderText()} />
-                  <Filterbutton data={getFilterItems()} />
+                  <Search
+                    placeholder={getPlaceholderText()}
+                    style={{
+                      width: "250px",
+                      height: "56px",
+                      padding: "16px",
+                      border: "1px solid #B5C3C3",
+                    }}
+                  />
+                  <Filterbutton
+                    data={getFilterItems().data}
+                    text={getFilterItems().text}
+                  />
                 </Flex>
               </Flex>
               <Pageignition />
@@ -100,7 +121,7 @@ function Headers() {
             activeProduct={activeProduct}
             data={dataRefrence[activeTabKey]}
           />
-          {!activeProduct && <Bottompageignition />}
+          {!activeProduct && <Bottompageignition isVisible={true} />}
         </div>
       )}
     </div>

@@ -20,7 +20,14 @@ function ProductDetails({ onClick }) {
       bodyStyle={{ margin: 6, padding: 6 }}
     >
       <Flex style={{ gap: 7, marginTop: 4 }}>
-        <span style={{ fontWeight: 500, fontSize: "16px", lineHeight: "28px" }}>
+        <span
+          style={{
+            fontWeight: 500,
+            fontSize: "16px",
+            lineHeight: "24px",
+            fontFamily: "NeueHaasDisplayRoman",
+          }}
+        >
           Jollof
         </span>
         <img
@@ -44,7 +51,9 @@ function ProductDetails({ onClick }) {
       <h4
         style={{
           fontWeight: 600,
-          fontSize: 28,
+          fontSize: "32px",
+          lineHeight: "40px",
+          fontFamily: "NeueHaasDisplayRoman",
         }}
       >
         Jollof Rice and Curry Chicken Flavour
@@ -52,7 +61,12 @@ function ProductDetails({ onClick }) {
 
       <div style={{ display: "flex", gap: 20, marginTop: 10 }}>
         <span style={{ fontSize: 28 }}>
-          From <span style={{ fontWeight: 700, size: 36 }}>N28,950.00</span>
+          From{" "}
+          <span
+            style={{ fontWeight: 600, fontSize: "32px", lineHeight: "32px" }}
+          >
+            N28,950.00
+          </span>
         </span>
 
         <div style={{ display: "block", marginLeft: "auto", marginTop: 10 }}>
@@ -64,7 +78,14 @@ function ProductDetails({ onClick }) {
           <img src={stock} alt="Stock" style={{ display: "block" }} />
         </div>
       </div>
-      <p style={{ fontWeight: 500, fontSize: 16, lineHeight: 2 }}>
+      <p
+        style={{
+          fontWeight: 500,
+          fontSize: "16px",
+          lineHeight: "24px",
+          fontFamily: "NeueHaasDisplayRoman",
+        }}
+      >
         {description}
       </p>
       <Comment />

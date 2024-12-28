@@ -7,7 +7,7 @@ import dp from "../../Assets/Ordericons/displayimageicon.svg";
 
 const { TextArea } = Input;
 
-const Chat = () => {
+const Chat = ({ hideModal }) => {
   const [position, setPosition] = useState("end");
 
   return (
@@ -36,7 +36,10 @@ const Chat = () => {
           </Typography.Text>
           <img src={options} alt="options" />
           <img src={star} alt="star" />
-          <CloseCircleOutlined style={{ fontSize: "24px" }} />
+          <CloseCircleOutlined
+            style={{ fontSize: "24px", cursor: "pointer" }}
+            onClick={hideModal}
+          />
         </Space>
       </Card>
 

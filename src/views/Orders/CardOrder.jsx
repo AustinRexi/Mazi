@@ -13,18 +13,33 @@ import options from "../../Assets/Couriericons/options.svg";
 
 const { Text } = Typography;
 
-const CardOrder = ({ item }) => {
+const CardOrder = ({ item, isActiveTab, onViewDetails }) => {
   const [hovered, setHovered] = useState(false);
-  const [isOptionsVisible, setIsOptionsVisible] = useState(false);
 
+  const [isOptionsVisible, setIsOptionsVisible] = useState(false);
+  const handleMenuClick = ({ key }) => {
+    if (key === "1") {
+      onViewDetails(item);
+    }
+    // Add further actions for other keys if needed
+  };
   const menu = (
     <Menu
-      items={[
-        { key: "1", label: "View" },
-        { key: "2", label: "Fulfil" },
-        { key: "3", label: "Cancel" },
-        { key: "3", label: "Refund" },
-      ]}
+      onClick={handleMenuClick}
+      items={
+        isActiveTab
+          ? [
+              { key: "1", label: "View" },
+              { key: "2", label: "Cancel" },
+              { key: "3", label: "Refund" },
+            ]
+          : [
+              { key: "1", label: "View" },
+              { key: "2", label: "Fulfil" },
+              { key: "3", label: "Cancel" },
+              { key: "4", label: "Refund" },
+            ]
+      }
     />
   );
 
@@ -52,7 +67,7 @@ const CardOrder = ({ item }) => {
         <img src={item.icon} alt="Order Icon" />
         <Text
           type="secondary"
-          style={{ fontWeight: 600, fontSize: 12, lineHeight: "16px" }}
+          style={{ fontWeight: 600, fontSize: "12px", lineHeight: "16px" }}
         >
           {item.title}
         </Text>
@@ -79,24 +94,61 @@ const CardOrder = ({ item }) => {
       <Row style={{ marginTop: 16, marginBottom: 16 }} align="middle">
         <Avatar src={item.displayimg} size="large" />
         <Col style={{ marginLeft: 16 }}>
-          <Text strong>{item.name}</Text>
+          <Text
+            style={{
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "24px",
+            }}
+          >
+            {item.name}
+          </Text>
         </Col>
       </Row>
       <Divider />
 
       <Row style={{ marginBottom: 16 }}>
         <Col span={12}>
-          <Text type="secondary">Order ID</Text>
+          <Text
+            type="secondary"
+            style={{
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "24px",
+              color: " #545E5E",
+            }}
+          >
+            Order ID
+          </Text>
         </Col>
         <Col span={12} style={{ textAlign: "right" }}>
-          <Text>{item.orderid}</Text>
+          <Text
+            style={{
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "24px",
+              color: "#545E5E",
+            }}
+          >
+            {item.orderid}
+          </Text>
         </Col>
       </Row>
       <Divider />
 
       <Row style={{ marginBottom: 16 }}>
         <Col span={12}>
-          <Text type="secondary">Method</Text>
+          <Text
+            type="secondary"
+            style={{
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "24px",
+              color: " #545E5E",
+            }}
+          >
+            Method
+          </Text>
         </Col>
         <Col
           span={12}
@@ -119,7 +171,17 @@ const CardOrder = ({ item }) => {
 
       <Row style={{ marginBottom: 16 }}>
         <Col span={12}>
-          <Text type="secondary">Date</Text>
+          <Text
+            type="secondary"
+            style={{
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "24px",
+              color: " #545E5E",
+            }}
+          >
+            Date
+          </Text>
         </Col>
         <Col
           span={12}
@@ -129,17 +191,46 @@ const CardOrder = ({ item }) => {
             flexWrap: "wrap",
           }}
         >
-          <Text style={{ whiteSpace: "nowrap" }}>{item.date}</Text>
+          <Text
+            style={{
+              whiteSpace: "nowrap",
+              fontWeight: 500,
+              fontSize: "12px",
+              lineHeight: "24px",
+              color: " #545E5E",
+            }}
+          >
+            {item.date}
+          </Text>
         </Col>
       </Row>
       <Divider />
 
       <Row>
         <Col span={12}>
-          <Text type="secondary">Amount</Text>
+          <Text
+            type="secondary"
+            style={{
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "24px",
+              color: " #545E5E",
+            }}
+          >
+            Amount
+          </Text>
         </Col>
         <Col span={12} style={{ textAlign: "right" }}>
-          <Text strong>{item.Amount}</Text>
+          <Text
+            style={{
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "24px",
+              color: " #545E5E",
+            }}
+          >
+            {item.Amount}
+          </Text>
         </Col>
       </Row>
     </Card>

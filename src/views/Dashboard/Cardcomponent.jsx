@@ -11,7 +11,7 @@ import Ratings from "./Ratings";
 const { Title } = Typography;
 
 function Cardcomponent() {
-  const finDetails = [
+  const statistics = [
     {
       Detail: "Revenue",
       DetailIcon: chartIcon,
@@ -50,7 +50,7 @@ function Cardcomponent() {
         gap: 6,
       }}
     >
-      {finDetails.map((detail, index) => (
+      {statistics.map((detail, index) => (
         <Card
           hoverable
           key={index}
@@ -91,9 +91,10 @@ function Cardcomponent() {
               <Title
                 style={{
                   margin: 2,
-                  fontSize: "20px",
+                  fontSize: "22px",
                   fontWeight: 600,
-                  lineHeight: "26px",
+                  lineHeight: "32px",
+                  fontFamily: " NeueHaasDisplayLight",
                 }}
                 level={5}
               >
@@ -122,8 +123,9 @@ function Cardcomponent() {
                     style={{
                       fontWeight: 500,
                       fontSize: "14px",
-                      lineHeight: "20px",
+                      lineHeight: "30px",
                       color: "#545E5E",
+                      fontFamily: "NeueHaasDisplayMediu",
                     }}
                   >
                     Previous
@@ -150,8 +152,9 @@ function Cardcomponent() {
                     style={{
                       fontWeight: 500,
                       fontSize: "14px",
-                      lineHeight: "20px",
+                      lineHeight: "29px",
                       color: "#545E5E",
+                      fontFamily: "NeueHaasDisplayMediu",
                     }}
                   >
                     Difference
@@ -163,7 +166,6 @@ function Cardcomponent() {
                       fontSize: "13px",
                       fontWeight: 700,
                       lineHeight: "12px",
-                      marginTop: "3px",
                     }}
                   >
                     {detail.percentage}
@@ -174,11 +176,11 @@ function Cardcomponent() {
                 <div style={{ marginLeft: "14px", marginTop: "4px" }}>
                   <span
                     style={{
-                      marginTop: "8px",
                       color: detail.color,
-                      fontWeight: 600,
+                      fontWeight: 500,
                       fontSize: "14px",
-                      lineHeight: "20px",
+                      lineHeight: "24px",
+                      fontFamily: "NeueHaasDisplayMediu",
                     }}
                   >
                     Trend

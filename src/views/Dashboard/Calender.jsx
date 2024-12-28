@@ -30,7 +30,7 @@ const Calender = ({ data, placeholder, style }) => {
     },
   ];
 
-  const presets = data || defaultPresets;
+  const presets = defaultPresets || data;
 
   return (
     <div style={{ padding: 6, ...style }}>
@@ -54,8 +54,13 @@ const Calender = ({ data, placeholder, style }) => {
               outline: "none",
               boxShadow: "none",
               padding: 2,
+              fontFamily: "",
+              fontWeight: 500,
+              lineHeight: "24px",
+              fontSize: "16px",
+              color: "#121515",
             }}
-            placeholder={placeholder || "Select Date"}
+            placeholder={placeholder || "This Month"}
             suffixIcon={<DownOutlined />}
             presets={presets}
             onChange={onChange}

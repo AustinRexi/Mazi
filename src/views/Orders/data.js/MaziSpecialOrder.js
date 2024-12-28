@@ -1,13 +1,13 @@
-import banktransfer from "../../Assets/Ordericons/banktransfer.svg";
-import active from "../../Assets/Ordericons/activeicon.svg";
-import cancel from "../../Assets/Ordericons/cancelicon.svg";
-import complete from "../../Assets/Ordericons/completedicon.svg";
-import mastercard from "../../Assets/Ordericons/mastercard.svg";
-import mazitoken from "../../Assets/Ordericons/mazitoken.svg";
-import paypal from "../../Assets/Ordericons/paypal.svg";
-import pending from "../../Assets/Ordericons/pendingicon.svg";
-import refunded from "../../Assets/Ordericons/refundedicon.svg";
-import dp from "../../Assets/Ordericons/displayimageicon.svg";
+import banktransfer from "../../../Assets/Ordericons/banktransfer.svg";
+import active from "../../../Assets/Ordericons/activeicon.svg";
+import cancel from "../../../Assets/Ordericons/cancelicon.svg";
+import complete from "../../../Assets/Ordericons/completedicon.svg";
+import mastercard from "../../../Assets/Ordericons/mastercard.svg";
+import mazitoken from "../../../Assets/Ordericons/mazitoken.svg";
+import paypal from "../../../Assets/Ordericons/paypal.svg";
+import pending from "../../../Assets/Ordericons/pendingicon.svg";
+import refunded from "../../../Assets/Ordericons/refundedicon.svg";
+import dp from "../../../Assets/Ordericons/displayimageicon.svg";
 export default [
   {
     icon: active,

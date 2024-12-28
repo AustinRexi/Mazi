@@ -5,7 +5,7 @@ import Filterbutton from "../../Components/Product/Filterbutton";
 import prev from "../../Assets/Calendaricon/prev.svg";
 import next from "../../Assets/Calendaricon/next.svg";
 
-const FilteredItems = () => {
+const FilteredItems = ({ style }) => {
   const [selectedDate, setSelectedDate] = useState(dayjs("2023-02-17"));
 
   const handleDateChange = (date) => {
@@ -94,7 +94,6 @@ const FilteredItems = () => {
               <div
                 style={{
                   display: "flex",
-                  // justifyContent: "space-between",
                   alignItems: "center",
                   paddingBottom: "10px",
                 }}
@@ -159,6 +158,7 @@ const FilteredItems = () => {
         data={filterOptions}
         overlay={filterMenu}
         onFilterApply={handleFilterApply}
+        style={{ ...style }}
       />
     </>
   );

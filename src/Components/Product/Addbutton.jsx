@@ -14,8 +14,7 @@ function Addbutton({ onClick, text = "Add product" }) {
           marginLeft: "6px",
           height: "8vh",
           width: "160px",
-          fontSize: "17px",
-          fontWeight: 500,
+
           padding: "14px, 28px, 14px, 28px",
           display: "flex",
           alignItems: "center",
@@ -24,11 +23,20 @@ function Addbutton({ onClick, text = "Add product" }) {
         }}
         onClick={onClick}
       >
-        {text}
+        <span
+          style={{
+            lineHeight: "24px",
+            fontFamily: "NeueHaasDisplayLight",
+            fontSize: "18px",
+            fontWeight: 500,
+          }}
+        >
+          {text}
+        </span>
         <img
           src={Addicon}
           alt="add"
-          style={{ marginTop: "2px", marginLeft: "10px", paddingRight: "8px" }}
+          style={{ marginTop: "2px", marginLeft: "6px", paddingRight: "6px" }}
         />
       </Button>
     </div>

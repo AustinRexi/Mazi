@@ -1,37 +1,20 @@
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import "./editor.css";
-
-const editorConfiguration = {
-  toolbar: {
-    items: ["bold", "italic", "underline", "indent"],
-    viewportTopOffset: 30,
-    shouldNotGroupWhenFull: true,
-  },
-};
+import Editor from "../../Components/shared/Editor";
 
 const Edit = () => {
+  const data = [
+    {
+      title: "Product Description",
+      data: " <p>Mor mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus  Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent auctor purus luctus enim egestas, ac scelerisque ante pulvinar.</p>",
+    },
+    {
+      title: "Product Specification",
+      data: "<ul><li>Forem ipsum dolor sit amet.</li><li>Forem ipsum dolor sit consectetur adipiscing elit.</li><li>Forem ipsum dolorconsectetur adipiscing elit..</li><li>Forem ipsum dolor sit am, consectetur</li></ul>",
+    },
+  ];
   return (
     <div className="container">
       <h2>About Product</h2>
-      <div className="editor-container">
-        <div className="editor-section">
-          <h3>Product Description:</h3>
-          <CKEditor
-            editor={ClassicEditor}
-            config={editorConfiguration}
-            data="<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>"
-          />
-        </div>
-        <div className="editor-section">
-          <h3>Product Specification:</h3>
-          <CKEditor
-            editor={ClassicEditor}
-            config={editorConfiguration}
-            data="<ul><li>Forem ipsum dolor sit amet.</li><li>Forem ipsum dolor sit consectetur...</li></ul>"
-          />
-        </div>
-      </div>
+      <Editor data={data} />
     </div>
   );
 };

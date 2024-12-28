@@ -1,18 +1,18 @@
 import { useState, useCallback, useMemo } from "react";
-import Allorder from "./Allorder";
-import MaziSpecialOrder from "./MaziSpecialOrder";
+import Allorder from "./data.js/Allorder";
+import MaziSpecialOrder from "./data.js/MaziSpecialOrder";
 import CourierCard from "../../Components/Courier/CourierCard";
 import CardOrder from "./CardOrder";
 import AddProduct from "../Product/Addproduct";
-import Calender from "../../views/Dashboard/Calender";
+import Calender from "../Dashboard/Calender";
 import { Badge } from "antd";
 import dayjs from "dayjs";
 import Tabbutton from "../../Components/Product/Tabbutton";
 import Addbutton from "../../Components/Product/Addbutton";
 import Search from "../../Components/Product/Search";
-import allorderstatus from "./allorderstatusdata";
-import mazispecialstatus from "./mazispecialorderstatusdata";
-
+import allorderstatus from "./data.js/allorderstatusdata";
+import mazispecialstatus from "./data.js/mazispecialorderstatusdata";
+import OrderDetails from "./orderdetails/OrderDetails";
 const dataRefrence = { tab1: allorderstatus, tab2: mazispecialstatus };
 const orders = { tab1: Allorder, tab2: MaziSpecialOrder };
 
@@ -35,6 +35,7 @@ const styles = {
   calendar: {
     marginTop: "6px",
     height: "48px",
+    cursor: "pointer",
   },
   listContainer: {
     display: "flex",
@@ -80,9 +81,23 @@ const styles = {
   },
 };
 
-function Header() {
+const presets = [
+  { label: "Today", value: dayjs() },
+  { label: "Three Months", value: dayjs().subtract(3, "month") },
+  { label: "Six Months", value: dayjs().subtract(6, "month") },
+  { label: "One Year", value: dayjs().subtract(1, "year") },
+];
+function Order() {
   const [activeTabKey, setActiveTabKey] = useState("tab1");
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const handleViewDetails = useCallback((order) => {
+    setSelectedOrder(order); // Set the selected order
+  }, []);
+  const handleBackToOrders = useCallback(() => {
+    setSelectedOrder(null); // Clear the selected order to show the order list
+  }, []);
 
   const onTabChange = useCallback((key) => {
     setActiveTabKey(key);
@@ -97,23 +112,15 @@ function Header() {
   const text = "New Order";
   const getPlaceholderText = "Stores, food or groceries";
 
-  const presets = useMemo(
-    () => [
-      { label: "Today", value: dayjs() },
-      { label: "Three Months", value: dayjs().subtract(3, "month") },
-      { label: "Six Months", value: dayjs().subtract(6, "month") },
-      { label: "One Year", value: dayjs().subtract(1, "year") },
-    ],
-    []
-  );
-
   return (
     <div>
-      {showAddProduct ? (
+      {selectedOrder ? (
+        <OrderDetails order={selectedOrder} onBack={handleBackToOrders} />
+      ) : showAddProduct ? (
         <AddProduct />
       ) : (
         <div>
-          <div style={{ display: "flex", gap: 16 }}>
+          <div style={{ display: "flex", gap: 12 }}>
             <h2 style={styles.heading}>Order</h2>
             <div style={styles.badge}>
               <Badge count={252}>
@@ -128,7 +135,12 @@ function Header() {
                       id={id}
                       handleClick={onTabChange}
                       style={{
-                        width: 117,
+                        width: "117px",
+                        color: "#494949",
+                        fontSize: "16px",
+                        lineHeight: "24px",
+                        borderRadius: "2px",
+                        marginTop: "8px",
                       }}
                     >
                       {label}
@@ -138,7 +150,15 @@ function Header() {
               </Badge>
             </div>
             <Addbutton text={text} onClick={handleAddButtonClick} />
-            <Search placeholder={getPlaceholderText} />
+            <Search
+              placeholder={getPlaceholderText}
+              style={{
+                width: "260px",
+                height: "56px",
+                padding: "16px",
+                border: "1px solid #B5C3C3",
+              }}
+            />
             <Calender
               placeholder="Today"
               data={presets}
@@ -154,7 +174,12 @@ function Header() {
 
           <div style={styles.userCardGrid}>
             {orderData.map((item, index) => (
-              <CardOrder item={item} key={index} />
+              <CardOrder
+                item={item}
+                key={index}
+                isActiveTab={activeTabKey === "tab1"}
+                onViewDetails={handleViewDetails}
+              />
             ))}
           </div>
         </div>
@@ -163,4 +188,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default Order;

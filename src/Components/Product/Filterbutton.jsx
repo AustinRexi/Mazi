@@ -3,7 +3,7 @@ import Filter from "../../views/Product/Filter";
 import Filtericon from "../../Assets/Lineicons/Filtericon.svg";
 import { useState } from "react";
 
-const Filterbutton = ({ data, onFilterApply, overlay }) => {
+const Filterbutton = ({ data, onFilterApply, overlay, text, style }) => {
   const [filterData, setFilterData] = useState(null);
 
   const handleFilterClick = (selectedFilterData) => {
@@ -24,7 +24,7 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
         boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
       }}
     >
-      <Filter data={data} onFilterClick={handleFilterClick} />
+      <Filter data={data} onFilterClick={handleFilterClick} text={text} />
     </div>
   );
 
@@ -46,12 +46,11 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
             width: "119px",
             height: "56px",
             background: "#DEEAEA",
-            fontSize: "14px",
-            fontWeight: 500,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             padding: "0 8px",
+            ...style,
           }}
         >
           <span
@@ -59,9 +58,10 @@ const Filterbutton = ({ data, onFilterApply, overlay }) => {
               display: "flex",
               alignItems: "center",
               lineHeight: "20px",
-              fontSize: "14px",
+              fontSize: "16px",
               fontWeight: 500,
               color: "#121515",
+              fontFamily: "NeueHaasDisplayLight",
             }}
           >
             Filter

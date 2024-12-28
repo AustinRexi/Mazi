@@ -164,8 +164,8 @@ function Formfile() {
             <h3
               style={{
                 fontWeight: 600,
-                fontSize: "22px",
-                height: "24px",
+                fontSize: "24px",
+                height: "32px",
                 whiteSpace: "wrap",
               }}
             >

@@ -24,7 +24,7 @@ export default [
       mobile: "08160178711",
     },
     get vehicle() {
-      return this.title;
+      return this.title.charAt(0).toUpperCase();
     },
     model: {
       name: "Toyota Corolla",

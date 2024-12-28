@@ -57,6 +57,7 @@ const Topstores = () => (
             title={
               <span
                 style={{
+                  fontFamily: "NeueHaasDisplayRoman",
                   lineHeight: "24px",
                   fontSize: "16px",
                   fontWeight: 500,
@@ -71,6 +72,8 @@ const Topstores = () => (
                   fontSize: "12px",
                   lineHeight: "16px",
                   fontWeight: 500,
+                  fontFamily: "NeueHaasDisplayRoman",
+                  color: "#2A2F2F",
                 }}
               >
                 {item.price}

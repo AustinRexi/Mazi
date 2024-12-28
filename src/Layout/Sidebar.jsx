@@ -27,13 +27,14 @@ const Sidebar = () => {
     marginTop: isActive ? "6px" : "",
     display: "flex",
     paddingLeft: "40px",
-    alignItems: "start",
     color: isActive ? "cyan" : "orange",
-    borderLeft: isActive ? "5px solid #034147" : "none",
+    borderLeft: isActive ? "7px solid #034147" : "none",
     height: isActive ? "56px" : "auto",
     borderRadius: isActive ? "6px" : "0",
     backgroundColor: isActive ? "#F2FBFB" : "",
-    paddingBottom: "10px",
+    paddingBottom: "8px",
+    justifyItems: "center",
+    alignItems: "center",
   });
 
   const side = [
@@ -104,7 +105,11 @@ const Sidebar = () => {
       <Space
         direction="vertical"
         size="8"
-        style={{ width: "max-content", padding: 7, height: "160vh" }}
+        style={{
+          width: "258px",
+          padding: 4,
+          height: "160vh",
+        }}
       >
         {side.map((item) => (
           <NavLink key={item.name} to={item.link} style={navLinkStyles}>
@@ -113,20 +118,22 @@ const Sidebar = () => {
                 style={{
                   display: "flex",
                   marginTop: "4px",
-                  gap: "6px",
+                  gap: "4px",
                   cursor: "pointer",
                   justifyItems: "flex-start",
+                  alignContent: "center",
                 }}
               >
                 <img src={isActive ? item.activeIcon : item.icon} alt="" />
                 <Title
                   level={4}
                   style={{
-                    marginLeft: "4px",
-                    marginTop: "12px",
-                    size: "12px",
-                    fontWeight: 400,
-                    lineHeight: "22px",
+                    marginLeft: "6px",
+                    marginTop: "10px",
+                    fontSize: "16px",
+                    fontWeight: 500,
+                    lineHeight: "24px",
+                    fontFamily: "NeueHaasDisplayLight",
                   }}
                 >
                   {item.name}

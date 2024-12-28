@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import PrevandNext from "../../../Components/shared/PrevandNext";
 
 function OrderHeader() {
-  const orderDate = dayjs("2024-02-13T10:15:00"); // Date in ISO format
+  const orderDate = dayjs("2024-02-13T10:15:00");
   return (
     <div style={{ paddingRight: 70 }}>
       <Row>
@@ -15,6 +15,8 @@ function OrderHeader() {
               fontWeight: 600,
               lineHeight: "32px",
               fontSize: "24px",
+
+              fontFamily: "NeueHaasDisplayRoman",
             }}
           >
             Order #465765322
@@ -26,9 +28,10 @@ function OrderHeader() {
               justifyContent: "start",
               alignContent: "center",
               marginTop: 16,
+              gap: 3,
             }}
           >
-            <Space style={{}}>
+            <Space>
               <Button
                 type="secondary"
                 style={{
@@ -38,8 +41,9 @@ function OrderHeader() {
                   fontWeight: 500,
                   fontSize: "14px",
                   lineHeight: "20px",
+                  fontFamily: "NeueHaasDisplayThin",
                 }}
-                variant="solid"
+                // variant="solid"
               >
                 Paid
               </Button>
@@ -51,8 +55,9 @@ function OrderHeader() {
                   fontWeight: 500,
                   fontSize: "14px",
                   lineHeight: "20px",
+                  fontFamily: "NeueHaasDisplayThin",
                 }}
-                variant="solid"
+                // variant="solid"
               >
                 Unfulfilled
               </Button>
@@ -62,11 +67,21 @@ function OrderHeader() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                marginLeft: 2,
+                marginLeft: 3,
               }}
             >
-              <CalendarOutlined style={{ marginRight: "10px" }} />
-              <span>{orderDate.format("MMM D, YYYY [at] h:mm A")}</span>
+              <CalendarOutlined style={{ marginRight: "8px" }} />
+              <span
+                style={{
+                  color: "#545E5E",
+                  fontFamily: "NeueHaasDisplayRoman",
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  lineHeight: "24px",
+                }}
+              >
+                {orderDate.format("MMM D, YYYY [at] h:mm A")}
+              </span>
             </div>
           </Flex>
         </Col>

@@ -1,6 +1,6 @@
 import { Card, Space, Divider, Slider, Row, Col, Button } from "antd";
 
-function Filter({ data }) {
+function Filter({ data, text }) {
   const sortByItems = [
     "Popularity",
     "Delivery time",
@@ -16,9 +16,28 @@ function Filter({ data }) {
     <Space size={18} direction="vertical">
       <Card
         size="small"
-        title={<div style={{ fontWeight: 500, fontSize: "24px" }}>Sort by</div>}
+        title={
+          <div
+            style={{
+              fontFamily: "NeueHaasDisplayRoman",
+              fontWeight: 500,
+              fontSize: "24px",
+              lineHeight: "32px",
+            }}
+          >
+            Sort by
+          </div>
+        }
         extra={
-          <a href="#" style={{ color: "#F58B3F" }}>
+          <a
+            href="#"
+            style={{
+              color: "#F58B3F",
+              fontSize: "16px",
+              fontWeight: 500,
+              lineHeight: "24px",
+            }}
+          >
             Clear All
           </a>
         }
@@ -28,15 +47,12 @@ function Filter({ data }) {
         }}
         style={{
           border: "none",
-          fontFamily: "Neue Haas Grotesk Display Pro",
           color: "#121515",
-          fontSize: "16px",
-          lineHeight: "24px",
           width: "380px",
-          height: "900px",
+          height: "max-content",
           right: "10px",
           borderRadius: "12px",
-          padding: "24px",
+          padding: "6px",
           backgroundColor: "#FFFFFF",
         }}
       >
@@ -46,6 +62,7 @@ function Filter({ data }) {
             flexWrap: "wrap",
             gap: "8px",
             marginTop: "16px",
+            fontSize: "16px",
           }}
         >
           {sortByItems.map((item, index) => (
@@ -53,22 +70,36 @@ function Filter({ data }) {
               key={index}
               type="default"
               style={{
-                backgroundColor: "#F5F5F5",
                 borderRadius: "4px",
                 padding: "4px 8px",
-                fontSize: "14px",
-                color: "#333",
                 border: "none",
               }}
             >
-              {item}
+              <span
+                style={{
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  fontWeight: 500,
+                  fontFamily: "NeueHaasDisplayRoman",
+                  color: " #545E5E",
+                }}
+              >
+                {" "}
+                {item}
+              </span>
             </Button>
           ))}
         </div>
         <Divider />
         <div>
           <div
-            style={{ fontWeight: 500, fontSize: "16px", marginBottom: "16px" }}
+            style={{
+              fontWeight: 500,
+              fontSize: "24px",
+              lineHeight: "32px",
+              marginBottom: "16px",
+              fontFamily: "NeueHaasDisplayRoman",
+            }}
           >
             Price
           </div>
@@ -81,14 +112,20 @@ function Filter({ data }) {
         <Divider />
         <div>
           <div
-            style={{ fontWeight: 500, fontSize: "16px", marginBottom: "16px" }}
+            style={{
+              fontWeight: 500,
+              fontSize: "24px",
+              lineHeight: "32px",
+              marginBottom: "16px",
+              fontFamily: "NeueHaasDisplayRoman",
+            }}
           >
-            Types of restaurant
+            {text}
           </div>
-          <Row gutter={[16, 16]}>
+          <Row gutter={[18, 2]}>
             {data.map((type, index) => (
               <Col
-                span={8}
+                span={6}
                 key={index}
                 style={{ textAlign: "center", marginBottom: "12px" }}
               >

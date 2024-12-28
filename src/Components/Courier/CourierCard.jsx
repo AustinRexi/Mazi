@@ -1,4 +1,4 @@
-import { Card, Avatar } from "antd";
+import { Card } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 const CourierCard = ({ item }) => {
@@ -13,23 +13,16 @@ const CourierCard = ({ item }) => {
         height: "48px",
         padding: "0px 12px",
         opacity: "0.9",
+        gap: 20,
       }}
       bodyStyle={{ padding: "0px" }}
     >
-      <Avatar
-        src={item.icon}
-        style={{
-          backgroundColor: "#13c2c2",
-          dropshadow: "16px ,16px",
-        }}
-        size="medium"
-        icon={!item.icon && <UserOutlined />}
-      />
+      <img src={item.icon} icon={!item.icon && <UserOutlined />} />
       <span
         style={{
           fontWeight: "500",
-          size: "16px",
-          lineHeight: 24,
+          fontSize: "14px",
+          lineHeight: "24px",
           marginLeft: "20px",
           whiteSpace: "nowrap",
           color: item.color,
@@ -39,11 +32,11 @@ const CourierCard = ({ item }) => {
       </span>
       <span
         style={{
+          fontWeight: "500",
+          fontSize: "14px",
+          lineHeight: "24px",
+          marginLeft: "20px",
           whiteSpace: "nowrap",
-          marginLeft: "14px",
-          fontWeight: 600,
-          size: 16,
-          lineHeight: 24,
         }}
       >
         {item.amount}

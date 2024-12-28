@@ -1,8 +1,8 @@
-import active from "../../Assets/Ordericons/active.svg";
-import pending from "../../Assets/Ordericons/pending.svg";
-import cancel from "../../Assets/Ordericons/cancel.svg";
-import refunded from "../../Assets/Ordericons/refunded.svg";
-import complete from "../../Assets/Ordericons/complete.svg";
+import active from "../../../Assets/Ordericons/active.svg";
+import pending from "../../../Assets/Ordericons/pending.svg";
+import cancel from "../../../Assets/Ordericons/cancel.svg";
+import refunded from "../../../Assets/Ordericons/refunded.svg";
+import complete from "../../../Assets/Ordericons/complete.svg";
 export default [
   {
     title: "Active",

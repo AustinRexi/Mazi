@@ -26,7 +26,12 @@ const Board = () => {
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Title
             level={5}
-            style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}
+            style={{
+              fontWeight: 600,
+              fontSize: "24px",
+              lineHeight: "32px",
+              fontFamily: "NeueHaasDisplayBoldItalic",
+            }}
           >
             Hello Tunde
           </Title>

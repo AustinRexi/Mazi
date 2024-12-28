@@ -15,7 +15,7 @@ const Comment = () => {
   return (
     <div>
       <Flex style={{ alignItems: "center" }}>
-        <span style={{ fontWeight: 700, fontSize: "16px", lineHeight: "24px" }}>
+        <span style={{ fontWeight: 600, fontSize: "16px", lineHeight: "24px" }}>
           {review}
         </span>
 
@@ -38,22 +38,9 @@ const Comment = () => {
         <img src={commentimg} alt="Comment icon" />
         <TextArea
           placeholder="Leave a comment"
-          how
-          can
-          i
-          add
-          this
-          image
-          to
-          the
-          place
-          holder
-          Line
-          autoSize
           style={{
             marginTop: 8,
             width: 250,
-
             borderRadius: 14,
             border: "1px solid #DEEAEA",
             boxShadow: isFocused ? "0px 4px 6px rgba(0, 0, 0, 0.1)" : "none",

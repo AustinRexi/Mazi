@@ -9,7 +9,7 @@ function Search({ placeholder, style }) {
         style={{
           height: "55px",
           marginTop: "15px",
-          marginLeft: "15px",
+          // marginLeft: "15px",
           borderRadius: "16px",
           ...style,
         }}
@@ -37,6 +37,18 @@ function Search({ placeholder, style }) {
         }
         placeholder={placeholder}
       />
+      <style>
+        {`
+          .ant-input::placeholder {
+            font-weight: 500;
+font-size: 16px;
+font-weight: 500;
+line-height: 20px;
+text-align: left;
+color: #838D8D;
+
+} `}
+      </style>
     </div>
   );
 }

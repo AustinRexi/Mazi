@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Select, Button, Input } from "antd";
+import { Select, Button, Input, Flex } from "antd";
 
 const { Option } = Select;
 
-const Bottompageignition = () => {
+const Bottompageignition = ({ isVisible, style }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const totalItems = 1534;
@@ -28,7 +28,8 @@ const Bottompageignition = () => {
         display: "flex",
         alignItems: "center",
         backgroundColor: "#F8FBFB",
-        width: "1020px",
+        width: "95%",
+        ...style,
       }}
     >
       <Select
@@ -36,10 +37,9 @@ const Bottompageignition = () => {
         style={{
           marginLeft: "9px",
           padding: 6,
-          borderRadius: "16px",
           Padding: "10px, 14px, 10px, 14px",
-          gap: "8px",
-          height: "45px",
+          gap: "4px",
+          height: "40px",
           width: "72px",
         }}
         onChange={handlePageSizeChange}
@@ -50,9 +50,10 @@ const Bottompageignition = () => {
         style={{
           marginLeft: 8,
           whiteSpace: "nowrap",
+          fontFamily: "Aeonik",
           fontWeight: 500,
           fontSize: "16px",
-          lineHeight: "24px",
+          lineHeight: "28px",
           color: "#8D8E8D",
         }}
       >
@@ -62,10 +63,11 @@ const Bottompageignition = () => {
       <div
         style={{
           marginLeft: "auto",
-          display: "flex",
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
+          display: isVisible ? "flex" : "none",
+          ...style,
         }}
       >
         <div
@@ -78,8 +80,8 @@ const Bottompageignition = () => {
         >
           <Button
             style={{
-              height: "40px",
-              width: "108px",
+              height: "30px",
+              width: "80px",
               marginRight: 8,
               backgroundColor: "#D3D3D3",
               color: "#FFFFFF",
@@ -94,8 +96,8 @@ const Bottompageignition = () => {
           </Button>
           <Button
             style={{
-              height: "40px",
-              width: "108px",
+              height: "30px",
+              width: "80px",
               borderRadius: "8px",
               gap: "4px",
               padding: "7px, 24px, 7px, 24px",
@@ -109,10 +111,18 @@ const Bottompageignition = () => {
             Next &raquo;
           </Button>
         </div>
-        <span style={{ whiteSpace: "nowrap" }}>
+        <span
+          style={{
+            whiteSpace: "nowrap",
+            fontFamily: "Aeonik",
+            fontWeight: 500,
+            fontSize: "16px",
+            lineHeight: "28px",
+          }}
+        >
           Page{" "}
           <Input
-            style={{ width: 50, textAlign: "center" }}
+            style={{ width: 50, textAlign: "center", height: "27px" }}
             value={currentPage}
             readOnly
           />{" "}

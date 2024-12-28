@@ -65,9 +65,9 @@ const ChartDetail = () => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                width: "80%",
-                alignItems: "flex-start",
-                gap: "20px",
+                width: "92%",
+                alignItems: "center",
+                gap: "15px",
               }}
             >
               <h5
@@ -88,22 +88,26 @@ const ChartDetail = () => {
                   alignItems: "center",
                   gap: "10px",
                   marginTop: "13px",
-                  marginLeft: "16px",
+                  marginLeft: "10px",
                 }}
               >
                 {items.map((list) => (
                   <div
                     key={list.detail} // Ensure unique key for list items
                     style={{
+                      fontFamily: "NeueHaasDisplayLight",
                       fontSize: "16px",
                       display: "flex",
                       gap: "5px",
                       fontWeight: 500,
                       lineHeight: "24px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      color: "#055961",
                     }}
                   >
                     <img src={list.icon} alt={list.detail} />
-                    <h6>{list.detail}</h6>
+                    <h6 style={{ marginTop: 3 }}>{list.detail}</h6>
                   </div>
                 ))}
               </nav>

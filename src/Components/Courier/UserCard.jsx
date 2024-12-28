@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Card, Avatar, Typography, Button, Modal, Dropdown, Menu } from "antd";
+import { Card, Avatar, Typography, Button, Dropdown, Menu } from "antd";
 import call from "../../Assets/Couriericons/call.svg";
 import message from "../../Assets/Couriericons/message.svg";
+import options from "../../Assets/Couriericons/options.svg";
 import CallingCard from "./CallingCard";
 import Chat from "../Courier/Chat";
-import options from "../../Assets/Couriericons/options.svg";
+import ModalComponent from "../../Components/shared/ModalComponent";
 
 const { Text } = Typography;
 
@@ -31,17 +32,6 @@ const UserCard = ({ datas }) => {
 
   return (
     <>
-      <style>
-        {`
-          @keyframes blink {
-            50% { opacity: 0; }
-          }
-          .green-modal .ant-modal-content {
-            background-color: #006D75 !important;
-          }
-        `}
-      </style>
-
       <Card
         hoverable
         style={{
@@ -93,12 +83,13 @@ const UserCard = ({ datas }) => {
           <Avatar size={64} src={datas.dp} style={{ marginRight: "15px" }} />
           <div>
             <Text
-              strong
+              type="secondary"
               style={{
-                fontSize: "16px",
+                fontSize: "18px",
                 fontWeight: 500,
                 lineHeight: "24px",
                 color: "#121515",
+                fontFamily: "NeueHaasDisplayRoman",
               }}
             >
               {datas.name}
@@ -153,7 +144,10 @@ const UserCard = ({ datas }) => {
             }}
           >
             <Text>
-              <strong>Vehicle ({datas.title})</strong>
+              Vehicle (
+              {datas.title.charAt(0).toUpperCase() +
+                datas.title.slice(1).toLowerCase()}
+              )
             </Text>
             <br />
             <Text>{datas.model.name}</Text>
@@ -197,62 +191,51 @@ const UserCard = ({ datas }) => {
           }}
         >
           <Button
-            type="primary"
             style={{ backgroundColor: "#055961", width: "50%" }}
             onClick={showCallingModal}
           >
             <img src={call} alt="call-icon" />
           </Button>
           <Button
-            type="primary"
             style={{ backgroundColor: "#067782", width: "50%" }}
             onClick={showChatModal}
           >
             <img src={message} alt="message-icon" />
           </Button>
         </div>
+
+        {isCallingModalVisible && (
+          <ModalComponent
+            isVisible={isCallingModalVisible}
+            hideModal={hideCallingModal}
+          >
+            <CallingCard hideModal={hideCallingModal} />
+          </ModalComponent>
+        )}
+
+        {isChatModalVisible && (
+          <ModalComponent
+            isVisible={isChatModalVisible}
+            wrapClassName={null}
+            style={{
+              position: "absolute",
+              bottom: 20,
+              right: 20,
+              width: "400px",
+              maxWidth: "100%",
+              borderRadius: "8px",
+              padding: 0,
+            }}
+            bodyStyle={{
+              padding: "0px",
+              borderRadius: "8px",
+              overflow: "hidden",
+            }}
+          >
+            <Chat hideModal={hideChatModal} />
+          </ModalComponent>
+        )}
       </Card>
-
-      <Modal
-        open={isCallingModalVisible}
-        onOk={hideCallingModal}
-        onCancel={hideCallingModal}
-        wrapClassName="green-modal"
-        footer={null}
-        closable={false}
-        style={{
-          top: 20,
-          right: 20,
-          position: "absolute",
-        }}
-      >
-        <CallingCard />
-      </Modal>
-
-      <Modal
-        open={isChatModalVisible}
-        onOk={hideChatModal}
-        onCancel={hideChatModal}
-        footer={null}
-        closable={false}
-        style={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          width: "400px",
-          maxWidth: "100%",
-          borderRadius: "8px",
-          padding: 0,
-        }}
-        bodyStyle={{
-          padding: "0px",
-          borderRadius: "8px",
-          overflow: "hidden",
-        }}
-        mask={false}
-      >
-        <Chat />
-      </Modal>
     </>
   );
 };

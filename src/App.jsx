@@ -1,11 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-
+import "mapbox-gl/dist/mapbox-gl.css";
 import Layout from "./Layout/Layout";
 
 import Board from "./views/Dashboard/Board";
 import Product from "./views/Product/Product";
-import Orders from "./views/Orders/Orders";
+import Orders from "./views/Orders/Order";
 import Customers from "./views/Customers/Customers";
 import Settings from "./views/Settings/Settings";
 import Support from "./views/Support/Support";

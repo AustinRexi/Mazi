@@ -6,14 +6,13 @@ function Tabbutton({ children, handleClick, id, activeTabKey, style }) {
         onClick={() => handleClick(id)}
         type="link"
         style={{
-          marginTop: "8px",
           borderBottom: `${activeTabKey === id ? "3px solid #494949" : ""}`,
-          color: "#494949",
-          fontSize: "16px",
-          fontWeight: 600,
-          lineHeight: "24px",
-          width: "60px",
-          borderRadius: "2px",
+          fontWeight: `${activeTabKey === id ? "600px" : "500px"}`,
+          fontFamily: `${
+            activeTabKey === id
+              ? "NeueHaasDisplayMediu"
+              : "NeueHaasDisplayRoman"
+          }`,
           ...style,
         }}
         wrap

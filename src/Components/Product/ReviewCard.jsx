@@ -49,7 +49,15 @@ const ReviewCard = () => {
               flex="auto"
             >
               <Avatar size="large" src={user.avatarUrl} />
-              <strong>{user.name}</strong>
+              <strong
+                style={{
+                  fontWeight: 600,
+                  lineHeight: "24px",
+                  fontSize: "14px",
+                }}
+              >
+                {user.name}
+              </strong>
               <Rate
                 defaultValue={user.rating}
                 disabled
@@ -61,13 +69,33 @@ const ReviewCard = () => {
               <Space direction="vertical">
                 <Row justify="space-between">
                   <Space>
-                    <span style={{ marginBottom: 10 }}>
+                    <span
+                      style={{
+                        marginBottom: 10,
+                        fontWeight: 500,
+                        fontSize: "12px",
+                        lineHeight: "16px",
+                        color: " #1D1D1D",
+                        fontFamily: "NeueHaasDisplayRoman",
+                      }}
+                    >
                       {dayjs(user.date).format("MMMM D, YYYY")} (edited)
                     </span>
                   </Space>
                 </Row>
               </Space>
-              <p style={{ marginTop: "10px" }}>{user.comment}</p>
+              <p
+                style={{
+                  marginTop: "10px",
+                  fontWeight: 500,
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  color: "  #646464",
+                  fontFamily: "NeueHaasDisplayRoman",
+                }}
+              >
+                {user.comment}
+              </p>
               <Row justify="start" align="middle" gutter={24}>
                 <Col>
                   <Button

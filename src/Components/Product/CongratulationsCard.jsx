@@ -9,34 +9,39 @@ const CongratulationsCard = () => {
 
   const handleViewProducts = () => {
     navigate("/products");
-    console.log("ffff");
   };
 
   return (
     <>
       <Card
         style={{
-          width: "398px",
+          width: "370px",
           textAlign: "center",
-          height: "370px",
+          height: "350px",
           border: "none",
-          borderRadius: "24px",
-          gap: "24px",
-          padding: "32px",
+          borderRadius: "28px",
+          justifyContent: "center",
+          alignContent: "center",
         }}
         cover={
           <div style={{ margin: "20px 0" }}>
-            <img src={congratulation} alt="Congratulations" />
+            <img
+              src={congratulation}
+              alt="Congratulations"
+              style={{ width: "180px", height: "100px" }}
+            />
           </div>
         }
       >
         <Title
-          level={4}
+          level={3}
           style={{
             fontSize: "24px",
-            fontWeight: 600,
+            fontWeight: 700,
             lineHeight: "32px",
             textAlign: "center",
+            fontFamily: "NeueHaasDisplayLight",
+            color: " #034147",
           }}
         >
           Congratulations
@@ -47,6 +52,9 @@ const CongratulationsCard = () => {
             fontWeight: 500,
             lineHeight: "24px",
             textAlign: "center",
+            fontFamily: "NeueHaasDisplayRoman",
+            wordBreak: "break-word",
+            whiteSpace: "wrap",
           }}
         >
           Congratulations, your product has been added to the list successfully.

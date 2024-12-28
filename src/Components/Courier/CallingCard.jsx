@@ -8,7 +8,7 @@ import calling from "../../Assets/Couriericons/calling.svg";
 
 const { Text } = Typography;
 
-const CallingCard = () => {
+const CallingCard = ({ hideModal }) => {
   const blinkAnimation = {
     "@keyframes blink": {
       "50%": { opacity: 0 },
@@ -25,13 +25,13 @@ const CallingCard = () => {
         border: "none",
       }}
     >
-      <style>
+      {/* <style>
         {`
           @keyframes blink {
             50% { opacity: 0; }
           }
         `}
-      </style>
+      </style> */}
       <Avatar size={64} src={calling} style={{ marginBottom: 20 }} />
       <Text
         style={{
@@ -61,6 +61,7 @@ const CallingCard = () => {
           }}
         />
         <Button
+          onClick={hideModal}
           shape="circle"
           icon={<PhoneOutlined />}
           size="large"

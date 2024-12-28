@@ -1,13 +1,13 @@
-import banktransfer from "../../Assets/Ordericons/banktransfer.svg";
-import active from "../../Assets/Ordericons/activeicon.svg";
-import cancel from "../../Assets/Ordericons/cancelicon.svg";
-import complete from "../../Assets/Ordericons/completedicon.svg";
-import mastercard from "../../Assets/Ordericons/mastercard.svg";
-import mazitoken from "../../Assets/Ordericons/mazitoken.svg";
-import paypal from "../../Assets/Ordericons/paypal.svg";
-import pending from "../../Assets/Ordericons/pendingicon.svg";
-import refunded from "../../Assets/Ordericons/refundedicon.svg";
-import dp from "../../Assets/Ordericons/displayimageicon.svg";
+import banktransfer from "../../../Assets/Ordericons/banktransfer.svg";
+import active from "../../../Assets/Ordericons/activeicon.svg";
+import cancel from "../../../Assets/Ordericons/cancelicon.svg";
+import complete from "../../../Assets/Ordericons/completedicon.svg";
+import mastercard from "../../../Assets/Ordericons/mastercard.svg";
+import mazitoken from "../../../Assets/Ordericons/mazitoken.svg";
+import paypal from "../../../Assets/Ordericons/paypal.svg";
+import pending from "../../../Assets/Ordericons/pendingicon.svg";
+import refunded from "../../../Assets/Ordericons/refundedicon.svg";
+import dp from "../../../Assets/Ordericons/displayimageicon.svg";
 export default [
   {
     icon: active,
@@ -19,7 +19,7 @@ export default [
       icon: mastercard,
       details: "****0556",
     },
-    date: "FEB.13,2024|10:15am",
+    date: "FEB.13,2024 | 10:15am",
     Amount: "N14,560.00",
   },
   {
@@ -32,7 +32,7 @@ export default [
       icon: mastercard,
       details: "****0556",
     },
-    date: "FEB.13,2024|10:15am",
+    date: "FEB.13,2024 | 10:15am",
     Amount: "N14,560.00",
   },
   {
@@ -45,7 +45,7 @@ export default [
       icon: mazitoken,
       details: "Mazi Token",
     },
-    date: "FEB.13,2024|10:15am",
+    date: "FEB.13,2024 | 10:15am",
     Amount: "N14,560.00",
   },
   {
@@ -58,7 +58,7 @@ export default [
       icon: paypal,
       details: "Paypal",
     },
-    date: "FEB.13,2024|10:15am",
+    date: "FEB.13,2024 | 10:15am",
     Amount: "N14,560.00",
   },
   {
@@ -71,7 +71,7 @@ export default [
       icon: mastercard,
       details: "****0556",
     },
-    date: "FEB.13,2024|10:15am",
+    date: "FEB.13,2024 | 10:15am",
     Amount: "N14,560.00",
   },
   {
@@ -84,7 +84,7 @@ export default [
       icon: banktransfer,
       details: "Bank Tansfer",
     },
-    date: "FEB.13,2024|10:15am",
+    date: "FEB.13,2024 | 10:15am",
     Amount: "N14,560.00",
   },
   {
@@ -97,7 +97,7 @@ export default [
       icon: mastercard,
       details: "****0556",
     },
-    date: "FEB.13,2024|10:15am",
+    date: "FEB.13,2024 | 10:15am",
     Amount: "N14,560.00",
   },
   {
@@ -110,7 +110,7 @@ export default [
       icon: mastercard,
       details: "****0556",
     },
-    date: "FEB.13,2024|10:15am",
+    date: "FEB.13,2024 | 10:15am",
     Amount: "N14,560.00",
   },
 ];

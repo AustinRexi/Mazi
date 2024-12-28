@@ -16,7 +16,7 @@ const Courier = () => {
   ];
 
   const styles = {
-    container: { width: "900px", padding: "40px" },
+    container: { width: "900px", padding: "30px" },
     header: {
       display: "flex",
       alignItems: "center",
@@ -55,7 +55,7 @@ const Courier = () => {
       lineHeight: "32px",
       textAlign: "left",
       fontSize: "24px",
-      margin: "0",
+      marginTop: "16px",
     },
   };
 

@@ -23,8 +23,6 @@ function Request() {
     },
   ];
 
-  // Calculate the total price across all items
-  //   const total = data.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const blinkAnimation = {
     animation: "blink 1s steps(5, start) infinite",
   };

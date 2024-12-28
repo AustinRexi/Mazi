@@ -47,7 +47,11 @@ const Navbar = () => {
             }}
           >
             <img src={menu} alt="" />
-            <img src={logo} alt="" />
+            <img
+              src={logo}
+              alt=""
+              style={{ width: "57.82px", height: "40px", marginTop: 16 }}
+            />
           </div>
         </Col>
         <Col span={19}>
@@ -70,7 +74,12 @@ const Navbar = () => {
               }}
             >
               <div style={{ padding: 10 }}>
-                <Select defaultValue="Nigeria" style={{ width: 200 }}>
+                <Select
+                  defaultValue="Nigeria"
+                  style={{
+                    width: 200,
+                  }}
+                >
                   {optionsWithImages.map((option) => (
                     <Option
                       key={option.value}
@@ -87,7 +96,16 @@ const Navbar = () => {
                             height: "20px",
                           }}
                         />
-                        {option.label}
+                        <span
+                          style={{
+                            fontFamily: "NeueHaasDisplayRoman",
+                            fontWeight: 500,
+                            fontSize: "16px",
+                            lineHeight: "24px",
+                          }}
+                        >
+                          {option.label}
+                        </span>
                       </div>
                     </Option>
                   ))}
@@ -104,7 +122,10 @@ const Navbar = () => {
               >
                 <img src={cart} alt="" />
                 <img src={notification} alt="" />
-                <Button type="primary" style={{ height: 32 }}>
+                <Button
+                  type="primary"
+                  style={{ height: 32, fontFamily: "roboto" }}
+                >
                   Add store {<PlusOutlined />}
                 </Button>
                 <img src={avatar} alt="" style={{ paddingRight: "6px" }} />

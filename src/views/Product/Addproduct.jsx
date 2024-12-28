@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Form, Col, Row, Card, Button, Modal } from "antd";
+import { Form, Col, Row, Card, Button } from "antd";
 import flower from "../../utils/icons/flower.svg";
 import Uploadimage from "./Uploadimage";
 import Formfile from "./Formfile";
 import Edit from "./Edit";
 import CongratulationsCard from "../../Components/Product/Congratulationscard";
+import ModalComponent from "../../Components/shared/ModalComponent";
 
 const AddProduct = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -17,18 +18,31 @@ const AddProduct = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
+  const hideModal = () => setIsSubmitted(false);
   return (
     <div>
-      <Modal
-        visible={isSubmitted}
-        closable={false}
-        footer={null}
-        onCancel={() => setIsSubmitted(false)}
-        centered
-      >
-        <CongratulationsCard />
-      </Modal>
+      {isSubmitted && (
+        <ModalComponent
+          isVisible={isSubmitted}
+          hideModal={hideModal}
+          wrapClassName="custom-modal"
+          style={{
+            position: "absolute",
+            top: 120,
+            right: 380,
+            padding: 0,
+            margin: 0,
+            borderRadius: "8px",
+            display: "inline-block",
+          }}
+          bodyStyle={{
+            backgroundColor: "transparent",
+            padding: 0,
+          }}
+        >
+          <CongratulationsCard />
+        </ModalComponent>
+      )}
 
       <Form
         layout="vertical"
