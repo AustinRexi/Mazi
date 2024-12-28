@@ -1,119 +1,169 @@
 import { Table } from "antd";
-// import data from "../../Assets/Fooddata";
+import { MoreOutlined } from "@ant-design/icons";
+import OptionDetails from "../../views/Product/OptionDetails";
 
-const columns = [
-  {
-    title: "ITEMS",
-    dataIndex: "items",
-    render: (items) => (
-      <span
-        style={{
-          display: "flex",
-          // alignItems: "center",
-          gap: "20px",
-          width: "338px",
-          height: "85px",
-        }}
-      >
-        <img
-          src={items.icon}
-          alt="icon"
+const Tabledata = (props) => {
+  const handleMoreClick = (product) => {
+    props.setActiveProduct(product);
+  };
+
+  // Define the common cell style
+  const cellStyle = {
+    fontWeight: 500,
+    fontSize: "14px",
+    lineHeight: "24px",
+    fontFamily: "NeueHaasDisplayRoman",
+  };
+
+  const columns = [
+    {
+      title: "ITEMS",
+      dataIndex: "items",
+      render: (items) => (
+        <span
           style={{
-            width: "112px",
-            marginRight: "8px",
-            height: "72px",
-            borderRadius: "6px",
-          }}
-        />
-        <div
-          style={{
-            fontWeight: 500,
-            fontSize: "16px",
-            lineHeight: "24px",
-            whiteSpace: "normal",
-            wordBreak: "break-word",
+            display: "flex",
+            gap: "8px",
+            width: "256px",
+            height: "70px",
           }}
         >
-          {items.description}
-        </div>
-      </span>
-    ),
-    sorter: (a, b) => a.items.description.localeCompare(b.items.description),
-  },
-
-  {
-    title: "RATING",
-    dataIndex: "rating",
-    render: (rating) => (
-      <span style={{ display: "flex", alignItems: "center" }}>
-        <img
-          src={rating.icon}
-          alt="star icon"
-          style={{ width: "16px", height: "16px", marginRight: "4px" }}
+          <img
+            src={items.icon}
+            alt="icon"
+            style={{
+              width: "90px",
+              marginRight: "4px",
+              height: "75px",
+              borderRadius: "6px",
+            }}
+          />
+          <div style={{ ...cellStyle, fontSize: "16px", marginTop: "14px" }}>
+            {items.description}
+          </div>
+        </span>
+      ),
+      sorter: (a, b) => a.items.description.localeCompare(b.items.description),
+      onHeaderCell: () => ({
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      }),
+    },
+    {
+      title: "RATING",
+      dataIndex: "rating",
+      render: (rating) => (
+        <span style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={rating.icon}
+            alt="star icon"
+            style={{ width: "16px", height: "16px", marginRight: "4px" }}
+          />
+          <div style={cellStyle}>{rating.ratings}</div>
+        </span>
+      ),
+      sorter: (a, b) => a.rating.ratings.localeCompare(b.rating.ratings),
+      onHeaderCell: () => ({
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      }),
+    },
+    {
+      title: "STORE",
+      dataIndex: "store",
+      render: (store) => <div style={cellStyle}>{store}</div>,
+      sorter: (a, b) => a.store - b.store,
+      onHeaderCell: () => ({
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      }),
+    },
+    {
+      title: "SUB CATEGORY",
+      dataIndex: "subcategory",
+      render: (subcategory) => <div style={cellStyle}>{subcategory}</div>,
+      sorter: (a, b) => a.subcategory - b.subcategory,
+      onHeaderCell: () => ({
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      }),
+    },
+    {
+      title: "DATE ADDED",
+      dataIndex: "dateadded",
+      render: (dateadded) => <div style={cellStyle}>{dateadded}</div>,
+      sorter: (a, b) => a.dateadded - b.dateadded,
+      onHeaderCell: () => ({
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      }),
+    },
+    {
+      title: "QUANTITY",
+      dataIndex: "quantity",
+      render: (quantity) => <div style={cellStyle}>{quantity}</div>,
+      sorter: (a, b) => a.quantity - b.quantity,
+      onHeaderCell: () => ({
+        style: {
+          backgroundColor: "#ECECEC",
+          width: "80px",
+        },
+      }),
+    },
+    {
+      title: "AMOUNT",
+      dataIndex: "amount",
+      render: (amount) => <div style={cellStyle}>{amount}</div>,
+      sorter: (a, b) => a.amount - b.amount,
+      onHeaderCell: () => ({
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      }),
+    },
+    {
+      title: "",
+      key: "action",
+      onHeaderCell: () => ({
+        style: {
+          backgroundColor: "#ECECEC",
+        },
+      }),
+      render: (item) => (
+        <MoreOutlined
+          style={{ fontSize: 18, cursor: "pointer" }}
+          onClick={() => handleMoreClick(item)}
         />
-        <div>{rating.ratings}</div>
-      </span>
-    ),
-    sorter: (a, b) => a.rating.ratings.localeCompare(b.rating.ratings),
-  },
-  {
-    title: "STORE",
-    dataIndex: "store",
-    sorter: {
-      compare: (a, b) => a.store - b.store,
-      multiple: 2,
+      ),
     },
-  },
-  {
-    title: "SUB CATEGORY",
-    dataIndex: "subcategory",
-    sorter: {
-      compare: (a, b) => a.subcategory - b.subcategory,
-      multiple: 1,
-    },
-  },
-  {
-    title: "DATE ADDED",
-    dataIndex: "dateadded",
-    sorter: {
-      compare: (a, b) => a.dateadded - b.dateadded,
-      multiple: 1,
-    },
-  },
-  {
-    title: "QUANTITY",
-    dataIndex: "quantity",
-    sorter: {
-      compare: (a, b) => a.quantity - b.quantity,
-      multiple: 1,
-    },
-  },
-  {
-    title: "AMOUNT",
-    dataIndex: "amount",
-    sorter: {
-      compare: (a, b) => a.amount - b.amount,
-      multiple: 1,
-    },
-  },
-];
+  ];
 
-const onChange = (pagination, filters, sorter, extra) => {
-  console.log("params", pagination, filters, sorter, extra);
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log("params", pagination, filters, sorter, extra);
+  };
+
+  return props.activeProduct ? (
+    <OptionDetails activeProduct={props.activeProduct} />
+  ) : (
+    <Table
+      columns={columns}
+      dataSource={props.data}
+      onChange={onChange}
+      pagination={false}
+      style={{
+        width: "1050px",
+        borderRadius: "8px",
+        border: "0px 0px 1px 0px",
+        boxShadow: "0px 4px 8px 0px #AAAAAA14",
+        margin: 10,
+      }}
+    />
+  );
 };
-const Tabledata = ({ data }) => (
-  <Table
-    columns={columns}
-    dataSource={data}
-    onChange={onChange}
-    style={{
-      width: "1280px",
-      height: "5px",
-      borderRadius: "8px",
-      justify: "space-between",
-      border: "0px 0px 1px 0px",
-      boxshadow: "0px 4px 8px 0px #AAAAAA14",
-    }}
-  />
-);
+
 export default Tabledata;

@@ -1,16 +1,18 @@
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
 
-import Navbar from "./Adminnavbar/Adminbar";
-import Sidebar from "./Adminnavbar/Sidebar";
+const Layout = () => (
+  <section>
+    <Navbar style={{ position: "fixed" }} />
 
-function Layout() {
-  return (
-    <nav>
-      <Navbar />
-      <Sidebar />
-      <Outlet />
-    </nav>
-  );
-}
+    <div style={{ display: "flex" }}>
+      <Sidebar style={{ position: "fixed" }} />
+      <div style={{ width: "100%" }}>
+        <Outlet />
+      </div>
+    </div>
+  </section>
+);
 
 export default Layout;

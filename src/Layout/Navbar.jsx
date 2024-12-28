@@ -34,39 +34,52 @@ const Navbar = () => {
         <Col>
           <div
             style={{
-              width: "39vh",
+              gap: "24px",
+              width: "256px",
               background: "#white",
-              height: "50px",
+              height: "72px",
               display: "flex",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+              marginBottom: "1px",
+              marginLeft: "1px",
+              border: "0px 1px 0px 0px",
+              opacity: "0px",
             }}
           >
             <img src={menu} alt="" />
-            <img src={logo} alt="" />
+            <img
+              src={logo}
+              alt=""
+              style={{ width: "57.82px", height: "40px", marginTop: 16 }}
+            />
           </div>
         </Col>
-        <Col
-          span={19}
-          // style={{ display: "flex", justifyContent: "space-between" }}
-        >
+        <Col span={19}>
           <div
             style={{
               background: "white",
-              height: "50px",
+              height: "72px",
               alignItems: "center",
               padding: 0,
+              width: "auto",
             }}
           >
             <div
               style={{
+                padding: 10,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
               }}
             >
-              <div style={{ padding: 8 }}>
-                <Select defaultValue="Nigeria" style={{ width: 200 }}>
+              <div style={{ padding: 10 }}>
+                <Select
+                  defaultValue="Nigeria"
+                  style={{
+                    width: 200,
+                  }}
+                >
                   {optionsWithImages.map((option) => (
                     <Option
                       key={option.value}
@@ -83,7 +96,16 @@ const Navbar = () => {
                             height: "20px",
                           }}
                         />
-                        {option.label}
+                        <span
+                          style={{
+                            fontFamily: "NeueHaasDisplayRoman",
+                            fontWeight: 500,
+                            fontSize: "16px",
+                            lineHeight: "24px",
+                          }}
+                        >
+                          {option.label}
+                        </span>
                       </div>
                     </Option>
                   ))}
@@ -100,11 +122,13 @@ const Navbar = () => {
               >
                 <img src={cart} alt="" />
                 <img src={notification} alt="" />
-                <Button type="primary" style={{ height: 32 }}>
+                <Button
+                  type="primary"
+                  style={{ height: 32, fontFamily: "roboto" }}
+                >
                   Add store {<PlusOutlined />}
                 </Button>
                 <img src={avatar} alt="" style={{ paddingRight: "6px" }} />
-                {/* <Button type="primary">Add store {<PlusOutlined />}</Button> */}
               </div>
             </div>
           </div>

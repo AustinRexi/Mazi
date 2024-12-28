@@ -1,18 +1,6 @@
-import { Card, Space, Divider, Slider, Row, Col } from "antd";
-import chicken from "../../Assets/RestaurantIcons/chicken.svg";
-import Jollof from "../../Assets/RestaurantIcons/Jollof.svg";
-import Burgers from "../../Assets/RestaurantIcons/Burgers.svg";
-import Nigeria from "../../Assets/RestaurantIcons/Nigeria.svg";
-import Alcohol from "../../Assets/RestaurantIcons/Alcohol.svg";
-import Breakfast from "../../Assets/RestaurantIcons/Breakfast.svg";
-import Chinese from "../../Assets/RestaurantIcons/Chinese.svg";
-import Pizza from "../../Assets/RestaurantIcons/Pizza.svg";
-import Softdrink from "../../Assets/RestaurantIcons/Softdrink.svg";
-import Icecream from "../../Assets/RestaurantIcons/Icecream.svg";
-import Bakery from "../../Assets/RestaurantIcons/Bakery.svg";
-import Seafood from "../../Assets/RestaurantIcons/Seafood.svg";
+import { Card, Space, Divider, Slider, Row, Col, Button } from "antd";
 
-function Filter() {
+function Filter({ data, text }) {
   const sortByItems = [
     "Popularity",
     "Delivery time",
@@ -24,28 +12,32 @@ function Filter() {
     "Delivery fee",
   ];
 
-  const restaurantTypes = [
-    { name: "Chicken", icon: chicken },
-    { name: "Jollof", icon: Jollof },
-    { name: "Burgers", icon: Burgers },
-    { name: "Nigeria", icon: Nigeria },
-    { name: "Alcohol", icon: Alcohol },
-    { name: "Breakfast", icon: Breakfast },
-    { name: "Chinese", icon: Chinese },
-    { name: "Pizza", icon: Pizza },
-    { name: "Softdrink", icon: Softdrink },
-    { name: "Icecream", icon: Icecream },
-    { name: "Bakery", icon: Bakery },
-    { name: "Seafood", icon: Seafood },
-  ];
-
   return (
-    <Space size={16} direction="vertical" style={{ width: "100%" }}>
+    <Space size={18} direction="vertical">
       <Card
         size="small"
-        title={<div style={{ fontWeight: 500, fontSize: "24px" }}>Sort by</div>}
+        title={
+          <div
+            style={{
+              fontFamily: "NeueHaasDisplayRoman",
+              fontWeight: 500,
+              fontSize: "24px",
+              lineHeight: "32px",
+            }}
+          >
+            Sort by
+          </div>
+        }
         extra={
-          <a href="#" style={{ color: "#F58B3F" }}>
+          <a
+            href="#"
+            style={{
+              color: "#F58B3F",
+              fontSize: "16px",
+              fontWeight: 500,
+              lineHeight: "24px",
+            }}
+          >
             Clear All
           </a>
         }
@@ -54,19 +46,14 @@ function Filter() {
           paddingBottom: "0px",
         }}
         style={{
-          fontFamily: "Neue Haas Grotesk Display Pro",
+          border: "none",
           color: "#121515",
-          fontSize: "16px",
-          lineHeight: "24px",
-          width: "350px",
-          height: "700px",
+          width: "380px",
+          height: "max-content",
+          right: "10px",
           borderRadius: "12px",
-          padding: "24px",
-          top: "15px",
-          left: "400px",
-          gap: "16px",
+          padding: "6px",
           backgroundColor: "#FFFFFF",
-          boxShadow: "0px 9px 18px 0px #AAAAAA26",
         }}
       >
         <div
@@ -75,27 +62,44 @@ function Filter() {
             flexWrap: "wrap",
             gap: "8px",
             marginTop: "16px",
+            fontSize: "16px",
           }}
         >
           {sortByItems.map((item, index) => (
-            <div
+            <Button
               key={index}
+              type="default"
               style={{
-                backgroundColor: "#F5F5F5",
                 borderRadius: "4px",
                 padding: "4px 8px",
-                fontSize: "14px",
-                color: "#333",
+                border: "none",
               }}
             >
-              {item}
-            </div>
+              <span
+                style={{
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  fontWeight: 500,
+                  fontFamily: "NeueHaasDisplayRoman",
+                  color: " #545E5E",
+                }}
+              >
+                {" "}
+                {item}
+              </span>
+            </Button>
           ))}
         </div>
         <Divider />
         <div>
           <div
-            style={{ fontWeight: 500, fontSize: "16px", marginBottom: "16px" }}
+            style={{
+              fontWeight: 500,
+              fontSize: "24px",
+              lineHeight: "32px",
+              marginBottom: "16px",
+              fontFamily: "NeueHaasDisplayRoman",
+            }}
           >
             Price
           </div>
@@ -108,22 +112,34 @@ function Filter() {
         <Divider />
         <div>
           <div
-            style={{ fontWeight: 500, fontSize: "16px", marginBottom: "16px" }}
+            style={{
+              fontWeight: 500,
+              fontSize: "24px",
+              lineHeight: "32px",
+              marginBottom: "16px",
+              fontFamily: "NeueHaasDisplayRoman",
+            }}
           >
-            Types of restaurant
+            {text}
           </div>
-          <Row gutter={[16, 16]}>
-            {restaurantTypes.map((type, index) => (
-              <Col span={6} key={index} style={{ textAlign: "center" }}>
+          <Row gutter={[18, 2]}>
+            {data.map((type, index) => (
+              <Col
+                span={6}
+                key={index}
+                style={{ textAlign: "center", marginBottom: "12px" }}
+              >
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center",
-                    gap: "8px",
                   }}
                 >
-                  <img src={type.icon} />
+                  <img
+                    src={type.icon}
+                    style={{ marginBottom: "8px" }}
+                    alt={`Restaurant type ${index}`}
+                  />
                 </div>
               </Col>
             ))}

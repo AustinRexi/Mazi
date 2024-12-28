@@ -1,4 +1,88 @@
 /* src/index.css or src/App.css */
-body {
-  font-family: "Neue Haas Grotesk Display Pro", sans-serif;
+
+@font-face {
+  font-family: "NeueHaasDisplayBlack";
+  src: local("NeueHaasDisplayBlack"),
+    url("./Assets/fonts/NeueHaasDisplayBlack.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayBlackItalic";
+  src: local("NeueHaasDisplayBlackItalic"),
+    url("./Assets/fonts/NeueHaasDisplayBlackItalic.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayBold";
+  src: local("NeueHaasDisplayBold"),
+    url("./Assets/fonts/NeueHaasDisplayBold.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayBoldItalic";
+  src: local("NeueHaasDisplayBoldItalic"),
+    url("./Assets/fonts/NeueHaasDisplayBoldItalic.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayLight";
+  src: local("NeueHaasDisplayLight"),
+    url("./Assets/fonts/NeueHaasDisplayLight.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayLightItalic";
+  src: local("NeueHaasDisplayLightItalic"),
+    url("./Assets/fonts/NeueHaasDisplayLightItalic.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayMediu";
+  src: local("NeueHaasDisplayMediu"),
+    url("./Assets/fonts/NeueHaasDisplayMediu.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayMediumItalic";
+  src: local("NeueHaasDisplayMediumItalic"),
+    url("./Assets/fonts/NeueHaasDisplayMediumItalic.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayRoman";
+  src: local("NeueHaasDisplayRoman"),
+    url("./Assets/fonts/NeueHaasDisplayRoman.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayRomanItalic";
+  src: local("NeueHaasDisplayRomanItalic"),
+    url("./Assets/fonts/NeueHaasDisplayRomanItalic.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayThin";
+  src: local("NeueHaasDisplayThin"),
+    url("./Assets/fonts/NeueHaasDisplayThin.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayThinItalic";
+  src: local("NeueHaasDisplayThinItalic"),
+    url("./Assets/fonts/NeueHaasDisplayThinItalic.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayXThin";
+  src: local("NeueHaasDisplayXThin"),
+    url("./Assets/fonts/NeueHaasDisplayXThin.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayXThinItalic";
+  src: local("NeueHaasDisplayXThinItalic"),
+    url("./Assets/fonts/NeueHaasDisplayXThinItalic.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayXXThin";
+  src: local("NeueHaasDisplayXXThin"),
+    url("./Assets/fonts/NeueHaasDisplayXXThin.ttf");
+}
+@font-face {
+  font-family: "NeueHaasDisplayXXThinItalic";
+  src: local("NeueHaasDisplayXXThinItalic"),
+    url("./Assets/fonts/NeueHaasDisplayXXThinItalic.ttf");
+}
+
+body,
+*,
+html {
+  font-family: "NeueHaasDisplayMediu", sans-serif;
 }

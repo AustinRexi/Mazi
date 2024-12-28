@@ -1,4 +1,5 @@
 import { Form, Input, Select, Switch, Divider, InputNumber } from "antd";
+import Radiobtn from "./Radiobtn";
 
 const { Option } = Select;
 const subcategories = [
@@ -18,19 +19,18 @@ function Formfile() {
     <div style={{ boxshadow: "0px 9px 18px 0px #AAAAAA26" }}>
       <div
         style={{
-          marginLeft: "7px",
+          marginLeft: "8px",
 
           backgroundColor: "#FFFFFF",
-          // padding: "20px,   10px",
-          // gap: "20px",
+
           borderRadius: "12px",
-          // width: "450px",
         }}
       >
-        <Divider>Main Information</Divider>
+        <h3 style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}>
+          Main Information
+        </h3>
         <Form.Item
           name="name"
-          // label="Name"
           rules={[
             { required: true, message: "Please input the product name!" },
           ]}
@@ -125,14 +125,23 @@ function Formfile() {
         </Form.Item>
 
         <Form.Item name="weight">
-          <InputNumber placeholder="Weight Kg" min={0} />
+          <InputNumber
+            placeholder="Weight Kg"
+            min={0}
+            style={{
+              width: "100%",
+              height: "50px",
+              borderRadius: "12px",
+              gap: "8px",
+            }}
+          />
         </Form.Item>
         <div style={{ display: "flex" }}>
           <Form.Item name="price">
             <InputNumber
               placeholder="Price"
               min={0}
-              style={{ width: "80%", borderRadius: "8px" }}
+              style={{ width: "95%", height: "56px", borderRadius: "12px" }}
             />
           </Form.Item>
 
@@ -140,22 +149,61 @@ function Formfile() {
             <InputNumber
               placeholder="Sale Price"
               min={0}
-              style={{ width: "80%", borderRadius: "8px" }}
+              style={{
+                width: "98%",
+                height: "56px",
+                borderRadius: "12px",
+                marginLeft: "2px",
+              }}
             />
           </Form.Item>
         </div>
-        <div style={{ display: "flex" }}>
-          <Form.Item label="Product Stock"></Form.Item>
-          <Switch style={{ left: "100px" }} defaultChecked />
+        <Divider />
+        <div style={{ padding: "2px" }}>
+          <div style={{ display: "flex" }}>
+            <h3
+              style={{
+                fontWeight: 600,
+                fontSize: "24px",
+                height: "32px",
+                whiteSpace: "wrap",
+              }}
+            >
+              Product Stock
+            </h3>
+            <Switch
+              style={{ left: "50px", marginTop: "10px" }}
+              defaultChecked
+            />
+          </div>
+          <div style={{ display: "flex", marginTop: "18px" }}>
+            <Form.Item name="stock">
+              <InputNumber
+                placeholder="No.In Stock"
+                min={0}
+                style={{ width: "95%", height: "56px", borderRadius: "12px" }}
+              />
+            </Form.Item>
+            <Form.Item name="low stock range">
+              <InputNumber
+                placeholder="Low stock range"
+                min={0}
+                style={{
+                  width: "98%",
+                  height: "56px",
+                  borderRadius: "12px",
+                  marginLeft: "2px",
+                }}
+              />
+            </Form.Item>
+          </div>
         </div>
-
-        <Form.Item name="backorders" label="Allow Backorders?">
-          <Select>
-            <Option value="not_allow">Do Not Allow</Option>
-            <Option value="allow_notify">Allow but notify customer</Option>
-            <Option value="allow">Allow</Option>
-          </Select>
-        </Form.Item>
+        <Divider />
+        <h3 style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}>
+          {" "}
+          Allow Backorders?
+        </h3>
+        <Radiobtn />
       </div>
     </div>
   );
