@@ -4,7 +4,7 @@ import backicon from "../../../../Assets/Couriericons/backicon.svg";
 import Editor from "../../../../Components/shared/Editor";
 const { Title, Text } = Typography;
 
-const FulfillCard = ({ hideModal }) => {
+const FulfillCard = ({ onBack, hideModal }) => {
   const [timeLeft, setTimeLeft] = useState(960);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const FulfillCard = ({ hideModal }) => {
         <Col span={4}>
           <div
             style={{ display: "flex", gap: 6, cursor: "pointer" }}
-            onClick={hideModal}
+            onClick={onBack}
           >
             <Avatar src={backicon} size={24} />
             <Typography.Title
@@ -206,6 +206,7 @@ const FulfillCard = ({ hideModal }) => {
               height: "48px",
               marginTop: 8,
             }}
+            onClick={hideModal}
           >
             Continue
           </Button>

@@ -3,11 +3,12 @@ import ModalComponent from "../../../Components/shared/ModalComponent";
 import option from "../../../Assets/Couriericons/options.svg";
 import { Row, Col, Dropdown, Button, Typography, Space } from "antd";
 import ProceedCard from "./countdowncard/ProceedCard";
+import FulfillCard from "./countdowncard/FulfillCard";
 const { Text } = Typography;
 
 function OrderTab() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [currentView, setCurrentView] = useState("proceed");
   const items = [
     {
       key: "1",
@@ -25,6 +26,7 @@ function OrderTab() {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setCurrentView("proceed");
   };
 
   return (
@@ -91,7 +93,17 @@ function OrderTab() {
             padding: 0,
           }}
         >
-          <ProceedCard hideModal={handleCancel} />
+          {currentView === "proceed" ? (
+            <ProceedCard
+              onProceed={() => setCurrentView("fulfill")}
+              hideModal={handleCancel}
+            />
+          ) : (
+            <FulfillCard
+              onBack={() => setCurrentView("proceed")}
+              hideModal={handleCancel}
+            />
+          )}
         </ModalComponent>
       )}
     </div>

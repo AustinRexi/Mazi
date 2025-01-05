@@ -14,18 +14,10 @@ import ModalComponent from "../../../../Components/shared/ModalComponent";
 import FulfillCard from "./FulfillCard";
 const { Title, Text } = Typography;
 
-const ProceedCard = ({ hideModal }) => {
+const ProceedCard = ({ onProceed, hideModal }) => {
   const [timeLeft, setTimeLeft] = useState(960);
   const [confirmed, setConfirmed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -331,7 +323,7 @@ const ProceedCard = ({ hideModal }) => {
                   width: "350px",
                   backgroundColor: confirmed ? undefined : "#99C4C8",
                 }}
-                onClick={showModal}
+                onClick={onProceed}
                 disabled={!confirmed}
               >
                 Proceed To Deliver
@@ -339,28 +331,6 @@ const ProceedCard = ({ hideModal }) => {
             </Col>
           </Row>
         </>
-      )}
-      {isModalVisible && (
-        <ModalComponent
-          isVisible={isModalVisible}
-          hideModal={handleCancel}
-          wrapClassName="custom-modal"
-          style={{
-            position: "absolute",
-            top: 20,
-            right: 380,
-            padding: 0,
-            margin: 0,
-            borderRadius: "8px",
-            display: "inline-block",
-          }}
-          bodyStyle={{
-            backgroundColor: "transparent",
-            padding: 0,
-          }}
-        >
-          <FulfillCard hideModal={handleCancel} />
-        </ModalComponent>
       )}
     </Card>
   );
