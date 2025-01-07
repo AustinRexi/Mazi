@@ -11,7 +11,7 @@ const Board = () => {
     <section
       style={{
         backgroundColor: "#F8FBFB",
-        paddingLeft: 20,
+        paddingLeft: 25,
       }}
     >
       <div
