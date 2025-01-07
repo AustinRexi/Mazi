@@ -50,32 +50,32 @@ const Navbar = () => {
   return (
     <div>
       {isMobile ? (
-        <div className="mobile-nav">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "16px",
-            }}
-          >
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              onClick={toggleDrawer}
-              style={{ color: "#a4a4a4" }}
-            />
-            <img src={logo} alt="Logo" style={{ height: 40 }} />
-            <div style={{ display: "flex", gap: "16px" }}>
-              <img src={cart} alt="Cart" />
-              <img src={notification} alt="Notifications" />
-            </div>
-          </div>
+        <div style={{ padding: 16 }}>
+          <Row gutter={[32, 18]}>
+            <Col span={11}>
+              {" "}
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                onClick={toggleDrawer}
+                style={{ color: "#a4a4a4" }}
+              />
+            </Col>
+            <Col span={11}>
+              <img src={logo} alt="Logo" style={{ height: 40 }} />
+            </Col>
+            <Col span={2}>
+              <div style={{ display: "flex", gap: "16px", marginTop: 4 }}>
+                <img src={cart} alt="Cart" />
+                <img src={notification} alt="Notifications" />
+              </div>
+            </Col>
+          </Row>
           <Drawer
             placement="left"
             onClose={toggleDrawer}
             open={drawerOpen}
-            width={292}
+            width={274}
           >
             <Menu mode="vertical">
               <MenuItem />
