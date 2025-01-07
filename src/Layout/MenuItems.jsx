@@ -41,7 +41,7 @@ const side = [
     name: "Products",
     icon: productIcon,
     activeIcon: productfilled,
-    link: "/Products",
+    link: "/Product",
   },
   { name: "Orders", icon: orderIcon, activeIcon: orderfilled, link: "/Orders" },
   {

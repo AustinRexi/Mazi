@@ -8,7 +8,8 @@ const CongratulationsCard = () => {
   const navigate = useNavigate();
 
   const handleViewProducts = () => {
-    navigate("/products");
+    console.log("Navigating to Products");
+    navigate("/Product");
   };
 
   return (

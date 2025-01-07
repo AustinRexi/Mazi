@@ -11,7 +11,6 @@ const Board = () => {
     <section
       style={{
         backgroundColor: "#F8FBFB",
-        // paddingLeft: 25,
       }}
     >
       <Row gutter={[30, 20]} style={{ padding: 10 }}>

@@ -6,14 +6,18 @@ import data from "../../Components/CourierandOrder/data";
 import CourierCard from "../../Components/Courier/CourierCard";
 import courierdata from "../../Components/Courier/courierdata";
 import UserCard from "../../Components/Courier/UserCard";
-
+import { useNavigate } from "react-router-dom";
 const Courier = () => {
+  const navigate = useNavigate();
   const presets = [
     { label: "Date Joined", value: dayjs().add(-1, "month") },
     { label: "Active", value: dayjs().subtract(3, "month") },
     { label: "Busy", value: dayjs().subtract(6, "month") },
     { label: "Offline", value: dayjs().add(-1, "month") },
   ];
+  const handleAddButtonClick = () => {
+    navigate("/addproduct");
+  };
 
   const styles = {
     container: { width: "900px", padding: "30px" },
@@ -64,7 +68,7 @@ const Courier = () => {
       <div style={styles.header}>
         <h3 style={styles.h}>Courier</h3>
         <Search placeholder="Search couriers" style={styles.searchBox} />
-        <Addbutton text="Add Courier" />
+        <Addbutton text="Add Courier" onClick={handleAddButtonClick} />
         <Calender placeholder="Active" data={presets} style={styles.calendar} />
       </div>
       <div style={styles.listContainer}>

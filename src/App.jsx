@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Layout from "./Layout/Layout";
-
+import AddProduct from "./views/Product/Addproduct";
 import Board from "./views/Dashboard/Board";
 import Product from "./views/Product/Product";
 import Orders from "./views/Orders/Order";
@@ -12,6 +12,7 @@ import Support from "./views/Support/Support";
 import Wallet from "./views/Wallet/Wallet";
 import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
 import Courier from "./views/Courier/Courier";
+import CongratulationsCard from "./Components/Product/CongratulationsCard";
 
 const router = createBrowserRouter([
   {
@@ -23,8 +24,12 @@ const router = createBrowserRouter([
         element: <Board />,
       },
       {
-        path: "Products",
+        path: "Product",
         element: <Product />,
+      },
+      {
+        path: "addproduct",
+        element: <AddProduct />,
       },
       {
         path: "Orders",
@@ -53,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: "Customers",
         element: <Customers />,
+      },
+      {
+        path: "Congratulations",
+        element: <CongratulationsCard />,
       },
     ],
   },
