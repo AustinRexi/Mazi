@@ -1,4 +1,4 @@
-import { Card } from "antd";
+import { Card, Row, Col } from "antd";
 import listIcon1 from "../../utils/icons/listIcon1.svg";
 import listIcon2 from "../../utils/icons/listIcon2.svg";
 import listIcon3 from "../../utils/icons/listIcon3.svg";
@@ -33,92 +33,101 @@ const ChartDetail = () => {
         justifyContent: "space-between",
       }}
     >
-      <Card
-        hoverable
-        style={{
-          gap: "24px",
-          height: "340px",
-          display: "flex",
-          width: "725px",
-          justifyContent: "space-between",
-          background: "#FFFFFF",
-          borderRadius: "8px",
-          border: "1px solid #DEEAEA",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          <div
+      <Row gutter={[0, 16]}>
+        <Col xs={0} md={21} lg={21}>
+          {" "}
+          <Card
+            hoverable
             style={{
+              gap: "24px",
+              height: "340px",
+              display: "flex",
+
+              width: "90%",
               justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: "20px",
-              width: "100%",
+              background: "#FFFFFF",
+              borderRadius: "8px",
+              border: "1px solid #DEEAEA",
             }}
           >
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                width: "92%",
-                alignItems: "center",
-                gap: "15px",
+                width: "100%",
               }}
             >
-              <h5
+              <div
                 style={{
-                  fontSize: "24px",
-                  fontWeight: 600,
-                  lineHeight: "32px",
-                  marginBottom: "10px",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  marginBottom: "20px",
+                  width: "100%",
                 }}
               >
-                Sales Report
-              </h5>
-
-              <nav
-                style={{
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginTop: "13px",
-                  marginLeft: "10px",
-                }}
-              >
-                {items.map((list) => (
-                  <div
-                    key={list.detail} // Ensure unique key for list items
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "92%",
+                    alignItems: "center",
+                    gap: "15px",
+                  }}
+                >
+                  <h5
                     style={{
-                      fontFamily: "NeueHaasDisplayLight",
-                      fontSize: "16px",
-                      display: "flex",
-                      gap: "5px",
-                      fontWeight: 500,
-                      lineHeight: "24px",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      color: "#055961",
+                      fontSize: "24px",
+                      fontWeight: 600,
+                      lineHeight: "32px",
+                      marginBottom: "10px",
                     }}
                   >
-                    <img src={list.icon} alt={list.detail} />
-                    <h6 style={{ marginTop: 3 }}>{list.detail}</h6>
-                  </div>
-                ))}
-              </nav>
-            </div>
+                    Sales Report
+                  </h5>
 
-            <Chart />
-          </div>
-          <Card2 data={items} /> {/* Pass items correctly as data */}
-        </div>
-      </Card>
-      <Topstores />
+                  <nav
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                      alignItems: "center",
+                      gap: "10px",
+                      marginTop: "13px",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    {items.map((list) => (
+                      <div
+                        key={list.detail} // Ensure unique key for list items
+                        style={{
+                          fontFamily: "NeueHaasDisplayLight",
+                          fontSize: "16px",
+                          display: "flex",
+                          gap: "5px",
+                          fontWeight: 500,
+                          lineHeight: "24px",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          color: "#055961",
+                        }}
+                      >
+                        <img src={list.icon} alt={list.detail} />
+                        <h6 style={{ marginTop: 3 }}>{list.detail}</h6>
+                      </div>
+                    ))}
+                  </nav>
+                </div>
+
+                <Chart />
+              </div>
+              <Card2 data={items} />
+            </div>
+          </Card>
+        </Col>
+        <Col xs={9} md={0} lg={0}></Col>
+        <Col span={3}>
+          <Topstores />
+        </Col>
+      </Row>
     </div>
   );
 };

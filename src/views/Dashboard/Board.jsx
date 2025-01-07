@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Typography, Row, Col } from "antd";
 import Calender from "./Calender";
 import ChartDetail from "./ChartDetail";
 import Cardcomponent from "./Cardcomponent";
@@ -11,37 +11,48 @@ const Board = () => {
     <section
       style={{
         backgroundColor: "#F8FBFB",
-        paddingLeft: 25,
+        // paddingLeft: 25,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignContent: "center",
-          justifyContent: "space-between",
-          width: "1030px",
-          padding: 10,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Title
-            level={5}
+      <Row gutter={[30, 20]} style={{ padding: 10 }}>
+        <Col xs={24} md={19} lg={19}>
+          <div
             style={{
-              fontWeight: 600,
-              fontSize: "24px",
-              lineHeight: "32px",
-              fontFamily: "NeueHaasDisplayBoldItalic",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginLeft: 10,
             }}
           >
-            Hello Tunde
-          </Title>
-          <img style={{ marginBottom: "6px" }} src={waveIcon} alt="wave icon" />
-        </div>
-        <Calender />
+            <Title
+              level={5}
+              style={{
+                fontWeight: 600,
+                fontSize: "24px",
+                lineHeight: "32px",
+                fontFamily: "NeueHaasDisplayBoldItalic",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Hello Tunde
+            </Title>
+            <img
+              style={{ marginBottom: "6px" }}
+              src={waveIcon}
+              alt="wave icon"
+            />
+          </div>
+        </Col>
+        <Col xs={10} md={5}>
+          <Calender />
+        </Col>
+      </Row>
+      <div style={{ marginRight: 50 }}>
+        <Cardcomponent />
       </div>
 
-      <Cardcomponent />
       <div style={{ marginTop: "20px" }}>
+        {" "}
         <ChartDetail />
       </div>
     </section>

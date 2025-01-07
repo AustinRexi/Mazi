@@ -51,8 +51,8 @@ const Navbar = () => {
     <div>
       {isMobile ? (
         <div style={{ padding: 16 }}>
-          <Row gutter={[32, 18]}>
-            <Col span={11}>
+          <Row gutter={[3, 18]}>
+            <Col span={6}>
               {" "}
               <Button
                 type="text"
@@ -61,7 +61,7 @@ const Navbar = () => {
                 style={{ color: "#a4a4a4" }}
               />
             </Col>
-            <Col span={11}>
+            <Col span={12}>
               <img src={logo} alt="Logo" style={{ height: 40 }} />
             </Col>
             <Col span={2}>
