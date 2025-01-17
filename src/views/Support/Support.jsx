@@ -1,7 +1,7 @@
 // import CourierDetails from "../Orders/trackorder/CourierDetails";
 // import OrderDetails from "../Orders/orderdetails/OrderDetails";
 
-import FulfillCard from "../Orders/orderdetails/countdowncard/FulfillCard";
+// import OrderData from "../Orders/orderdetails/OrderData";
 
 // import ArrivalCard from "../Orders/orderdetails/countdowncard/ArrivalCard";
 
@@ -14,7 +14,7 @@ import FulfillCard from "../Orders/orderdetails/countdowncard/FulfillCard";
 function Support() {
   return (
     <div>
-      <FulfillCard />
+      {/* <OrderData /> */}
       {/* <ArrivalCard /> */}
       {/* <TrackOrder /> */}
       {/* <MapComponent /> */}

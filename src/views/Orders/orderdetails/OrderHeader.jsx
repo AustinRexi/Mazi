@@ -1,9 +1,21 @@
 import { Button, Space, Flex, Row, Col } from "antd";
+import { useState } from "react";
 import { CalendarOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import PrevandNext from "../../../Components/shared/PrevandNext";
 
 function OrderHeader() {
+  const [hoveredButton, setHoveredButton] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleMouseEnter = (button) => {
+    setHoveredButton(button);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredButton(null);
+  };
+
   const orderDate = dayjs("2024-02-13T10:15:00");
   return (
     <div style={{ paddingRight: 70 }}>
@@ -35,15 +47,18 @@ function OrderHeader() {
               <Button
                 type="secondary"
                 style={{
-                  border: "1px solid #22BB5F",
+                  border: `1px solid ${
+                    hoveredButton === "Paid" ? "#ED9922" : "#22BB5F"
+                  }`,
                   borderRadius: "18px",
-                  color: "#22BB5F",
+                  color: `${hoveredButton === "Paid" ? "#ED9922" : "#22BB5F"}`,
                   fontWeight: 500,
                   fontSize: "14px",
                   lineHeight: "20px",
                   fontFamily: "NeueHaasDisplayThin",
                 }}
-                // variant="solid"
+                onMouseEnter={() => handleMouseEnter("Paid")}
+                onMouseLeave={handleMouseLeave}
               >
                 Paid
               </Button>
@@ -56,10 +71,32 @@ function OrderHeader() {
                   fontSize: "14px",
                   lineHeight: "20px",
                   fontFamily: "NeueHaasDisplayThin",
+                  display: isVisible ? "flex" : "none",
                 }}
-                // variant="solid"
               >
                 Unfulfilled
+              </Button>
+              <Button
+                style={{
+                  border: `1px solid ${
+                    hoveredButton === "processing" ? "#ED9922" : "#3CBCE3"
+                  }`,
+                  // border: "1px solid ",
+                  borderRadius: "18px",
+                  // color: "#3CBCE3",
+                  color: `${
+                    hoveredButton === "processing" ? "#ED9922" : "#3CBCE3"
+                  }`,
+                  fontWeight: 500,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  fontFamily: "NeueHaasDisplayThin",
+                  display: !isVisible ? "flex" : "none",
+                }}
+                onMouseEnter={() => handleMouseEnter("processing")}
+                onMouseLeave={handleMouseLeave}
+              >
+                Processing
               </Button>
             </Space>
 

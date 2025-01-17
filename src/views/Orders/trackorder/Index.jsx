@@ -4,7 +4,7 @@ import CourierDetails from "./CourierDetails";
 
 function TrackOrder() {
   return (
-    <div style={{ padding: 10 }}>
+    <div style={{ padding: 16 }}>
       <Row gutter={[4, 10]}>
         <Col span={17}>
           <MapComponent />

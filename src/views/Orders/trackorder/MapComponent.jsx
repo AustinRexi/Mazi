@@ -94,7 +94,13 @@ const MapComponent = () => {
   return (
     <div
       ref={mapContainerRef}
-      style={{ width: "97%", height: "90%", position: "relative" }}
+      style={{
+        width: "97%",
+        height: "90%",
+        position: "relative",
+        background: "transparent",
+        border: "none",
+      }}
     />
   );
 };

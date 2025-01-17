@@ -2,9 +2,14 @@ import { Card, Row, Col, Divider, Avatar } from "antd";
 import rice from "../../../Assets/Ordericons/rice.svg";
 import unfulfilled from "../../../Assets/Ordericons/unfulfill.svg";
 import drink from "../../../Assets/Ordericons/drinks.svg";
+import orange from "../../../Assets/Ordericons/orange.svg";
+import ewedu from "../../../Assets/Ordericons/ewedu.svg";
+import processing from "../../../Assets/Ordericons/process.svg";
 
 function Request() {
-  const data = [
+  const unfulfillRequest = { icon: unfulfilled, request: "Unfulfilled" };
+  const processingRequest = { icon: processing, request: "In progress" };
+  const specialOrder = [
     {
       price: 140,
       kitchen: "MAZIKITCHEN",
@@ -22,6 +27,24 @@ function Request() {
       description: "Free",
     },
   ];
+  const allOrder = [
+    {
+      price: 520,
+      kitchen: "AZAMAN STORE",
+      product: "Sweet orange",
+      quantity: 1,
+      icon: orange,
+      description: "$7.13 per kg",
+    },
+    {
+      price: 520,
+      kitchen: "INK SHOP GROCERIES",
+      product: "Fresh Ewedu leaf",
+      quantity: 1,
+      icon: ewedu,
+      description: "$7.13 per kg",
+    },
+  ];
 
   const blinkAnimation = {
     animation: "blink 1s steps(5, start) infinite",
@@ -33,33 +56,34 @@ function Request() {
         style={{
           display: "flex",
           justifyContent: "flex-start",
-          alignContent: "center",
+          alignItems: "center",
           gap: 4,
+          marginBottom: 4,
         }}
       >
-        <Avatar src={unfulfilled} style={blinkAnimation} />
+        <img src={processingRequest.icon} style={blinkAnimation} />
         <h4
           style={{
-            marginTop: "2px",
             fontWeight: 600,
             fontSize: "20px",
             lineHeight: "24px",
+            margin: 0,
           }}
         >
-          Unfulfilled
+          {processingRequest.request}
         </h4>
         <p
           style={{
             fontWeight: 500,
             fontSize: "16px",
             lineHeight: "24px",
-            marginTop: "2px",
+            margin: 0,
           }}
         >
-          ({data.length})
+          ({allOrder.length})
         </p>
       </div>
-      {data.map((item, index) => {
+      {allOrder.map((item, index) => {
         // Calculate total price for the current item
         const totalPrice = item.price * item.quantity;
 
@@ -82,7 +106,7 @@ function Request() {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignContent: "center",
+                  alignItems: "center",
                 }}
               >
                 <p>{item.description}</p>
@@ -94,6 +118,7 @@ function Request() {
                     borderRadius: 4,
                     textAlign: "center",
                     lineHeight: "30px",
+                    marginTop: 8,
                   }}
                 >
                   {item.quantity}
@@ -106,16 +131,22 @@ function Request() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                alignContent: "center",
+                alignItems: "center",
               }}
             >
-              <h5 style={{ color: "#838D8D", marginLeft: 10 }}>
+              <h5
+                style={{
+                  color: "#838D8D",
+                  marginLeft: 10,
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {item.kitchen}
               </h5>
               <h2 style={{ fontWeight: 700 }}>${totalPrice}</h2>
             </Col>
 
-            {index < data.length - 1 && <Divider />}
+            {index < allOrder.length - 1 && <Divider />}
           </Row>
         );
       })}

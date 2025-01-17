@@ -13,7 +13,6 @@ const Sidebar = () => {
         width: isMobile ? "100%" : "272px",
         minHeight: "100vh",
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-        // padding: isMobile ? "8px" : "16px",
       }}
     >
       <MenuItem />

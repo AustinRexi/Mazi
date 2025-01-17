@@ -1,24 +1,32 @@
 import { useState } from "react";
 import ModalComponent from "../../../Components/shared/ModalComponent";
 import option from "../../../Assets/Couriericons/options.svg";
-import { Row, Col, Dropdown, Button, Typography, Space } from "antd";
+import { Row, Col, Dropdown, Button, Flex, Space } from "antd";
 import ProceedCard from "./countdowncard/ProceedCard";
 import FulfillCard from "./countdowncard/FulfillCard";
-const { Text } = Typography;
+import Tabbutton from "../../../Components/Product/Tabbutton";
+import OrderData from "./OrderSummary";
+import TrackOrder from "../trackorder/Index";
+
+const dataRefrence = { tab1: OrderData, tab2: TrackOrder };
 
 function OrderTab() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [activeTabKey, setActiveTabKey] = useState("tab1");
   const [currentView, setCurrentView] = useState("proceed");
+  const [isVisible, setIsVisible] = useState(true);
+
   const items = [
-    {
-      key: "1",
-      label: "Edit",
-    },
-    {
-      key: "2",
-      label: "Delete",
-    },
+    { key: "1", label: "Edit" },
+    { key: "2", label: "Delete" },
   ];
+
+  const onTabChange = (tab) => {
+    setActiveTabKey(tab);
+    if (tab === "tab2") {
+      setIsVisible(isVisible);
+    }
+  };
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -29,29 +37,66 @@ function OrderTab() {
     setCurrentView("proceed");
   };
 
+  const ActiveComponent = dataRefrence[activeTabKey];
+
   return (
     <div style={{ marginBottom: 16 }}>
       <Row>
-        <Col span={8}>
-          <Text
-            style={{
-              marginLeft: 20,
-              borderBottom: "2px solid  #27332D",
-              fontWeight: 600,
-              lineHeight: "24px",
-              fontSize: "16px",
-              color: "#27332D",
-              fontFamily: "NeueHaasDisplayRoman",
-            }}
-          >
-            Order Details
-          </Text>
+        <Col span={9}>
+          {isVisible ? (
+            <Flex>
+              {[
+                { id: "tab1", label: "Order Details" },
+                { id: "tab2", label: "Track Order" },
+              ].map(({ id, label }) => (
+                <Tabbutton
+                  key={id}
+                  activeTabKey={activeTabKey}
+                  id={id}
+                  handleClick={onTabChange}
+                  style={{
+                    marginLeft: 15,
+                    fontWeight: 600,
+                    lineHeight: "24px",
+                    fontSize: "16px",
+                    color: "#27332D",
+                    fontFamily: "NeueHaasDisplayRoman",
+                    borderRadius: 0,
+                  }}
+                >
+                  {label}
+                </Tabbutton>
+              ))}
+            </Flex>
+          ) : (
+            <Flex>
+              {[{ id: "tab1", label: "Order Details" }].map(({ id, label }) => (
+                <Tabbutton
+                  key={id}
+                  activeTabKey={activeTabKey}
+                  id={id}
+                  handleClick={onTabChange}
+                  style={{
+                    marginLeft: 15,
+                    fontWeight: 600,
+                    lineHeight: "24px",
+                    fontSize: "16px",
+                    color: "#27332D",
+                    fontFamily: "NeueHaasDisplayRoman",
+                    borderRadius: 0,
+                  }}
+                >
+                  {label}
+                </Tabbutton>
+              ))}
+            </Flex>
+          )}
         </Col>
         <Col span={8}></Col>
-        <Col span={8}>
+        <Col span={6}>
           <Space>
             <Dropdown menu={{ items }} placement="bottomRight">
-              <Button shape="" style={{ marginRight: 8 }}>
+              <Button shape="" style={{ marginRight: 5 }}>
                 Action <img src={option} alt="more" />
               </Button>
             </Dropdown>
@@ -66,6 +111,7 @@ function OrderTab() {
                 fontSize: "16px",
                 fontWeight: 500,
                 lineHeight: "24px",
+                display: isVisible ? "flex" : "none",
               }}
               onClick={showModal}
             >
@@ -74,6 +120,11 @@ function OrderTab() {
           </Space>
         </Col>
       </Row>
+      <div style={{ padding: 16 }}>
+        <section>
+          <ActiveComponent />
+        </section>
+      </div>
       {isModalVisible && (
         <ModalComponent
           isVisible={isModalVisible}

@@ -46,7 +46,7 @@ const CardOrder = ({ item, isActiveTab, onViewDetails }) => {
   return (
     <Card
       style={{
-        width: 260,
+        width: 256,
         borderRadius: 12,
         margin: 0,
         padding: 0,

@@ -3,10 +3,10 @@ import Allorder from "./data.js/Allorder";
 import MaziSpecialOrder from "./data.js/MaziSpecialOrder";
 import CourierCard from "../../Components/Courier/CourierCard";
 import CardOrder from "./CardOrder";
-import AddProduct from "../Product/Addproduct";
 import Calender from "../Dashboard/Calender";
 import { Badge } from "antd";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 import Tabbutton from "../../Components/Product/Tabbutton";
 import Addbutton from "../../Components/Product/Addbutton";
 import Search from "../../Components/Product/Search";
@@ -17,12 +17,12 @@ const dataRefrence = { tab1: allorderstatus, tab2: mazispecialstatus };
 const orders = { tab1: Allorder, tab2: MaziSpecialOrder };
 
 const styles = {
-  container: { width: "1000px", padding: "40px" },
+  container: { padding: "40px" },
   header: {
     display: "flex",
     alignItems: "center",
     gap: "19px",
-    marginLeft: "10px",
+    // marginLeft: "10px",
   },
   searchBox: {
     marginLeft: "42px",
@@ -48,7 +48,7 @@ const styles = {
   },
   userCardGrid: {
     padding: 12,
-    width: "1050px",
+    width: "1030px",
     marginTop: "10px",
     display: "grid",
     gridTemplateColumns: "repeat(4, 1fr)",
@@ -89,9 +89,9 @@ const presets = [
 ];
 function Order() {
   const [activeTabKey, setActiveTabKey] = useState("tab1");
-  const [showAddProduct, setShowAddProduct] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
 
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const navigate = useNavigate();
   const handleViewDetails = useCallback((order) => {
     setSelectedOrder(order); // Set the selected order
   }, []);
@@ -103,9 +103,9 @@ function Order() {
     setActiveTabKey(key);
   }, []);
 
-  const handleAddButtonClick = useCallback(() => {
-    setShowAddProduct(true);
-  }, []);
+  const handleAddButtonClick = () => {
+    navigate("/addproduct");
+  };
 
   const iconData = useMemo(() => dataRefrence[activeTabKey], [activeTabKey]);
   const orderData = useMemo(() => orders[activeTabKey], [activeTabKey]);
@@ -116,11 +116,9 @@ function Order() {
     <div>
       {selectedOrder ? (
         <OrderDetails order={selectedOrder} onBack={handleBackToOrders} />
-      ) : showAddProduct ? (
-        <AddProduct />
       ) : (
         <div>
-          <div style={{ display: "flex", gap: 12 }}>
+          <div style={{ display: "flex", gap: 10 }}>
             <h2 style={styles.heading}>Order</h2>
             <div style={styles.badge}>
               <Badge count={252}>
@@ -135,7 +133,7 @@ function Order() {
                       id={id}
                       handleClick={onTabChange}
                       style={{
-                        width: "117px",
+                        width: "115px",
                         color: "#494949",
                         fontSize: "16px",
                         lineHeight: "24px",

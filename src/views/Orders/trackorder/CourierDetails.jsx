@@ -9,6 +9,7 @@ import Chat from "../../../Components/Courier/Chat";
 import { useState } from "react";
 
 import Address from "../orderdetails/Address";
+import ModalComponent from "../../../Components/shared/ModalComponent";
 const { Text } = Typography;
 const CourierDetails = () => {
   const [isCallingModalVisible, setIsCallingModalVisible] = useState(false);
@@ -34,7 +35,7 @@ const CourierDetails = () => {
     "Go to counter 4 on the left where the sign for  “pick up”  is and present the order number.";
   return (
     <>
-      <style>
+      {/* <style>
         {`
           @keyframes blink {
             50% { opacity: 0; }
@@ -43,7 +44,7 @@ const CourierDetails = () => {
             background-color: #006D75 !important;
           }
         `}
-      </style>
+      </style> */}
       <Card
         style={{
           width: 300,
@@ -199,6 +200,38 @@ const CourierDetails = () => {
           info="Additional info"
         />
       </Card>
+      {isCallingModalVisible && (
+        <ModalComponent
+          isVisible={isCallingModalVisible}
+          hideModal={hideCallingModal}
+        >
+          <CallingCard hideModal={hideCallingModal} />
+        </ModalComponent>
+      )}
+
+      {isChatModalVisible && (
+        <ModalComponent
+          isVisible={isChatModalVisible}
+          wrapClassName={null}
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 20,
+            width: "400px",
+            maxWidth: "100%",
+            borderRadius: "8px",
+            padding: 0,
+          }}
+          bodyStyle={{
+            padding: "0px",
+            borderRadius: "8px",
+            overflow: "hidden",
+          }}
+        >
+          <Chat hideModal={hideChatModal} />
+        </ModalComponent>
+      )}
+
       <Modal
         open={isCallingModalVisible}
         onOk={hideCallingModal}
