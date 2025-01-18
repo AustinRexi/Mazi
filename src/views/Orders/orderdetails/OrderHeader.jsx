@@ -4,9 +4,9 @@ import { CalendarOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import PrevandNext from "../../../Components/shared/PrevandNext";
 
-function OrderHeader() {
+function OrderHeader({ isVisible: initialIsVisible }) {
   const [hoveredButton, setHoveredButton] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isButtonVisible, setIsButtonVisible] = useState(initialIsVisible);
 
   const handleMouseEnter = (button) => {
     setHoveredButton(button);
@@ -71,7 +71,7 @@ function OrderHeader() {
                   fontSize: "14px",
                   lineHeight: "20px",
                   fontFamily: "NeueHaasDisplayThin",
-                  display: isVisible ? "flex" : "none",
+                  display: !isButtonVisible ? "flex" : "none",
                 }}
               >
                 Unfulfilled
@@ -91,7 +91,7 @@ function OrderHeader() {
                   fontSize: "14px",
                   lineHeight: "20px",
                   fontFamily: "NeueHaasDisplayThin",
-                  display: !isVisible ? "flex" : "none",
+                  display: isButtonVisible ? "flex" : "none",
                 }}
                 onMouseEnter={() => handleMouseEnter("processing")}
                 onMouseLeave={handleMouseLeave}

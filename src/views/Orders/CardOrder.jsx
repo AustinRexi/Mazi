@@ -21,7 +21,6 @@ const CardOrder = ({ item, isActiveTab, onViewDetails }) => {
     if (key === "1") {
       onViewDetails(item);
     }
-    // Add further actions for other keys if needed
   };
   const menu = (
     <Menu

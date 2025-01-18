@@ -13,6 +13,7 @@ import Search from "../../Components/Product/Search";
 import allorderstatus from "./data.js/allorderstatusdata";
 import mazispecialstatus from "./data.js/mazispecialorderstatusdata";
 import OrderDetails from "./orderdetails/OrderDetails";
+
 const dataRefrence = { tab1: allorderstatus, tab2: mazispecialstatus };
 const orders = { tab1: Allorder, tab2: MaziSpecialOrder };
 
@@ -22,7 +23,6 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "19px",
-    // marginLeft: "10px",
   },
   searchBox: {
     marginLeft: "42px",
@@ -87,20 +87,28 @@ const presets = [
   { label: "Six Months", value: dayjs().subtract(6, "month") },
   { label: "One Year", value: dayjs().subtract(1, "year") },
 ];
+
 function Order() {
   const [activeTabKey, setActiveTabKey] = useState("tab1");
-
+  const [isVisible, setIsVisible] = useState(activeTabKey === "tab1");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
-  const handleViewDetails = useCallback((order) => {
-    setSelectedOrder(order); // Set the selected order
-  }, []);
+
+  const handleViewDetails = useCallback(
+    (order) => {
+      setSelectedOrder(order);
+      setIsVisible(activeTabKey === "tab1");
+    },
+    [activeTabKey]
+  );
+
   const handleBackToOrders = useCallback(() => {
-    setSelectedOrder(null); // Clear the selected order to show the order list
+    setSelectedOrder(null);
   }, []);
 
   const onTabChange = useCallback((key) => {
     setActiveTabKey(key);
+    setIsVisible(key === "tab1");
   }, []);
 
   const handleAddButtonClick = () => {
@@ -115,7 +123,11 @@ function Order() {
   return (
     <div>
       {selectedOrder ? (
-        <OrderDetails order={selectedOrder} onBack={handleBackToOrders} />
+        <OrderDetails
+          isVisible={isVisible}
+          order={selectedOrder}
+          onBack={handleBackToOrders}
+        />
       ) : (
         <div>
           <div style={{ display: "flex", gap: 10 }}>

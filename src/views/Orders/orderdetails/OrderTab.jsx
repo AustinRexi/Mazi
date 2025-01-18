@@ -10,11 +10,11 @@ import TrackOrder from "../trackorder/Index";
 
 const dataRefrence = { tab1: OrderData, tab2: TrackOrder };
 
-function OrderTab() {
+function OrderTab({ isVisible: initialIsVisible }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeTabKey, setActiveTabKey] = useState("tab1");
   const [currentView, setCurrentView] = useState("proceed");
-  const [isVisible, setIsVisible] = useState(true);
+  const [isButtonVisible, setIsButtonVisible] = useState(initialIsVisible);
 
   const items = [
     { key: "1", label: "Edit" },
@@ -24,7 +24,7 @@ function OrderTab() {
   const onTabChange = (tab) => {
     setActiveTabKey(tab);
     if (tab === "tab2") {
-      setIsVisible(isVisible);
+      setIsButtonVisible(initialIsVisible);
     }
   };
 
@@ -43,7 +43,7 @@ function OrderTab() {
     <div style={{ marginBottom: 16 }}>
       <Row>
         <Col span={9}>
-          {isVisible ? (
+          {isButtonVisible ? (
             <Flex>
               {[
                 { id: "tab1", label: "Order Details" },
@@ -111,7 +111,7 @@ function OrderTab() {
                 fontSize: "16px",
                 fontWeight: 500,
                 lineHeight: "24px",
-                display: isVisible ? "flex" : "none",
+                display: !isButtonVisible ? "flex" : "none",
               }}
               onClick={showModal}
             >
