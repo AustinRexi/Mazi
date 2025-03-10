@@ -59,7 +59,7 @@ function Cardcomponent() {
     >
       <Col
         xs={24}
-        md={18}
+        md={16}
         lg={18}
         style={{
           display: "flex",

@@ -34,7 +34,7 @@ const ChartDetail = () => {
       }}
     >
       <Row gutter={[0, 16]}>
-        <Col xs={0} md={21} lg={21}>
+        <Col xs={0} md={24} lg={21}>
           {" "}
           <Card
             hoverable
@@ -43,7 +43,7 @@ const ChartDetail = () => {
               height: "340px",
               display: "flex",
 
-              width: "90%",
+              width: "92%",
               justifyContent: "space-between",
               background: "#FFFFFF",
               borderRadius: "8px",
@@ -97,7 +97,7 @@ const ChartDetail = () => {
                   >
                     {items.map((list) => (
                       <div
-                        key={list.detail} // Ensure unique key for list items
+                        key={list.detail}
                         style={{
                           fontFamily: "NeueHaasDisplayLight",
                           fontSize: "16px",
@@ -123,8 +123,8 @@ const ChartDetail = () => {
             </div>
           </Card>
         </Col>
-        <Col xs={9} md={0} lg={0}></Col>
-        <Col span={3}>
+        <Col xs={9} md={16} lg={0}></Col>
+        <Col xs={12} md={7} lg={3}>
           <Topstores />
         </Col>
       </Row>
