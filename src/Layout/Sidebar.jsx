@@ -14,7 +14,6 @@ const Sidebar = () => {
         minHeight: "100vh",
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
         padding: 4,
-        // marginTop: 6,
       }}
     >
       <MenuItem />
