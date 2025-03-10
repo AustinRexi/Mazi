@@ -6,13 +6,14 @@ import { useEffect, useState } from "react";
 const { Header, Sider, Content } = Layout;
 
 const LayoutDesign = () => {
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 
   useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   return (
     <Flex>
       <Layout
@@ -37,19 +38,18 @@ const LayoutDesign = () => {
           <Navbar />
         </Header>
         <Layout>
-          <Sider
-            style={{ backgroundColor: "white" }}
-            width={isDesktop ? 258 : 0}
-          >
-            <Sidebar />
-          </Sider>
+          {isDesktop && (
+            <Sider style={{ backgroundColor: "white" }} width={258}>
+              <Sidebar />
+            </Sider>
+          )}
           <Content style={{ padding: 12, background: "#F2FBFB" }}>
-            {" "}
-            <Outlet />{" "}
+            <Outlet />
           </Content>
         </Layout>
       </Layout>
     </Flex>
   );
 };
+
 export default LayoutDesign;

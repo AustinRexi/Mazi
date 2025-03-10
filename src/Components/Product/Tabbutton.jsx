@@ -1,5 +1,6 @@
 import { Button } from "antd";
 function Tabbutton({ children, handleClick, id, activeTabKey, style }) {
+  const isMobile = window.innerWidth <= 1024;
   return (
     <div>
       <Button
@@ -14,6 +15,7 @@ function Tabbutton({ children, handleClick, id, activeTabKey, style }) {
               : "NeueHaasDisplayRoman"
           }`,
           ...style,
+          height: isMobile ? "40px" : style.height || "auto",
         }}
         wrap
       >
