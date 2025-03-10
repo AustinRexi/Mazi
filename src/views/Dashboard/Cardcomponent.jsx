@@ -228,7 +228,7 @@ function Cardcomponent() {
             borderRadius: "12px",
             boxShadow: "0px 4px 8px 0px #AAAAAA14",
             border: "1px solid #DEEAEA",
-            marginLeft: isMobile ? "58px" : "0px",
+            marginLeft: isMobile ? "60px" : "0px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
