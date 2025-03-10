@@ -48,10 +48,20 @@ const Navbar = () => {
     setDrawerOpen((prev) => !prev);
   };
   return (
-    <div>
+    <div
+      style={{
+        justifyContent: "flex-start",
+        alignItems: "center",
+      }}
+    >
       {isMobile ? (
-        <div style={{ padding: 16 }}>
-          <Row gutter={[3, 18]}>
+        <div
+          style={{
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
+          <Row gutter={[14, 18]}>
             <Col span={6}>
               {" "}
               <Button
@@ -65,7 +75,7 @@ const Navbar = () => {
               <img src={logo} alt="Logo" style={{ height: 40 }} />
             </Col>
             <Col span={2}>
-              <div style={{ display: "flex", gap: "16px", marginTop: 4 }}>
+              <div style={{ display: "flex", gap: "16px", marginTop: 14 }}>
                 <img src={cart} alt="Cart" />
                 <img src={notification} alt="Notifications" />
               </div>
@@ -87,19 +97,17 @@ const Navbar = () => {
           <Col>
             <div
               style={{
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 gap: "24px",
                 width: "256px",
-                background: "#white",
-                height: "72px",
+                background: "white",
                 display: "flex",
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-                marginBottom: "1px",
-                marginLeft: "1px",
-                border: "0px 1px 0px 0px",
-                opacity: "0px",
+                height: "78px",
+                margin: 0,
+                padding: 0,
               }}
             >
-              <img src={menu} alt="" />
+              <img src={menu} alt="" style={{}} />
               <img
                 src={logo}
                 alt=""
@@ -111,81 +119,71 @@ const Navbar = () => {
             <div
               style={{
                 background: "white",
-                height: "72px",
+                display: "flex",
                 alignItems: "center",
-
-                width: "auto",
+                justifyContent: "space-between",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+                width: "102%",
+                gap: 30,
+                height: "78px",
               }}
             >
-              <div
-                style={{
-                  padding: 10,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-                  width: "100%",
-                  // paddingRight: 20,
-                  marginRight: 20,
-                }}
-              >
-                <div style={{ padding: 10 }}>
-                  <Select
-                    defaultValue="Nigeria"
-                    style={{
-                      width: 200,
-                    }}
-                  >
-                    {optionsWithImages.map((option) => (
-                      <Option
-                        key={option.value}
-                        value={option.value}
-                        label={option.label}
-                      >
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src={option.image}
-                            alt={option.label}
-                            style={{
-                              marginRight: "8px",
-                              width: "30px",
-                              height: "20px",
-                            }}
-                          />
-                          <span
-                            style={{
-                              fontFamily: "NeueHaasDisplayRoman",
-                              fontWeight: 500,
-                              fontSize: "16px",
-                              lineHeight: "24px",
-                            }}
-                          >
-                            {option.label}
-                          </span>
-                        </div>
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
-
-                <div
+              <div style={{ padding: 8, marginLeft: 2 }}>
+                <Select
+                  defaultValue="Nigeria"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-evenly",
-                    gap: 14,
+                    width: 130,
                   }}
                 >
-                  <img src={cart} alt="" />
-                  <img src={notification} alt="" />
-                  <Button
-                    type="primary"
-                    style={{ height: 32, fontFamily: "roboto" }}
-                  >
-                    Add store {<PlusOutlined />}
-                  </Button>
-                  <img src={avatar} alt="" style={{ paddingRight: "6px" }} />
-                </div>
+                  {optionsWithImages.map((option) => (
+                    <Option
+                      key={option.value}
+                      value={option.value}
+                      label={option.label}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src={option.image}
+                          alt={option.label}
+                          style={{
+                            marginRight: "8px",
+                            width: "30px",
+                            height: "20px",
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontFamily: "NeueHaasDisplayRoman",
+                            fontWeight: 500,
+                            fontSize: "16px",
+                            lineHeight: "24px",
+                          }}
+                        >
+                          {option.label}
+                        </span>
+                      </div>
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-evenly",
+                  gap: 18,
+                }}
+              >
+                <img src={cart} alt="" />
+                <img src={notification} alt="" />
+                <Button
+                  type="primary"
+                  style={{ height: 32, fontFamily: "roboto" }}
+                >
+                  Add store {<PlusOutlined />}
+                </Button>
+                <img src={avatar} alt="" style={{ paddingRight: "6px" }} />
               </div>
             </div>
           </Col>

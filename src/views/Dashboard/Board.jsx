@@ -46,7 +46,7 @@ const Board = () => {
           <Calender />
         </Col>
       </Row>
-      <div style={{ marginRight: 50 }}>
+      <div style={{ marginRight: 10 }}>
         <Cardcomponent />
       </div>
 

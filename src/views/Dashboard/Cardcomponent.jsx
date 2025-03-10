@@ -6,11 +6,23 @@ import profitIcon from "../../utils/icons/profit.svg";
 import peopleIcon from "../../utils/icons/people.svg";
 import heartIcon from "../../utils/icons/heart.svg";
 import little from "../../utils/icons/little.svg";
+import { useState, useEffect } from "react";
 
 import Ratings from "./Ratings";
 const { Title } = Typography;
 
 function Cardcomponent() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 576px)"); // Same as AntD xs breakpoint
+    setIsMobile(mediaQuery.matches);
+
+    const handler = (event) => setIsMobile(event.matches);
+    mediaQuery.addEventListener("change", handler);
+
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
   const statistics = [
     {
       Detail: "Revenue",
@@ -42,7 +54,7 @@ function Cardcomponent() {
   ];
   return (
     <Row
-      guttter={[3, 14]}
+      guttter={[2, 14]}
       style={{ justifyContent: "center", alignContent: "center" }}
     >
       <Col
@@ -52,7 +64,7 @@ function Cardcomponent() {
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "6px",
+
           justifyContent: "space-evenly",
         }}
       >
@@ -61,7 +73,7 @@ function Cardcomponent() {
             hoverable
             key={index}
             style={{
-              width: "235px",
+              width: "242px",
               height: "156px",
               display: "flex",
               flexDirection: "column",
@@ -70,6 +82,7 @@ function Cardcomponent() {
               boxShadow: " 0px 4px 8px 0px #AAAAAA14",
               border: "1px solid #DEEAEA",
               justifyContent: "flex-start",
+              marginTop: isMobile ? "8px" : "0px",
             }}
           >
             <div style={{ display: "flex", gap: "8px" }}>
@@ -204,18 +217,18 @@ function Cardcomponent() {
           </Card>
         ))}
       </Col>
-      <Col xs={3} md={0} lg={0}></Col>
-      <Col xs={{ span: 20, style: { marginTop: "8px" } }} md={6} lg={6}>
+
+      <Col xs={24} md={6} lg={6}>
         <Card
           hoverable
           style={{
-            width: "235px",
+            width: "242px",
             height: "156px",
-            marginLeft: "10px",
+            marginTop: isMobile ? "8px" : "0px",
             borderRadius: "12px",
             boxShadow: "0px 4px 8px 0px #AAAAAA14",
             border: "1px solid #DEEAEA",
-
+            marginLeft: isMobile ? "54px" : "0px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -264,7 +277,7 @@ function Cardcomponent() {
               display: "flex",
               alignItems: "start",
               justifyContent: "center",
-              padding: "8px 0", // Added padding for better spacing
+              padding: "8px 0",
             }}
           >
             <Row
