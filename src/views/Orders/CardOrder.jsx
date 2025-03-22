@@ -47,6 +47,7 @@ const CardOrder = ({ item, isActiveTab, onViewDetails }) => {
       style={{
         width: 256,
         borderRadius: 12,
+        marginTop: 10,
         margin: 0,
         padding: 0,
         gap: 8,

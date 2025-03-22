@@ -9,7 +9,7 @@ const CourierCard = ({ item }) => {
         backgroundColor: "#f5f5f5",
         display: "flex",
         alignItems: "center",
-        width: "198px",
+        width: window.innerWidth < 780 ? "100%" : "198px", // Responsive width
         height: "48px",
         padding: "0px 12px",
         opacity: "0.9",
@@ -17,7 +17,7 @@ const CourierCard = ({ item }) => {
       }}
       bodyStyle={{ padding: "0px" }}
     >
-      <img src={item.icon} icon={!item.icon && <UserOutlined />} />
+      <img src={item.icon} alt="icon" icon={!item.icon && <UserOutlined />} />
       <span
         style={{
           fontWeight: "500",

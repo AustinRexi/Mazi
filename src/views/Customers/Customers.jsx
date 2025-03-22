@@ -21,15 +21,26 @@ function Customers() {
   const getPlaceholderText = "Search Users or Stores";
 
   return (
-    <div style={{ padding: 8, background: "#F8FBFB" }}>
-      <Row>
-        <Col span={3}>
+    <div
+      style={{
+        padding: "8px",
+        background: "#F8FBFB",
+        minHeight: "100vh",
+      }}
+    >
+      <Row gutter={[16, 16]}>
+        <Col
+          xs={24} // Full width on mobile
+          sm={12} // Half width on small tablets
+          md={6} // Quarter width on medium devices
+          lg={3} // Original width on desktop
+        >
           <h2
             style={{
               marginTop: "20px",
               color: "#000000",
               fontWeight: 600,
-              fontSize: "24px",
+              fontSize: "clamp(18px, 4vw, 24px)", // Responsive font size
               lineHeight: "32px",
               marginLeft: 4,
             }}
@@ -37,31 +48,50 @@ function Customers() {
             Customers
           </h2>
         </Col>
-        <Col span={2}></Col>
-        <Col span={18}>
-          <div style={{ display: "flex", gap: 8 }}>
-            {" "}
+
+        <Col
+          xs={0} // Hidden on mobile
+          sm={0}
+          md={2}
+          lg={2}
+        />
+
+        <Col xs={24} sm={24} md={16} lg={18}>
+          <Flex
+            style={{
+              gap: 8,
+              flexWrap: "wrap", // Allow wrapping on smaller screens
+              width: "100%",
+              justifyContent: "flex-end",
+            }}
+          >
             <Search
               placeholder={getPlaceholderText}
               style={{
-                marginLeft: "42px",
-                width: "531px",
+                width: "100%", // Full width on all screens
+                maxWidth: "531px", // Maximum width on larger screens
                 height: "45px",
                 borderRadius: "16px",
                 border: "1px solid #B5C3C3",
                 padding: "0 16px",
+                marginLeft: 0, // Remove fixed margin
               }}
             />
             <ActionButton />
             <FilteredItems
-              style={{ width: 119, height: 40, borderRadius: 8 }}
+              style={{
+                minWidth: "119px",
+                height: "40px",
+                borderRadius: "8px",
+                flexShrink: 0,
+              }}
             />
-          </div>
+          </Flex>
         </Col>
       </Row>
 
-      <Row gutter={4} style={{ marginTop: 8 }}>
-        <Col span={18}>
+      <Row gutter={[16, 16]} style={{ marginTop: 8 }}>
+        <Col xs={24} md={18}>
           <Flex
             style={{
               gap: "10px",
@@ -69,8 +99,9 @@ function Customers() {
               border: "1px solid #B5B6B5",
               borderRadius: "16px",
               height: "48px",
-              width: "154px",
-              marginLeft: 15,
+              width: "100%", // Full width instead of fixed
+              maxWidth: "154px",
+              marginLeft: 0,
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -87,7 +118,7 @@ function Customers() {
                 handleClick={() => onTabChange(id)}
                 style={{
                   color: "#494949",
-                  fontSize: "16px",
+                  fontSize: "clamp(14px, 2vw, 16px)", // Responsive font
                   lineHeight: "24px",
                   width: "60px",
                   borderRadius: "2px",
@@ -99,14 +130,20 @@ function Customers() {
             ))}
           </Flex>
         </Col>
-        <Col span={6}>
-          {" "}
+        <Col
+          xs={24}
+          md={6}
+          style={{ display: "flex", justifyContent: "flex-end" }}
+        >
           <Bottompageignition isVisible={false} />
         </Col>
       </Row>
 
-      {/* MyTable receives active data based on activeTabKey */}
-      <MyTable activeTabKey={activeTabKey} data={dataReference[activeTabKey]} />
+      <MyTable
+        activeTabKey={activeTabKey}
+        data={dataReference[activeTabKey]}
+        style={{ width: "100%" }}
+      />
       <Bottompageignition isVisible={true} />
     </div>
   );
