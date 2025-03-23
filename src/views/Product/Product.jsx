@@ -44,9 +44,7 @@ function Product() {
     <div>
       {!activeProduct && (
         <>
-          {/* <Flex gap="middle" align="start" vertical> */}
           <Row gutter={[28, 15]} style={{ gap: 16 }}>
-            {/* <Flex gap="middle" style={{ display: "flex", gap: 24 }}> */}
             <Col xs={3} md={4} lg={2}>
               <h2
                 style={{
@@ -122,9 +120,8 @@ function Product() {
                 text={getFilterItems().text}
               />
             </Col>
-            {/* </Flex> */}
           </Row>
-          {/* </Flex> */}
+
           <Row>
             <Col xs={0} md={24}>
               <Pageignition />

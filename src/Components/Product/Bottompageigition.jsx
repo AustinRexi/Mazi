@@ -48,7 +48,7 @@ const Bottompageignition = ({ isVisible, style }) => {
       </Select>
       <span
         style={{
-          marginLeft: 8,
+          marginLeft: 3,
           whiteSpace: "nowrap",
           fontFamily: "Aeonik",
           fontWeight: 500,
