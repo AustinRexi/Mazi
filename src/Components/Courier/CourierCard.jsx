@@ -11,8 +11,8 @@ const CourierCard = ({ item }) => {
         alignItems: "center",
         width: window.innerWidth < 780 ? "100%" : "200px",
         height: "48px",
-        padding: "0px 14px",
-        gap: 18,
+        padding: "0px 8px",
+        gap: 14,
       }}
       bodyStyle={{ padding: "0px" }}
     >
@@ -21,7 +21,7 @@ const CourierCard = ({ item }) => {
         alt="icon"
         icon={!item.icon && <UserOutlined />}
         style={{
-          width: "36px",
+          width: "24px",
         }}
       />
       <span
