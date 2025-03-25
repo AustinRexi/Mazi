@@ -150,7 +150,7 @@ function CurrencyExchange() {
               <Transactions data={data} />
             </Col>
           </Row>
-          <Col lg={22}>
+          <Col xs={24} lg={24}>
             {" "}
             <Bottompageignition isVisible={true} />
           </Col>
