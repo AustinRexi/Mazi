@@ -12,7 +12,7 @@ const Edit = () => {
     },
   ];
   return (
-    <div className="container">
+    <div>
       <h2>About Product</h2>
       <Editor data={data} />
     </div>

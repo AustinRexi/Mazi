@@ -123,7 +123,7 @@ const ChartDetail = () => {
             </div>
           </Card>
         </Col>
-        <Col xs={9} md={16} lg={0}></Col>
+        <Col xs={10} md={16} lg={0}></Col>
         <Col xs={12} md={7} lg={3}>
           <Topstores />
         </Col>

@@ -33,7 +33,7 @@ const Calender = ({ data, placeholder, style }) => {
   const presets = defaultPresets || data;
 
   return (
-    <div style={{ padding: 6, ...style }}>
+    <div style={{ padding: 10, ...style }}>
       <Space direction="vertical" size={4}>
         <div
           style={{
