@@ -6,6 +6,7 @@ import Bottompageignition from "../../Components/Product/Bottompageigition";
 import displaypicture from "../Customers/icons/dp.svg";
 import Exchange from "./Exchange";
 import ActiveCurrency from "./ActiveCurrency";
+import PrevandNext from "../../Components/shared/PrevandNext";
 const { Text } = Typography;
 function CurrencyExchange() {
   const getPlaceholderText = "Search name";
@@ -150,9 +151,12 @@ function CurrencyExchange() {
               <Transactions data={data} />
             </Col>
           </Row>
-          <Col xs={24} lg={24}>
+          <Col xs={0} md={24} lg={24}>
             {" "}
             <Bottompageignition isVisible={true} />
+          </Col>
+          <Col xs={24} md={0} lg={0}>
+            <PrevandNext />
           </Col>
         </Col>
         <Col lg={7}>

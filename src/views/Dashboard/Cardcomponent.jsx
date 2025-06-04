@@ -268,7 +268,11 @@ function Cardcomponent() {
             borderRadius: "12px",
             boxShadow: "0px 4px 8px 0px #AAAAAA14",
             border: "1px solid #DEEAEA",
+<<<<<<< HEAD
 
+=======
+            marginLeft: isMobile ? "68px" : "0px",
+>>>>>>> 5efe074cff0fff40eed1f8d8c1f7082da05e047b
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",

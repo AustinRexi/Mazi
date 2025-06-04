@@ -8,18 +8,18 @@ import stock from "../../Assets/Lineicons/stock.svg";
 import Comment from "./Comment";
 
 function ProductDetails({ onClick }) {
+  const ismobile = window.innerWidth <= 600;
   const description =
     "Belleful meal is the new lovely jollof rice served with chicken dipped meal is the new lovely jollof rice served.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum augue sed urna consequat, vel dictum turpis malesuada. Nullam condimentum elementum accumsan. Nullam maximus purus ac mi maximus tristique. Integer ultricies vitae nibh pulvinar pulvinar.";
 
   return (
     <Card
       style={{
-        width: 470,
-        marginTop: "60px",
+        width: ismobile ? 400 : 470,
       }}
-      bodyStyle={{ margin: 6, padding: 6 }}
+      bodyStyle={{ margin: 6, padding: 3 }}
     >
-      <Flex style={{ gap: 7, marginTop: 4 }}>
+      <Flex style={{ gap: ismobile ? 0 : 7, marginTop: 4 }}>
         <span
           style={{
             fontWeight: 500,

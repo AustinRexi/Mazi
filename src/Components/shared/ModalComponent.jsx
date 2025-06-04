@@ -26,7 +26,8 @@ function ModalComponent({
       .custom-modal .ant-modal-content {
         background-color: transparent !important; /* Ensure no background */
         border: none !important; /* Remove border */
-      }
+      
+        }
 
       
         `}

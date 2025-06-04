@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import { Form, Col, Row, Card, Button } from "antd";
 import flower from "../../utils/icons/flower.svg";
 import Uploadimage from "./Uploadimage";
@@ -19,7 +18,23 @@ const AddProduct = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
   const hideModal = () => setIsSubmitted(false);
+
+  // Define modal styles based on device type
+  const getModalStyles = () => {
+    const isMobileOrTablet = window.innerWidth <= 900; // iPads typically have max-width of 1024px
+    return {
+      position: "absolute",
+      top: isMobileOrTablet ? 200 : 120, // 200px for mobile/iPad, 120px for desktop
+      right: isMobileOrTablet ? 20 : 380, // 20px for mobile/iPad, 380px for desktop
+      padding: 0,
+      margin: 0,
+      borderRadius: "8px",
+      display: "inline-block",
+    };
+  };
+
   return (
     <div>
       {isSubmitted && (
@@ -27,15 +42,7 @@ const AddProduct = () => {
           isVisible={isSubmitted}
           hideModal={hideModal}
           wrapClassName="custom-modal"
-          style={{
-            position: "absolute",
-            top: 120,
-            right: 380,
-            padding: 0,
-            margin: 0,
-            borderRadius: "8px",
-            display: "inline-block",
-          }}
+          style={getModalStyles()} // Apply dynamic styles
           bodyStyle={{
             backgroundColor: "transparent",
             padding: 0,
@@ -89,23 +96,23 @@ const AddProduct = () => {
             </Button>
           </Form.Item>
         </div>
-        <Row style={{ marginTop: "3px" }}>
-          <Col span={8}>
+        <Row gutter={[0, 0]} style={{ marginTop: 8 }}>
+          <Col xs={24} md={24} lg={8}>
             <div style={{ width: "90%", marginLeft: "10px", height: "200vh" }}>
               <Card style={{ height: "167vh" }}>
                 <Formfile />
               </Card>
             </div>
           </Col>
-          <Col span={8}>
+          <Col xs={24} md={24} lg={8}>
             <div style={{ width: "90%", marginLeft: "8px" }}>
               <Card style={{ height: "167vh", marginRight: "10px" }}>
                 <Uploadimage />
               </Card>
             </div>
           </Col>
-          <Col span={8}>
-            <div style={{ width: "97%", marginRight: "10px" }}>
+          <Col xs={24} md={24} lg={8}>
+            <div style={{ width: "90%", marginRight: "10px" }}>
               <Card style={{ height: "167vh" }}>
                 <Edit />
               </Card>
