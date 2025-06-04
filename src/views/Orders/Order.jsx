@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { Carousel } from "antd";
 import Allorder from "./data.js/Allorder";
 import MaziSpecialOrder from "./data.js/MaziSpecialOrder";
 import CourierCard from "../../Components/Courier/CourierCard";
@@ -17,8 +18,40 @@ import OrderDetails from "./orderdetails/OrderDetails";
 const dataRefrence = { tab1: allorderstatus, tab2: mazispecialstatus };
 const orders = { tab1: Allorder, tab2: MaziSpecialOrder };
 
+const getUserCardGridStyles = (width) => {
+  const baseStyles = {
+    width: "100%",
+    maxWidth: "1030px",
+    margin: "14px auto 0 auto",
+    display: "grid",
+    gap: "8px",
+    gridTemplateRows: "auto",
+    padding: 0,
+  };
+
+  if (width <= 480) {
+    return {
+      ...baseStyles,
+      gridTemplateColumns: "1fr",
+      justifyItems: "center",
+      maxWidth: "100%",
+      marginTop: 40,
+    };
+  } else if (width <= 768) {
+    return {
+      ...baseStyles,
+      gridTemplateColumns: "repeat(3, 1fr)",
+    };
+  } else {
+    return {
+      ...baseStyles,
+      gridTemplateColumns: "repeat(4, 1fr)",
+    };
+  }
+};
+
 const styles = {
-  container: { padding: "40px" },
+  container: { padding: "20px" },
   header: {
     display: "flex",
     alignItems: "center",
@@ -42,18 +75,16 @@ const styles = {
     flexDirection: "row",
     gap: "16px",
     marginTop: "40px",
-    width: "1080px",
-    background: "#FFFFFF",
-    marginLeft: 14,
+    width: "100%",
+    maxWidth: "1080px",
+    padding: 14,
+    marginLeft: 4,
+    marginRight: "auto",
   },
-  userCardGrid: {
-    padding: 12,
-    width: "1030px",
-    marginTop: "10px",
-    display: "grid",
-    gridTemplateColumns: "repeat(4, 1fr)",
-    gridTemplateRows: "repeat(4, auto)",
-    gap: "10px",
+  carouselContainer: {
+    marginTop: "40px",
+    width: "100%",
+    padding: 14,
   },
   h: {
     fontWeight: 600,
@@ -92,7 +123,14 @@ function Order() {
   const [activeTabKey, setActiveTabKey] = useState("tab1");
   const [isVisible, setIsVisible] = useState(activeTabKey === "tab1");
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleViewDetails = useCallback(
     (order) => {
@@ -115,10 +153,56 @@ function Order() {
     navigate("/addproduct");
   };
 
+  const onCarouselChange = (currentSlide) => {
+    console.log(currentSlide);
+  };
+
   const iconData = useMemo(() => dataRefrence[activeTabKey], [activeTabKey]);
   const orderData = useMemo(() => orders[activeTabKey], [activeTabKey]);
   const text = "New Order";
   const getPlaceholderText = "Stores, food or groceries";
+
+  const userCardGridStyles = getUserCardGridStyles(windowWidth);
+
+  const renderCourierList = () => {
+    if (windowWidth < 780) {
+      return (
+        <Carousel
+          afterChange={onCarouselChange}
+          dots={true}
+          slidesToShow={2}
+          slidesToScroll={1}
+          infinite={false}
+          style={{
+            width: "100%",
+            marginTop: "40px",
+            padding: "14px",
+          }}
+        >
+          {iconData.map((item, index) => (
+            <div
+              key={index}
+              style={{
+                width: "50%",
+                padding: "0 5px",
+                display: "inline-block",
+              }}
+            >
+              <CourierCard item={item} />
+            </div>
+          ))}
+        </Carousel>
+      );
+    } else {
+      return (
+        <div style={styles.listContainer}>
+          {iconData.map((item, index) => (
+            <CourierCard key={index} item={item} />
+          ))}
+        </div>
+      );
+    }
+  };
 
   return (
     <div>
@@ -130,7 +214,7 @@ function Order() {
         />
       ) : (
         <div>
-          <div style={{ display: "flex", gap: 10 }}>
+          <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
             <h2 style={styles.heading}>Order</h2>
             <div style={styles.badge}>
               <Badge count={252}>
@@ -176,13 +260,9 @@ function Order() {
             />
           </div>
 
-          <div style={styles.listContainer}>
-            {iconData.map((item, index) => (
-              <CourierCard key={index} item={item} />
-            ))}
-          </div>
+          {renderCourierList()}
 
-          <div style={styles.userCardGrid}>
+          <div style={userCardGridStyles}>
             {orderData.map((item, index) => (
               <CardOrder
                 item={item}

@@ -155,8 +155,12 @@ const Tabledata = (props) => {
       dataSource={props.data}
       onChange={onChange}
       pagination={false}
+      scroll={{
+        x: "max-content",
+      }}
       style={{
-        width: "1050px",
+        width: "100%",
+        maxWidth: "1050px",
         borderRadius: "8px",
         border: "0px 0px 1px 0px",
         boxShadow: "0px 4px 8px 0px #AAAAAA14",

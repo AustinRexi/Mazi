@@ -86,8 +86,8 @@ function CurrencyExchange() {
 
   return (
     <div style={{ padding: 20, backgroundColor: "#F8FBFB" }}>
-      <Row gutter={[0, 16]}>
-        <Col span={17}>
+      <Row gutter={[0, 14]}>
+        <Col lg={17}>
           <Row
             gutter={[0, 16]}
             style={{
@@ -96,7 +96,7 @@ function CurrencyExchange() {
               padding: 10,
             }}
           >
-            <Col span={11}>
+            <Col lg={11}>
               {" "}
               <h5
                 style={{
@@ -111,7 +111,7 @@ function CurrencyExchange() {
                 Currency Exchange
               </h5>
             </Col>
-            <Col span={12}>
+            <Col lg={12}>
               <Flex style={{ marginBottom: 8, marginLeft: 17 }}>
                 <Search
                   placeholder={getPlaceholderText}
@@ -128,7 +128,7 @@ function CurrencyExchange() {
                 />
               </Flex>
             </Col>
-            <Col span={14}>
+            <Col lg={14}>
               <Text
                 style={{
                   fontFamily: "NeueHaasDisplayRoman",
@@ -141,23 +141,31 @@ function CurrencyExchange() {
                 Recent Transactions
               </Text>
             </Col>
-            <Col span={10}>
-              <section style={{ marginLeft: 22 }}>
-                <Bottompageignition isVisible={false} />{" "}
+            <Col xs={24} lg={10}>
+              <section style={{ marginLeft: { xs: 0, lg: 22 } }}>
+                <Bottompageignition isVisible={false} />
               </section>
             </Col>
-            <Col span={24}>
+            <Col md={24} lg={24}>
               <Transactions data={data} />
             </Col>
           </Row>
-          <Col span={22}>
+          <Col xs={24} lg={24}>
             {" "}
             <Bottompageignition isVisible={true} />
           </Col>
         </Col>
-        <Col span={7}>
-          <Exchange />
-          <ActiveCurrency />
+        <Col lg={7}>
+          <Row gutter={[10, 10]}>
+            <Col md={13} lg={24}>
+              {" "}
+              <Exchange />
+            </Col>
+            <Col md={10} lg={24}>
+              {" "}
+              <ActiveCurrency />
+            </Col>
+          </Row>
         </Col>
       </Row>
     </div>

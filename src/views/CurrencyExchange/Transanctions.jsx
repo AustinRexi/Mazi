@@ -47,54 +47,52 @@ const Transaction = ({ data }) => {
                 marginTop: 8,
                 border: "1px solid #f0f0f0",
                 borderRadius: 4,
-                padding: 4,
+                padding: 8, // Increased padding for better spacing
                 backgroundColor: "#fff",
                 maxWidth: 700,
-                maxHeight: 72,
                 boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
               }}
             >
               <Row
-                gutter={[16, 16]}
-                style={{ justifyContent: "flex-start", alignContent: "center" }}
+                gutter={[8, 8]}
+                style={{ justifyContent: "flex-start", alignItems: "center" }}
               >
-                <Col span={6}>
-                  <section style={{ marginTop: "10px" }}>
-                    {" "}
-                    <Avatar src={detail.icon} size={32} />{" "}
+                <Col xs={24} md={6} lg={6}>
+                  <section
+                    style={{
+                      marginTop: "0",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Avatar
+                      src={detail.icon}
+                      size={32}
+                      style={{ marginRight: 8 }}
+                    />
                     <span
                       style={{
                         fontFamily: "NeueHaasDisplayRoman",
                         fontSize: "16px",
                         fontWeight: 500,
                         lineHeight: "24px",
-                        textAlign: "left",
-
-                        color: " #171717",
+                        color: "#171717",
                       }}
                     >
-                      {" "}
                       {detail.name}
                     </span>
                   </section>
                 </Col>
-                <Col>
-                  <Flex style={{ gap: 8 }}>
-                    {" "}
+                <Col xs={24} md={11}>
+                  <Flex style={{ gap: 4, flexWrap: "wrap" }}>
                     <img src={line} alt="..." />
-                    <div
-                      style={{
-                        display: "grid",
-                        margin: 2,
-                      }}
-                    >
+                    <div style={{ display: "grid", margin: 2 }}>
                       <Text
                         style={{
                           fontFamily: "NeueHaasDisplayRoman",
-                          fontSize: "16px",
+                          fontSize: "14px",
                           fontWeight: 500,
-                          lineHeight: "24px",
-                          textAlign: "left",
+                          lineHeight: "20px",
                           color: "#545E5E",
                         }}
                       >
@@ -106,7 +104,6 @@ const Transaction = ({ data }) => {
                           fontSize: "16px",
                           fontWeight: 600,
                           lineHeight: "24px",
-                          textAlign: "left",
                           color: "#121515",
                         }}
                       >
@@ -118,7 +115,7 @@ const Transaction = ({ data }) => {
                         display: "grid",
                         justifyItems: "center",
                         alignItems: "center",
-                        margin: 4,
+                        margin: 2,
                       }}
                     >
                       <Text
@@ -127,7 +124,6 @@ const Transaction = ({ data }) => {
                           fontSize: "14px",
                           fontWeight: 500,
                           lineHeight: "20px",
-                          textAlign: "left",
                           color: "#696969",
                         }}
                       >
@@ -137,29 +133,22 @@ const Transaction = ({ data }) => {
                       <Text
                         style={{
                           fontFamily: "NeueHaasDisplayRoman",
-                          fontSize: "16px",
+                          fontSize: "14px",
                           fontWeight: 500,
                           lineHeight: "20px",
-                          textAlign: "left",
                           color: "#696969",
                         }}
                       >
                         NGN {detail.exchangeRate}
                       </Text>
                     </div>
-                    <div
-                      style={{
-                        display: "grid",
-                        margin: 4,
-                      }}
-                    >
+                    <div style={{ display: "grid", margin: 2 }}>
                       <Text
                         style={{
                           fontFamily: "NeueHaasDisplayRoman",
-                          fontSize: "16px",
+                          fontSize: "14px",
                           fontWeight: 500,
-                          lineHeight: "24px",
-                          textAlign: "left",
+                          lineHeight: "20px",
                           color: "#545E5E",
                         }}
                       >
@@ -171,7 +160,6 @@ const Transaction = ({ data }) => {
                           fontSize: "16px",
                           fontWeight: 600,
                           lineHeight: "24px",
-                          textAlign: "left",
                           color: "#515251",
                         }}
                       >
@@ -181,20 +169,14 @@ const Transaction = ({ data }) => {
                     <img src={line} alt="..." />
                   </Flex>
                 </Col>
-                <Col>
-                  <div
-                    style={{
-                      display: "grid",
-                      margin: 3,
-                    }}
-                  >
+                <Col xs={12} md={3}>
+                  <div style={{ display: "grid", margin: 2 }}>
                     <Text
                       style={{
                         fontFamily: "NeueHaasDisplayRoman",
-                        fontSize: "16px",
+                        fontSize: "14px",
                         fontWeight: 500,
-                        lineHeight: "24px",
-                        textAlign: "left",
+                        lineHeight: "20px",
                         color: "#545E5E",
                       }}
                     >
@@ -206,7 +188,6 @@ const Transaction = ({ data }) => {
                         fontSize: "16px",
                         fontWeight: 600,
                         lineHeight: "24px",
-                        textAlign: "left",
                         color: "#121515",
                       }}
                     >
@@ -214,22 +195,16 @@ const Transaction = ({ data }) => {
                     </Text>
                   </div>
                 </Col>
-                <Col>
-                  <Flex style={{ gap: 8 }}>
+                <Col xs={10} md={3}>
+                  <Flex style={{ gap: 4 }}>
                     <img src={line} alt="..." />
-                    <div
-                      style={{
-                        display: "grid",
-                        margin: 4,
-                      }}
-                    >
+                    <div style={{ display: "grid", margin: 2 }}>
                       <Text
                         style={{
                           fontFamily: "NeueHaasDisplayRoman",
-                          fontSize: "16px",
+                          fontSize: "14px",
                           fontWeight: 500,
-                          lineHeight: "24px",
-                          textAlign: "left",
+                          lineHeight: "20px",
                           color: "#545E5E",
                         }}
                       >
@@ -238,10 +213,9 @@ const Transaction = ({ data }) => {
                       <Text
                         style={{
                           fontFamily: "NeueHaasDisplayRoman",
-                          fontSize: "16px",
+                          fontSize: "14px",
                           fontWeight: 500,
-                          lineHeight: "24px",
-                          textAlign: "left",
+                          lineHeight: "20px",
                           color: "#22BB5F",
                         }}
                       >
@@ -250,26 +224,18 @@ const Transaction = ({ data }) => {
                     </div>
                   </Flex>
                 </Col>
-                <Col>
-                  {" "}
+                <Col xs={2} md={1}>
                   <Dropdown
                     overlay={menu}
                     trigger={["click"]}
                     placement="bottom"
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 500,
-                      lineHeight: "16px",
-                      fontFamily: "NeueHaasDisplayThin",
-                      color: " #1D1D1D)",
-                    }}
                   >
                     <img
                       src={option}
                       alt="options"
                       style={{
-                        top: 20,
                         cursor: "pointer",
+                        marginTop: 8,
                       }}
                     />
                   </Dropdown>
