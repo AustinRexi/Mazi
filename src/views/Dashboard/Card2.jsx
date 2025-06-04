@@ -17,7 +17,7 @@ function Card2(props) {
       <div style={{ marginRight: "20px" }}>
         {props.data.map((list) => (
           <div
-            key={list.detail} // Ensure unique key for list items
+            key={list.detail}
             style={{
               width: "140px",
               height: "64px",
@@ -26,8 +26,8 @@ function Card2(props) {
               marginLeft: "10px",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center", // Center content vertically
-              alignItems: "center", // Center content horizontally
+              justifyContent: "center",
+              alignItems: "center",
               textAlign: "center",
               padding: 2,
               border: "1px solid #DEEAEA",

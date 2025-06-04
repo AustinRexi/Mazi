@@ -97,7 +97,7 @@ const ChartDetail = () => {
                   >
                     {items.map((list) => (
                       <div
-                        key={list.detail} // Ensure unique key for list items
+                        key={list.detail}
                         style={{
                           fontFamily: "NeueHaasDisplayLight",
                           fontSize: "16px",
@@ -124,7 +124,7 @@ const ChartDetail = () => {
           </Card>
         </Col>
         <Col xs={9} md={0} lg={0}></Col>
-        <Col span={3}>
+        <Col span={2}>
           <Topstores />
         </Col>
       </Row>

@@ -1,4 +1,4 @@
-import { Card, Row, Col, Divider, Avatar } from "antd";
+import { Card, Row, Col, Divider } from "antd";
 import rice from "../../../Assets/Ordericons/rice.svg";
 import unfulfilled from "../../../Assets/Ordericons/unfulfill.svg";
 import drink from "../../../Assets/Ordericons/drinks.svg";

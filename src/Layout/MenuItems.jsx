@@ -88,7 +88,7 @@ const MenuItem = () => {
       direction="vertical"
       size="8"
       style={{
-        width: "258px",
+        width: "250px",
         padding: 4,
         height: "160vh",
       }}

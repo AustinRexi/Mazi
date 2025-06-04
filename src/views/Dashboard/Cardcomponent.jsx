@@ -19,41 +19,73 @@ function Cardcomponent() {
       price: "N132.77m",
       percentage: "15.4%",
       icon: upArrowIcon,
+      rating: null,
       color: "#22BB5F",
+      previous: "Previous",
+      difference: "Difference",
+      trend: "Trend",
+      usericon: null,
     },
     {
       Detail: "New Customers",
       DetailIcon: peopleIcon,
       net: "5,456",
+      rating: null,
       price: "N162.77m",
       percentage: "25.4%",
       icon: upArrowIcon,
       color: "#22BB5F",
+      previous: "Previous",
+      difference: "Difference",
+      trend: "Trend",
+      usericon: null,
     },
     {
       Detail: "Gross Profit",
       DetailIcon: profitIcon,
       net: "N150.456M",
+      rating: null,
       price: "N132.77m",
       percentage: "15.4%",
       icon: downArrowIcon,
       color: "#E72529",
+      previous: "Previous",
+      difference: "Difference",
+      trend: "Trend",
+      usericon: null,
+    },
+    {
+      Detail: "Product Rating",
+      DetailIcon: heartIcon,
+      net: "4.8",
+      rating: <Ratings rating="4.8" />,
+      price: null,
+      percentage: null,
+      icon: null,
+      color: null,
+      previous: null,
+      difference: null,
+      trend: null,
+      usericon: little,
+      users: "15,056",
     },
   ];
   return (
     <Row
-      guttter={[3, 14]}
+      guttter={[3, 4]}
       style={{ justifyContent: "center", alignContent: "center" }}
     >
       <Col
         xs={24}
-        md={18}
-        lg={18}
+        // md={16}
+        lg={24}
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "6px",
-          justifyContent: "space-evenly",
+          gap: "24px",
+
+          marginLeft: 22,
+          justifyContent: "center",
         }}
       >
         {statistics.map((detail, index) => (
@@ -134,18 +166,35 @@ function Cardcomponent() {
                         fontFamily: "NeueHaasDisplayMediu",
                       }}
                     >
-                      Previous
+                      {detail.previous}
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          display: detail.usericon ? "flex" : "none",
+                          alignItems: "start",
+                          gap: "4px",
+                        }}
+                      >
+                        <img src={detail.usericon} alt="" />
+                        <span
+                          style={{
+                            lineHeight: "20px",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            color: "black",
+                          }}
+                        >
+                          {detail.users}
+                        </span>
+                      </div>
                     </span>
                     <Title
                       level={4}
                       style={{
-                        margin: 0,
                         fontSize: "14px",
                         fontWeight: 500,
                         lineHeight: "12px",
                         whiteSpace: "nowrap",
-
-                        textOverflow: "ellipsis",
                       }}
                     >
                       {detail.price}
@@ -163,12 +212,11 @@ function Cardcomponent() {
                         fontFamily: "NeueHaasDisplayMediu",
                       }}
                     >
-                      Difference
+                      {detail.difference}
                     </span>
                     <Title
                       level={5}
                       style={{
-                        margin: 0,
                         fontSize: "13px",
                         fontWeight: 700,
                         lineHeight: "12px",
@@ -189,22 +237,27 @@ function Cardcomponent() {
                         fontFamily: "NeueHaasDisplayMediu",
                       }}
                     >
-                      Trend
+                      {detail.trend}
                     </span>
                     <Title level={5} style={{ margin: 0, fontSize: "12px" }}>
                       <img
                         src={detail.icon}
-                        style={{ width: "12px", height: "12px" }}
+                        style={{
+                          width: "12px",
+                          height: "12px",
+                          display: detail.icon ? "initial" : "none",
+                        }}
                       />
                     </Title>
                   </div>
                 </Col>
+                {detail.rating}
               </Row>
             </div>
           </Card>
         ))}
       </Col>
-      <Col xs={3} md={0} lg={0}></Col>
+      {/* <Col xs={3} md={0} lg={0}></Col>
       <Col xs={{ span: 20, style: { marginTop: "8px" } }} md={6} lg={6}>
         <Card
           hoverable
@@ -306,7 +359,7 @@ function Cardcomponent() {
             <Ratings />
           </div>
         </Card>
-      </Col>
+      </Col> */}
     </Row>
   );
 }
