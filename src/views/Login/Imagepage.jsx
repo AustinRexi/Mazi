@@ -1,5 +1,5 @@
 import { Card, Typography } from "antd";
-import image from "../utils/icons/Images/image.png";
+import image from "../../utils/icons/Images/image.png";
 const { Title } = Typography;
 
 function Imagepage() {
