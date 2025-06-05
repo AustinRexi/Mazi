@@ -151,10 +151,9 @@ function Formpage() {
     <div
       style={{
         height: "100vh",
-        // width: "50vh",
+
         alignContent: "center",
         justifyContent: "center",
-        // marginLeft: "40px",
       }}
     >
       <div style={{ marginLeft: "100px" }}>
