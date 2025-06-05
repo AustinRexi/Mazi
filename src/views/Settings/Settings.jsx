@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Form,
   Input,
@@ -9,20 +9,56 @@ import {
   Space,
   Avatar,
   Upload,
+  message,
 } from "antd";
 import { UserOutlined, UploadOutlined } from "@ant-design/icons";
+import { AuthContext } from "../../context/AuthContext"; // Adjust path to your Auth.jsx
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const { Title, Text } = Typography;
 
 const Settings = () => {
+  const { user, updateProfileImage, logout } = useContext(AuthContext);
+  const navigate = useNavigate(); // Initialize navigate
+
   const onFinish = (values) => {
     console.log("Updated settings:", values);
     // Handle form submission (e.g., API call to update settings)
   };
 
   const handleLogout = () => {
-    console.log("User logged out");
-    // Add logout logic (e.g., clear auth token, redirect to login page)
+    logout(); // Clears token and profileImage from localStorage via AuthContext
+    // localStorage.clear(); // Optional: Only use if you want to clear ALL localStorage
+    navigate("/login"); // Redirect to login page
+  };
+
+  // Custom upload handler for base64
+  const handleUpload = ({ file, onSuccess, onError }) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64Image = reader.result;
+      try {
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          throw new Error("Only image files are allowed");
+        }
+        // Validate file size (e.g., 5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error("Image size exceeds 5MB");
+        }
+        updateProfileImage(base64Image); // Update context with base64 image
+        message.success("Profile picture updated successfully!");
+        onSuccess(null, file);
+      } catch (error) {
+        message.error(error.message);
+        onError(error);
+      }
+    };
+    reader.onerror = () => {
+      message.error("Failed to read image");
+      onError(new Error("Failed to read image"));
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -35,8 +71,16 @@ const Settings = () => {
         <Card style={{ marginBottom: "24px" }} title="Profile">
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
             <Space align="center">
-              <Avatar size={64} icon={<UserOutlined />} />
-              <Upload>
+              <Avatar
+                size={64}
+                src={user?.profileImage}
+                icon={<UserOutlined />}
+              />
+              <Upload
+                customRequest={handleUpload}
+                showUploadList={false}
+                accept="image/*"
+              >
                 <Button icon={<UploadOutlined />}>
                   Change Profile Picture
                 </Button>

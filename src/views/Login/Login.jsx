@@ -5,7 +5,7 @@ import Formpage from "./Formpage";
 function Login() {
   return (
     <div style={{ height: "100vh" }}>
-      <Row style={{}}>
+      <Row gutter={[0, 6]}>
         <Col xs={0} md={8} lg={12}>
           <Imagepage />
         </Col>

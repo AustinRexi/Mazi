@@ -1,18 +1,18 @@
 import { Row, Col, Select, Button, Drawer, Menu } from "antd";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { PlusOutlined, MenuOutlined } from "@ant-design/icons";
 import cart from "../utils/icons/cart.svg";
 import notification from "../utils/icons/notification.svg";
-import avatar from "../utils/icons/avatar.svg";
+import avatar from "../utils/icons/avatar.svg"; // Fallback image
 import flag from "../utils/icons/flag.svg";
 import menu from "../utils/icons/menu.svg";
 import logo from "../utils/icons/logo.svg";
-
 import MenuItem from "./MenuItems";
+import { AuthContext } from "../context/AuthContext"; // Adjust path to your Auth.jsx
 
 const Navbar = () => {
   const { Option } = Select;
+  const { user } = useContext(AuthContext);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -33,6 +33,7 @@ const Navbar = () => {
       image: flag,
     },
   ];
+
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 1024);
   };
@@ -47,6 +48,7 @@ const Navbar = () => {
   const toggleDrawer = () => {
     setDrawerOpen((prev) => !prev);
   };
+
   return (
     <div
       style={{
@@ -63,7 +65,6 @@ const Navbar = () => {
         >
           <Row gutter={[14, 18]}>
             <Col span={6}>
-              {" "}
               <Button
                 type="text"
                 icon={<MenuOutlined />}
@@ -183,7 +184,16 @@ const Navbar = () => {
                 >
                   Add store {<PlusOutlined />}
                 </Button>
-                <img src={avatar} alt="" style={{ paddingRight: "6px" }} />
+                <img
+                  src={user?.profileImage || avatar}
+                  alt="Profile"
+                  style={{
+                    paddingRight: "2px",
+                    width: "34px",
+                    height: "32px",
+                    borderRadius: "50%",
+                  }}
+                />
               </div>
             </div>
           </Col>
@@ -192,4 +202,5 @@ const Navbar = () => {
     </div>
   );
 };
+
 export default Navbar;
