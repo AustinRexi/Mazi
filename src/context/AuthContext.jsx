@@ -8,24 +8,33 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const profileImage = localStorage.getItem("profileImage") || null;
     if (token) {
-      setUser({ token });
+      setUser({ token, profileImage });
     }
     setLoading(false);
   }, []);
 
   const login = (token) => {
     localStorage.setItem("token", token);
-    setUser({ token });
+    setUser({ token, profileImage: user?.profileImage || null });
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("profileImage");
     setUser(null);
   };
 
+  const updateProfileImage = (base64Image) => {
+    localStorage.setItem("profileImage", base64Image);
+    setUser((prev) => ({ ...prev, profileImage: base64Image }));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, updateProfileImage, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

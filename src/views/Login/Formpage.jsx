@@ -156,7 +156,7 @@ function Formpage() {
         justifyContent: "center",
       }}
     >
-      <div style={{ marginLeft: "100px" }}>
+      <div style={{ marginLeft: "80px" }}>
         <Title
           level={3}
           style={{ marginLeft: "12px", fontSize: "34px", lineHeight: "22px" }}
