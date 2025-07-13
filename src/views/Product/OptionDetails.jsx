@@ -1,43 +1,59 @@
 import { Col, Row } from "antd";
+import { useState, useEffect } from "react";
 import ProductDetails from "../../Components/Product/ProductDetails";
 import ImageCard from "./ImageCard";
 import Addproduct from "./Addproduct";
-import { useState } from "react";
 import PrevandNext from "../../Components/shared/PrevandNext";
 
 function OptionDetails({ activeProduct }) {
   const [viewProduct, setViewProduct] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 576);
+
+  // Handle window resize for responsive styling
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 576);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleEditClick = () => {
     setViewProduct(true);
   };
 
+  const handleBackFromAdd = () => {
+    setViewProduct(false);
+  };
+
   if (viewProduct) {
-    return <Addproduct />;
+    return <Addproduct onBack={handleBackFromAdd} />;
   }
 
   return (
-    <div style={{ backgroundColor: "#F8FBFB" }}>
-<<<<<<< HEAD
-      <Row>
-        <Col xs={11} md={16} lg={19}></Col>
-        <Col xs={9} md={8} lg={5}>
-          <PrevandNext />{" "}
+    <div style={{ backgroundColor: "#F8FBFB", width: "100%" }}>
+      <Row
+        justify="end"
+        style={{
+          padding: isMobile ? "8px" : "10px",
+          width: "100%",
+        }}
+      >
+        <Col
+          xs={12}
+          md={12}
+          lg={8}
+          style={{ display: "flex", justifyContent: "flex-end" }}
+        >
+          <PrevandNext />
         </Col>
       </Row>
 
-      <Row gutter={[10, 10]} style={{ marginTop: 14 }}>
+      <Row gutter={[10, 10]} style={{ marginTop: isMobile ? 10 : 14 }}>
         <Col
           xs={{ span: 24, order: 2 }}
           md={{ span: 24, order: 2 }}
           lg={{ span: 12, order: 1 }}
-=======
-      <Row style={{ padding: 15 }}>
-        <Col
-          xs={{ span: 24, order: 2, offset: 0 }}
-          md={{ span: 24, order: 2, offset: 3 }}
-          lg={{ span: 12, order: 1, offset: 0 }}
->>>>>>> dev-rex
         >
           <ProductDetails
             activeProduct={activeProduct}
@@ -45,15 +61,9 @@ function OptionDetails({ activeProduct }) {
           />
         </Col>
         <Col
-<<<<<<< HEAD
-          xs={{ span: 22, order: 1 }}
+          xs={{ span: 24, order: 1 }}
           md={{ span: 24, order: 1 }}
           lg={{ span: 12, order: 2 }}
-=======
-          xs={{ span: 24, order: 1, offset: 0 }}
-          md={{ span: 24, order: 1, offset: 3 }}
-          lg={{ span: 12, order: 2, offset: 0 }}
->>>>>>> dev-rex
         >
           <ImageCard />
         </Col>

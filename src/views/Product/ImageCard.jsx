@@ -6,42 +6,34 @@ import image3 from "../../Assets/Productimages/image3.svg";
 import image4 from "../../Assets/Productimages/image4.svg";
 
 const ImageCard = () => {
-  const images = [coverimage, image1, image2, image3, image4];
+  const images = [
+    { src: coverimage, alt: "Jollof Rice Cover" },
+    { src: image1, alt: "Jollof Rice Thumbnail 1" },
+    { src: image2, alt: "Jollof Rice Thumbnail 2" },
+    { src: image3, alt: "Jollof Rice Thumbnail 3" },
+    { src: image4, alt: "Jollof Rice Thumbnail 4" },
+  ];
 
   return (
-    <>
-<<<<<<< HEAD
-      <Card
-        style={{ width: 490 }}
-=======
-      <Row gutter={[50, 20]} style={{ marginBottom: "10px" }}>
-        <Col xs={8} lg={12}></Col>
-        <Col xs={6} lg={12}>
-          <PrevandNext />
-        </Col>
+    <Card
+      style={{ width: "100%", maxWidth: 490 }} // Responsive width
+      cover={<Image alt={images[0].alt} src={images[0].src} />}
+    >
+      <Row gutter={[16, 16]}>
+        {images.slice(1).map((image, index) => (
+          <Col xs={6} md={6} lg={6} key={image.src}>
+            {" "}
+            {/* Use src as key for uniqueness */}
+            <Image
+              width="100%" // Responsive width
+              style={{ maxWidth: 96 }} // Cap width for consistency
+              src={image.src}
+              alt={image.alt}
+            />
+          </Col>
+        ))}
       </Row>
-      <Card
-        style={{ width: window.innerWidth <= 700 ? 300 : 500 }}
->>>>>>> dev-rex
-        cover={<Image alt="Jollof Rice" src={images[0]} />}
-      >
-        <Row gutter={16}>
-          {images.slice(1).map((image, index) => (
-<<<<<<< HEAD
-            <Col xs={5} md={6} lg={6} key={index}>
-=======
-            <Col xs={10} md={6} lg={6} key={index}>
->>>>>>> dev-rex
-              <Image
-                width={96}
-                src={image}
-                alt={`Jollof Rice Thumbnail ${index + 1}`}
-              />
-            </Col>
-          ))}
-        </Row>
-      </Card>
-    </>
+    </Card>
   );
 };
 
