@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { Form, Col, Row, Card, Button } from "antd";
 import flower from "../../utils/icons/flower.svg";
 import Uploadimage from "./Uploadimage";
@@ -10,6 +10,16 @@ import ModalComponent from "../../Components/shared/ModalComponent";
 const AddProduct = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // Track screen size
+
+  // Handle window resize for responsive minHeight
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 700);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -29,23 +39,6 @@ const AddProduct = () => {
 
   const hideModal = () => setIsSubmitted(false);
 
-<<<<<<< HEAD
-  // Define modal styles based on device type
-  const getModalStyles = () => {
-    const isMobileOrTablet = window.innerWidth <= 900; // iPads typically have max-width of 1024px
-    return {
-      position: "absolute",
-      top: isMobileOrTablet ? 200 : 120, // 200px for mobile/iPad, 120px for desktop
-      right: isMobileOrTablet ? 20 : 380, // 20px for mobile/iPad, 380px for desktop
-      padding: 0,
-      margin: 0,
-      borderRadius: "8px",
-      display: "inline-block",
-    };
-  };
-
-=======
->>>>>>> dev-rex
   return (
     <div>
       {isSubmitted && (
@@ -53,12 +46,9 @@ const AddProduct = () => {
           isVisible={isSubmitted}
           hideModal={hideModal}
           wrapClassName="custom-modal"
-<<<<<<< HEAD
-          style={getModalStyles()} // Apply dynamic styles
-=======
           style={{
             position: "absolute",
-            top: "20%", // Adjusted for responsiveness
+            top: "50%", // Centered vertically
             left: "50%",
             transform: "translate(-50%, -50%)",
             padding: 0,
@@ -66,7 +56,6 @@ const AddProduct = () => {
             borderRadius: "8px",
             display: "inline-block",
           }}
->>>>>>> dev-rex
           bodyStyle={{
             backgroundColor: "transparent",
             padding: 0,
@@ -129,52 +118,33 @@ const AddProduct = () => {
             </Button>
           </Form.Item>
         </div>
-<<<<<<< HEAD
-        <Row gutter={[0, 0]} style={{ marginTop: 8 }}>
-          <Col xs={24} md={24} lg={8}>
-            <div style={{ width: "90%", marginLeft: "10px", height: "200vh" }}>
-              <Card style={{ height: "167vh" }}>
-=======
         <Row gutter={[8, 16]} style={{ marginTop: "10px" }}>
           <Col xs={24} md={8} lg={8}>
             <div style={{ width: "100%", marginLeft: "10px" }}>
-              <Card style={{ minHeight: "500px" }}>
->>>>>>> dev-rex
+              <Card style={{ minHeight: isMobile ? "500px" : "1064px" }}>
                 <Formfile />
               </Card>
             </div>
           </Col>
-<<<<<<< HEAD
-          <Col xs={24} md={24} lg={8}>
-            <div style={{ width: "90%", marginLeft: "8px" }}>
-              <Card style={{ height: "167vh", marginRight: "10px" }}>
-=======
           <Col xs={24} md={8} lg={8}>
             <div style={{ width: "100%", marginLeft: "8px" }}>
               <Card
                 style={{
-                  minHeight: window.innerWidth < 700 ? "400px" : "1064px",
+                  minHeight: isMobile ? "500px" : "1064px", // Unified minHeight
                   marginRight: "10px",
                 }}
               >
->>>>>>> dev-rex
                 <Uploadimage />
               </Card>
             </div>
           </Col>
-<<<<<<< HEAD
-          <Col xs={24} md={24} lg={8}>
-            <div style={{ width: "90%", marginRight: "10px" }}>
-              <Card style={{ height: "167vh" }}>
-=======
           <Col xs={24} md={8} lg={8}>
             <div style={{ width: "100%", marginRight: "10px" }}>
               <Card
                 style={{
-                  minHeight: window.innerWidth < 700 ? "500px" : "1064px",
+                  minHeight: isMobile ? "500px" : "1064px", // Unified minHeight
                 }}
               >
->>>>>>> dev-rex
                 <Edit />
               </Card>
             </div>
