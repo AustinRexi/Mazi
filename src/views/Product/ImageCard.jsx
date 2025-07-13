@@ -12,18 +12,18 @@ const ImageCard = () => {
   return (
     <>
       <Row gutter={[50, 20]} style={{ marginBottom: "10px" }}>
-        <Col span={12}></Col>
-        <Col span={12}>
+        <Col xs={8} lg={12}></Col>
+        <Col xs={6} lg={12}>
           <PrevandNext />
         </Col>
       </Row>
       <Card
-        style={{ width: 500 }}
+        style={{ width: window.innerWidth <= 700 ? 300 : 500 }}
         cover={<Image alt="Jollof Rice" src={images[0]} />}
       >
         <Row gutter={16}>
           {images.slice(1).map((image, index) => (
-            <Col span={6} key={index}>
+            <Col xs={10} md={6} lg={6} key={index}>
               <Image
                 width={100}
                 src={image}

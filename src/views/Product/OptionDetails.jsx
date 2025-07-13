@@ -17,14 +17,22 @@ function OptionDetails({ activeProduct }) {
 
   return (
     <div style={{ backgroundColor: "#F8FBFB" }}>
-      <Row style={{ padding: 18, marginLeft: 10 }}>
-        <Col span={12}>
+      <Row style={{ padding: 15 }}>
+        <Col
+          xs={{ span: 24, order: 2, offset: 0 }}
+          md={{ span: 24, order: 2, offset: 3 }}
+          lg={{ span: 12, order: 1, offset: 0 }}
+        >
           <ProductDetails
             activeProduct={activeProduct}
             onClick={handleEditClick}
           />
         </Col>
-        <Col span={12}>
+        <Col
+          xs={{ span: 24, order: 1, offset: 0 }}
+          md={{ span: 24, order: 1, offset: 3 }}
+          lg={{ span: 12, order: 2, offset: 0 }}
+        >
           <ImageCard />
         </Col>
       </Row>

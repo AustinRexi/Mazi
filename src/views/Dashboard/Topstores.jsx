@@ -39,7 +39,7 @@ const Topstores = () => (
   >
     <header
       style={{
-        fontWeight: 600,
+        fontWeight: 400,
         fontSize: "24px",
         lineHeight: "32px",
         marginBottom: "12px",

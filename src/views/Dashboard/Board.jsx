@@ -26,10 +26,10 @@ const Board = () => {
             <Title
               level={5}
               style={{
-                fontWeight: 600,
+                fontWeight: 400,
                 fontSize: "24px",
                 lineHeight: "32px",
-                fontFamily: "NeueHaasDisplayBoldItalic",
+                fontFamily: "NeueHaasDisplayBold",
                 whiteSpace: "nowrap",
               }}
             >

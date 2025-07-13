@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Flex, Row, Col } from "antd";
 import Addbutton from "../../Components/Product/Addbutton";
 import Filterbutton from "../../Components/Product/Filterbutton";
 import Search from "../../Components/Product/Search";
-import { Flex, Row, Col } from "antd";
 import Tabbutton from "../../Components/Product/Tabbutton";
 import Pageignition from "../../Components/Product/Pageignition";
 import Fooddata from "../../Assets/Fooddata";
@@ -37,20 +37,20 @@ function Product() {
   };
 
   const handleAddButtonClick = () => {
-    navigate("/addproduct");
+    navigate("/addproduct"); // Adjusted to match your latest code
   };
 
   return (
     <div>
       {!activeProduct && (
         <>
-          <Row gutter={[28, 15]} style={{ gap: 16 }}>
-            <Col xs={3} md={4} lg={2}>
+          <Row gutter={[4, 16]} style={{ marginTop: "10px", flexWrap: "wrap" }}>
+            <Col xs={24} md={6} lg={3} order={{ xs: 2, lg: 1 }}>
               <h2
                 style={{
                   marginTop: "20px",
                   color: "#000000",
-                  fontWeight: 600,
+                  fontWeight: 400,
                   fontSize: "24px",
                   lineHeight: "32px",
                   marginLeft: 14,
@@ -59,19 +59,23 @@ function Product() {
                 Products
               </h2>
             </Col>
-            <Col xs={16} md={12} lg={7}>
+            <Col
+              xs={{ span: 24, order: 3, offset: 0 }}
+              md={{ span: 10, order: 2, offset: 0 }}
+              lg={{ span: 7, order: 2, offset: 0 }}
+            >
               <Flex
                 style={{
                   gap: "10px",
-                  padding: "2px,8px,2px,8px",
+                  padding: "2px 8px",
                   marginLeft: "118px",
                   marginTop: "18px",
                   border: "1px solid #B5B6B5",
                   borderRadius: "16px",
-                  height: "8vh",
+                  height: "50px",
                   width: "175px",
                 }}
-                wrap
+                wrap="wrap"
               >
                 {[
                   { id: "tab1", label: "Food" },
@@ -97,12 +101,19 @@ function Product() {
                 ))}
               </Flex>
             </Col>
-            <Col xs={11} md={0} lg={0}></Col>
-            <Col xs={12} md={7} lg={5}>
+            <Col
+              xs={{ span: 24, order: 4, offset: 0 }}
+              md={{ span: 6, order: 4, offset: 0 }}
+              lg={{ span: 4, order: 3, offset: 0 }}
+            >
               <Addbutton onClick={handleAddButtonClick} />
             </Col>
-            <Col xs={4} md={7} lg={0}></Col>
-            <Col xs={18} md={10} lg={5}>
+
+            <Col
+              xs={{ span: 24, order: 2, offset: 5 }}
+              md={{ span: 10, order: 3, offset: 2 }}
+              lg={{ span: 6, order: 4, offset: 0 }}
+            >
               <Search
                 placeholder={getPlaceholderText()}
                 style={{
@@ -113,8 +124,11 @@ function Product() {
                 }}
               />
             </Col>
-
-            <Col xs={8} md={6} lg={3}>
+            <Col
+              xs={{ span: 24, order: 5, offset: 0 }}
+              md={{ span: 4, order: 5, offset: 0 }}
+              lg={{ span: 4, order: 5, offset: 0 }}
+            >
               <Filterbutton
                 data={getFilterItems().data}
                 text={getFilterItems().text}

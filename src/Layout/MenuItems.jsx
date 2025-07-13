@@ -118,7 +118,9 @@ const MenuItem = () => {
                   fontSize: "16px",
                   fontWeight: 500,
                   lineHeight: "24px",
-                  fontFamily: "NeueHaasDisplayLight",
+                  fontFamily: isActive
+                    ? "NeueHaasDisplayBold"
+                    : "NeueHaasDisplayLight",
                 }}
               >
                 {item.name}

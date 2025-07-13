@@ -48,7 +48,7 @@ const Uploadmore = () => {
           display: "flex",
           alignItems: "center",
           gap: "4px",
-          width: "14vw",
+          width: "150px",
           marginLeft: "5px",
           backgroundColor: "#F1F7F4",
           height: "60px",
