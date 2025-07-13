@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { Form, Col, Row, Card, Button } from "antd";
 import flower from "../../utils/icons/flower.svg";
 import Uploadimage from "./Uploadimage";
@@ -10,6 +10,16 @@ import ModalComponent from "../../Components/shared/ModalComponent";
 const AddProduct = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700); // Track screen size
+
+  // Handle window resize for responsive minHeight
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 700);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -38,7 +48,7 @@ const AddProduct = () => {
           wrapClassName="custom-modal"
           style={{
             position: "absolute",
-            top: "20%", // Adjusted for responsiveness
+            top: "50%", // Centered vertically
             left: "50%",
             transform: "translate(-50%, -50%)",
             padding: 0,
@@ -111,7 +121,7 @@ const AddProduct = () => {
         <Row gutter={[8, 16]} style={{ marginTop: "10px" }}>
           <Col xs={24} md={8} lg={8}>
             <div style={{ width: "100%", marginLeft: "10px" }}>
-              <Card style={{ minHeight: "500px" }}>
+              <Card style={{ minHeight: isMobile ? "500px" : "1064px" }}>
                 <Formfile />
               </Card>
             </div>
@@ -120,7 +130,7 @@ const AddProduct = () => {
             <div style={{ width: "100%", marginLeft: "8px" }}>
               <Card
                 style={{
-                  minHeight: window.innerWidth < 700 ? "400px" : "1064px",
+                  minHeight: isMobile ? "500px" : "1064px", // Unified minHeight
                   marginRight: "10px",
                 }}
               >
@@ -132,7 +142,7 @@ const AddProduct = () => {
             <div style={{ width: "100%", marginRight: "10px" }}>
               <Card
                 style={{
-                  minHeight: window.innerWidth < 700 ? "500px" : "1064px",
+                  minHeight: isMobile ? "500px" : "1064px", // Unified minHeight
                 }}
               >
                 <Edit />
