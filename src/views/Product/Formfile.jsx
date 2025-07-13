@@ -26,7 +26,7 @@ function Formfile() {
           borderRadius: "12px",
         }}
       >
-        <h3 style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}>
+        <h3 style={{ fontWeight: 400, fontSize: "24px", lineHeight: "32px" }}>
           Main Information
         </h3>
         <Form.Item
@@ -163,7 +163,7 @@ function Formfile() {
           <div style={{ display: "flex" }}>
             <h3
               style={{
-                fontWeight: 600,
+                fontWeight: 400,
                 fontSize: "24px",
                 height: "32px",
                 whiteSpace: "wrap",
@@ -199,7 +199,7 @@ function Formfile() {
           </div>
         </div>
         <Divider />
-        <h3 style={{ fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}>
+        <h3 style={{ fontWeight: 400, fontSize: "24px", lineHeight: "32px" }}>
           {" "}
           Allow Backorders?
         </h3>

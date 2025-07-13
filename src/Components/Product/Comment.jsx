@@ -58,7 +58,7 @@ const Comment = () => {
             fontWeight: 400,
             fontSize: "18px",
             lineHeight: "16px",
-            marginTop: 6,
+            marginTop: 18,
           }}
         >
           Post

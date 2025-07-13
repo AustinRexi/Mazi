@@ -77,7 +77,7 @@ const ChartDetail = () => {
                   <h5
                     style={{
                       fontSize: "24px",
-                      fontWeight: 600,
+                      fontWeight: 400,
                       lineHeight: "32px",
                       marginBottom: "10px",
                     }}

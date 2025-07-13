@@ -10,13 +10,28 @@ const ImageCard = () => {
 
   return (
     <>
+<<<<<<< HEAD
       <Card
         style={{ width: 490 }}
+=======
+      <Row gutter={[50, 20]} style={{ marginBottom: "10px" }}>
+        <Col xs={8} lg={12}></Col>
+        <Col xs={6} lg={12}>
+          <PrevandNext />
+        </Col>
+      </Row>
+      <Card
+        style={{ width: window.innerWidth <= 700 ? 300 : 500 }}
+>>>>>>> dev-rex
         cover={<Image alt="Jollof Rice" src={images[0]} />}
       >
         <Row gutter={16}>
           {images.slice(1).map((image, index) => (
+<<<<<<< HEAD
             <Col xs={5} md={6} lg={6} key={index}>
+=======
+            <Col xs={10} md={6} lg={6} key={index}>
+>>>>>>> dev-rex
               <Image
                 width={96}
                 src={image}

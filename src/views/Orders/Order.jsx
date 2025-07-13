@@ -99,7 +99,7 @@ const styles = {
     marginTop: "18px",
     border: "1px solid #B5B6B5",
     borderRadius: "16px",
-    height: "8vh",
+    height: "50px",
     width: "278px",
   },
   heading: {

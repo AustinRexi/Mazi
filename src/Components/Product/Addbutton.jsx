@@ -12,7 +12,7 @@ function Addbutton({ onClick, text = "Add product" }) {
           borderRadius: "24px",
           marginTop: "16px",
           marginLeft: "6px",
-          height: "8vh",
+          height: "50px",
           width: "160px",
 
           padding: "14px, 28px, 14px, 28px",
