@@ -40,16 +40,25 @@ const MapComponent = () => {
   const mapRef = useRef(null);
 
   useEffect(() => {
+    if (!mapboxgl.supported()) {
+      console.error("WebGL is not supported in this browser.");
+      return;
+    }
+
+    const zoomLevel = window.innerWidth < 768 ? 14 : 15; // Adjust zoom for mobile
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [3.355168, 6.598775],
-      zoom: 15,
+      zoom: zoomLevel,
     });
+
+    // Handle window resize
+    const handleResize = () => mapRef.current.resize();
+    window.addEventListener("resize", handleResize);
 
     markersData.forEach((marker) => {
       const markerContainer = document.createElement("div");
-
       Object.assign(markerContainer.style, {
         display: "flex",
         flexDirection: "column",
@@ -60,18 +69,17 @@ const MapComponent = () => {
       const icon = document.createElement("img");
       icon.src = marker.icon;
       icon.alt = "icon";
-
+      const iconSize = window.innerWidth < 768 ? "30px" : "50px"; // Responsive icon size
       Object.assign(icon.style, {
-        width: "50px",
-        height: "50px",
+        width: iconSize,
+        height: iconSize,
         marginBottom: "5px",
       });
 
       const label = document.createElement("div");
       label.textContent = marker.label;
-
       Object.assign(label.style, {
-        fontSize: "12px",
+        fontSize: window.innerWidth < 768 ? "10px" : "12px", // Responsive font size
         color: "black",
         backgroundColor: "white",
         padding: "2px 5px",
@@ -88,18 +96,21 @@ const MapComponent = () => {
         .addTo(mapRef.current);
     });
 
-    return () => mapRef.current.remove();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      mapRef.current.remove();
+    };
   }, []);
 
   return (
     <div
       ref={mapContainerRef}
       style={{
-        width: "97%",
-        height: "90%",
-        position: "relative",
-        background: "transparent",
-        border: "none",
+        width: "100%",
+        height: "100vh", // Full viewport height
+        // position: "absolute",
+        // top: 0,
+        // left: 0,
       }}
     />
   );

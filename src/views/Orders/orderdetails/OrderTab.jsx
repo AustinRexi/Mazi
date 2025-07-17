@@ -40,7 +40,7 @@ function OrderTab({ isVisible: initialIsVisible }) {
   const ActiveComponent = dataRefrence[activeTabKey];
 
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div style={{ marginBottom: 16, marginTop: 10 }}>
       <Row>
         <Col span={9}>
           {isButtonVisible ? (

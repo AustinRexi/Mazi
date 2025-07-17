@@ -64,7 +64,8 @@ function Request() {
         <img src={processingRequest.icon} style={blinkAnimation} />
         <h4
           style={{
-            fontWeight: 600,
+            fontFamily: "NeueHaasDisplayBold",
+            fontWeight: 500,
             fontSize: "20px",
             lineHeight: "24px",
             margin: 0,
@@ -89,10 +90,10 @@ function Request() {
 
         return (
           <Row gutter={[10, 16]} style={{ marginLeft: "2px" }} key={index}>
-            <Col span={5}>
+            <Col xs={0} md={5} lg={5}>
               <img src={item.icon} alt="Food icon" />
             </Col>
-            <Col span={12}>
+            <Col xs={8} md={12} lg={12}>
               <h5
                 style={{
                   fontWeight: 500,
@@ -126,7 +127,9 @@ function Request() {
               </div>
             </Col>
             <Col
-              span={5}
+              xs={4}
+              md={5}
+              lg={5}
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -143,7 +146,7 @@ function Request() {
               >
                 {item.kitchen}
               </h5>
-              <h2 style={{ fontWeight: 700 }}>${totalPrice}</h2>
+              <h2 style={{ fontWeight: 500 }}>${totalPrice}</h2>
             </Col>
 
             {index < allOrder.length - 1 && <Divider />}

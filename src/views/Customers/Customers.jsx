@@ -39,7 +39,7 @@ function Customers() {
             style={{
               marginTop: "20px",
               color: "#000000",
-              fontWeight: 600,
+              fontWeight: 500,
               fontSize: "clamp(18px, 4vw, 24px)", // Responsive font size
               lineHeight: "32px",
               marginLeft: 4,

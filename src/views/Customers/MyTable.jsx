@@ -17,7 +17,7 @@ const menu = (record) => (
 const cellStyle = {
   fontFamily: "NeueHaasDisplayRoman",
   fontSize: 16,
-  fontWeight: 500,
+  fontWeight: 400,
   lineHeight: "24px",
 };
 

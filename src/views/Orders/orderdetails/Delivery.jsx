@@ -3,22 +3,29 @@ import icon from "../../../Assets/Ordericons/delivery.svg";
 function Delivery() {
   return (
     <Card style={{ width: "600px" }}>
-      <h3 style={{ fontWeight: 700, lineHeight: "30px", size: "28px" }}>
+      <h3
+        style={{
+          fontFamily: "NeueHaasDisplayBold",
+          fontWeight: 500,
+          lineHeight: "30px",
+          size: "28px",
+        }}
+      >
         Delivery
       </h3>
       <Row gutter={[10, 16]}>
-        <Col span={2}>
+        <Col xs={2} md={2} lg={2}>
           <Avatar src={icon} alt="delivery" size="large" />
         </Col>
-        <Col span={16}>
+        <Col xs={6} md={16} lg={16}>
           <h4 style={{ fontWeight: 400, lineHeight: "28px", fontSize: "16px" }}>
             Mazi Delivery
           </h4>
         </Col>
-        <Col span={6}>
+        <Col xs={3} md={6} lg={6}>
           <h3
             style={{
-              fontWeight: 700,
+              fontWeight: 500,
               fontSize: "20px",
               lineHeight: "28px",
               marginLeft: "20px",

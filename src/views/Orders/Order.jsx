@@ -105,7 +105,7 @@ const styles = {
   heading: {
     marginTop: "20px",
     color: "#000000",
-    fontWeight: 600,
+    fontWeight: 500,
     fontSize: "24px",
     lineHeight: "32px",
     marginLeft: 20,

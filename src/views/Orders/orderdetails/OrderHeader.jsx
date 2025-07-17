@@ -20,21 +20,29 @@ function OrderHeader({ isVisible: initialIsVisible }) {
   return (
     <div style={{ paddingRight: 70 }}>
       <Row>
-        <Col span={6}>
+        <Col
+          xs={{ span: 10, order: 3 }}
+          md={{ span: 6, order: 1 }}
+          lg={{ span: 6, order: 1 }}
+        >
           <h2
             style={{
               marginTop: 12,
               fontWeight: 600,
               lineHeight: "32px",
               fontSize: "24px",
-
+              whiteSpace: "nowrap",
               fontFamily: "NeueHaasDisplayRoman",
             }}
           >
             Order #465765322
           </h2>
         </Col>
-        <Col span={10}>
+        <Col
+          xs={{ span: 24, order: 4 }}
+          md={{ span: 10, order: 4 }}
+          lg={{ span: 10, order: 4 }}
+        >
           <Flex
             style={{
               justifyContent: "start",
@@ -105,6 +113,7 @@ function OrderHeader({ isVisible: initialIsVisible }) {
                 display: "flex",
                 alignItems: "center",
                 marginLeft: 3,
+                whiteSpace: "nowrap",
               }}
             >
               <CalendarOutlined style={{ marginRight: "8px" }} />
@@ -122,8 +131,16 @@ function OrderHeader({ isVisible: initialIsVisible }) {
             </div>
           </Flex>
         </Col>
-        <Col span={3}></Col>
-        <Col span={5}>
+        <Col
+          xs={{ span: 12, order: 1 }}
+          md={{ span: 3, order: 3 }}
+          lg={{ span: 3, order: 3 }}
+        ></Col>
+        <Col
+          xs={{ span: 5, order: 2 }}
+          md={{ span: 5, order: 4 }}
+          lg={{ span: 5, order: 4 }}
+        >
           <PrevandNext />
         </Col>
       </Row>

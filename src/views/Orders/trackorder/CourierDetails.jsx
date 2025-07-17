@@ -54,8 +54,9 @@ const CourierDetails = () => {
       >
         <h6
           style={{
+            fontFamily: "NeueHaasDisplayBold",
             fontSize: "20px",
-            fontWeight: 600,
+            fontWeight: 500,
             lineHeight: "24px",
           }}
         >
@@ -105,7 +106,8 @@ const CourierDetails = () => {
         <div style={{ marginBottom: 16 }}>
           <h6
             style={{
-              fontWeight: 700,
+              fontFamily: "NeueHaasDisplayBold",
+              fontWeight: 500,
               lineHeight: "24px",
               fontSize: "20px",
             }}
@@ -139,8 +141,9 @@ const CourierDetails = () => {
         </div>
         <h6
           style={{
+            fontFamily: "NeueHaasDisplayBold",
             fontSize: "20px",
-            fontWeight: 600,
+            fontWeight: 500,
             lineHeight: "24px",
           }}
         >
@@ -195,7 +198,12 @@ const CourierDetails = () => {
         </Typography.Paragraph>
 
         <Address
-          style={{ fontSize: "20px", fontWeight: 600, lineHeight: "24px" }}
+          style={{
+            fontSize: "20px",
+            fontWeight: 500,
+            fontFamily: "NeueHaasDisplayBold",
+            lineHeight: "24px",
+          }}
           title="Delivery Address"
           info="Additional info"
         />

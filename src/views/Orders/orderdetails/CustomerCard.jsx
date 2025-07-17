@@ -30,8 +30,9 @@ const CustomerCard = () => {
       >
         <h6
           style={{
+            fontFamily: "NeueHaasDisplayBold",
             fontSize: "20px",
-            fontWeight: 700,
+            fontWeight: 500,
             lineHeight: "24px",
           }}
         >
@@ -69,7 +70,8 @@ const CustomerCard = () => {
         <div style={{ marginBottom: 16 }}>
           <h6
             style={{
-              fontWeight: 700,
+              fontFamily: "NeueHaasDisplayBold",
+              fontWeight: 500,
               lineHeight: "24px",
               fontSize: "20px",
             }}

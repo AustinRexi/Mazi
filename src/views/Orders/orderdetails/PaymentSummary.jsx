@@ -27,7 +27,8 @@ const PaymentSummary = () => {
     <Card style={{ width: "600px" }}>
       <h3
         style={{
-          fontWeight: 700,
+          fontFamily: "NeueHaasDisplayBold",
+          fontWeight: 500,
           lineHeight: "24px",
           fontSize: "20px",
           marginBottom: 20,
@@ -36,8 +37,8 @@ const PaymentSummary = () => {
         Payment Summary
       </h3>
       {items.map((item, index) => (
-        <Row key={index} style={{ alignItems: "center" }}>
-          <Col span={19}>
+        <Row gutter={[1, 0]} key={index} style={{ alignItems: "center" }}>
+          <Col xs={9} md={19} lg={19}>
             <h3
               style={{
                 fontWeight: item.product === "Total" ? 700 : 500,
@@ -48,7 +49,7 @@ const PaymentSummary = () => {
               {item.product}
             </h3>
           </Col>
-          <Col span={4}>
+          <Col xs={10} md={4} lg={4}>
             {typeof item.totalPrice === "object" ? (
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span>{item.totalPrice.details}</span>
@@ -57,7 +58,7 @@ const PaymentSummary = () => {
             ) : (
               <h3
                 style={{
-                  fontWeight: item.product === "Total" ? 700 : "inherit",
+                  fontWeight: item.product === "Total" ? 500 : "inherit",
                   fontSize: item.product === "Total" ? "20px" : "inherit",
                   lineHeight: item.product === "Total" ? "20px" : "inherit",
                   color:

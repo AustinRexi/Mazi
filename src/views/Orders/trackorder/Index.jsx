@@ -5,11 +5,19 @@ import CourierDetails from "./CourierDetails";
 function TrackOrder() {
   return (
     <div style={{ padding: 16 }}>
-      <Row gutter={[4, 10]}>
-        <Col span={17}>
+      <Row gutter={[0, 16]}>
+        <Col
+          xs={{ span: 24, offset: 0 }}
+          md={{ span: 24, offset: 0 }}
+          lg={{ span: 16, offset: 0 }}
+        >
           <MapComponent />
         </Col>
-        <Col span={7}>
+        <Col
+          xs={{ span: 24, offset: 0 }}
+          md={{ span: 24, offset: 0 }}
+          lg={{ span: 7, offset: 1 }}
+        >
           <CourierDetails />
         </Col>
       </Row>
