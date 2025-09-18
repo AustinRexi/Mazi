@@ -1,20 +1,21 @@
-import { Row, Col, Select, Button, Drawer, Menu } from "antd";
+import { Row, Col, Select, Button, Drawer, Menu, Badge, Modal } from "antd";
 import { useState, useEffect, useContext } from "react";
-import { PlusOutlined, MenuOutlined } from "@ant-design/icons";
-import cart from "../utils/icons/cart.svg";
-import notification from "../utils/icons/notification.svg";
+import { MenuOutlined, BellOutlined } from "@ant-design/icons";
 import avatar from "../utils/icons/avatar.svg"; // Fallback image
 import flag from "../utils/icons/flag.svg";
 import menu from "../utils/icons/menu.svg";
 import logo from "../utils/icons/logo.svg";
 import MenuItem from "./MenuItems";
 import { AuthContext } from "../context/AuthContext"; // Adjust path to your Auth.jsx
+import notification from "../utils/icons/notification.svg";
 
 const Navbar = () => {
   const { Option } = Select;
   const { user } = useContext(AuthContext);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(7);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const optionsWithImages = [
     {
@@ -49,6 +50,22 @@ const Navbar = () => {
     setDrawerOpen((prev) => !prev);
   };
 
+  // Function to handle incoming notifications
+  const handleNewNotification = () => {
+    setNotificationCount((prev) => prev + 1);
+  };
+
+  // Function to handle opening the notification modal
+  const handleOpenNotifications = () => {
+    setNotificationCount(0); // Reset count to 0
+    setModalVisible(true); // Open the modal
+  };
+
+  // Function to close the notification modal
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <div
       style={{
@@ -63,7 +80,10 @@ const Navbar = () => {
             alignItems: "center",
           }}
         >
-          <Row gutter={[14, 18]}>
+          <Row
+            gutter={[14, 18]}
+            style={{ justifyContent: "center", alignContent: "center" }}
+          >
             <Col span={6}>
               <Button
                 type="text"
@@ -76,9 +96,46 @@ const Navbar = () => {
               <img src={logo} alt="Logo" style={{ height: 40 }} />
             </Col>
             <Col span={2}>
-              <div style={{ display: "flex", gap: "16px", marginTop: 14 }}>
-                <img src={cart} alt="Cart" />
-                <img src={notification} alt="Notifications" />
+              <div
+                style={{
+                  display: "flex",
+                  gap: "16px",
+                  marginTop: 14,
+                  justifyContent: "center",
+                }}
+              >
+                <Badge
+                  count={notificationCount}
+                  offset={[0, 0]}
+                  style={{ backgroundColor: "#ff4d4f" }}
+                >
+                  <div
+                    onClick={handleOpenNotifications}
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      backgroundColor: "#F2FBFB",
+                      borderRadius: 8,
+                      padding: "6px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <img src={notification} alt="notifications" />
+                  </div>
+                </Badge>
+                <img
+                  src={user?.profileImage || avatar}
+                  alt="Profile"
+                  style={{
+                    paddingRight: "2px",
+                    width: "34px",
+                    height: "32px",
+                    borderRadius: "50%",
+                  }}
+                />
               </div>
             </Col>
           </Row>
@@ -176,13 +233,33 @@ const Navbar = () => {
                   gap: 18,
                 }}
               >
-                <img src={cart} alt="" />
-                <img src={notification} alt="" />
+                <Badge
+                  count={notificationCount}
+                  offset={[0, 0]}
+                  style={{ backgroundColor: "#ff4d4f" }}
+                >
+                  <div
+                    onClick={handleOpenNotifications}
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      backgroundColor: "#F2FBFB",
+                      borderRadius: 8,
+                      padding: "6px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <img src={notification} alt="notifications" />
+                  </div>
+                </Badge>
                 <Button
                   type="primary"
                   style={{ height: 32, fontFamily: "roboto" }}
                 >
-                  Add store {<PlusOutlined />}
+                  User Management
                 </Button>
                 <img
                   src={user?.profileImage || avatar}
@@ -199,6 +276,22 @@ const Navbar = () => {
           </Col>
         </Row>
       )}
+      <Modal
+        title="Notifications"
+        open={modalVisible}
+        onCancel={handleCloseModal}
+        footer={[
+          <Button key="close" onClick={handleCloseModal}>
+            Close
+          </Button>,
+          <Button key="test" onClick={handleNewNotification}>
+            Simulate New Notification
+          </Button>,
+        ]}
+      >
+        <p>No new notifications</p>
+        {/* Replace with actual notification content */}
+      </Modal>
     </div>
   );
 };

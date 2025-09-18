@@ -181,8 +181,8 @@ function Formpage() {
         style={{
           width: "50vh",
           padding: "24px",
-          background: "white",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+
+          // boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
           borderRadius: "8px",
           marginLeft: "25px",
         }}
