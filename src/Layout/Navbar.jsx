@@ -1,6 +1,6 @@
 import { Row, Col, Select, Button, Drawer, Menu, Badge, Modal } from "antd";
 import { useState, useEffect, useContext } from "react";
-import { MenuOutlined, BellOutlined } from "@ant-design/icons";
+import { MenuOutlined } from "@ant-design/icons";
 import avatar from "../utils/icons/avatar.svg"; // Fallback image
 import flag from "../utils/icons/flag.svg";
 import menu from "../utils/icons/menu.svg";
@@ -8,14 +8,18 @@ import logo from "../utils/icons/logo.svg";
 import MenuItem from "./MenuItems";
 import { AuthContext } from "../context/AuthContext"; // Adjust path to your Auth.jsx
 import notification from "../utils/icons/notification.svg";
-
+import UserManagement from "../views/usermanagement";
+import addicon from "../Assets/Lineicons/Addicon.svg";
 const Navbar = () => {
   const { Option } = Select;
   const { user } = useContext(AuthContext);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(7);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [notificationModalVisible, setNotificationModalVisible] =
+    useState(false);
+  const [userManagementModalVisible, setUserManagementModalVisible] =
+    useState(false); // New state for UserManagement modal
 
   const optionsWithImages = [
     {
@@ -58,12 +62,22 @@ const Navbar = () => {
   // Function to handle opening the notification modal
   const handleOpenNotifications = () => {
     setNotificationCount(0); // Reset count to 0
-    setModalVisible(true); // Open the modal
+    setNotificationModalVisible(true); // Open the notification modal
   };
 
   // Function to close the notification modal
-  const handleCloseModal = () => {
-    setModalVisible(false);
+  const handleCloseNotificationModal = () => {
+    setNotificationModalVisible(false);
+  };
+
+  // Function to handle opening the UserManagement modal
+  const handleOpenUserManagementModal = () => {
+    setUserManagementModalVisible(true); // Open the UserManagement modal
+  };
+
+  // Function to close the UserManagement modal
+  const handleCloseUserManagementModal = () => {
+    setUserManagementModalVisible(false);
   };
 
   return (
@@ -92,9 +106,20 @@ const Navbar = () => {
                 style={{ color: "#a4a4a4" }}
               />
             </Col>
-            <Col span={12}>
+            <Col span={8}>
               <img src={logo} alt="Logo" style={{ height: 40 }} />
             </Col>
+            <Col span={5}>
+              {" "}
+              <Button
+                type="primary"
+                style={{ height: 22 }}
+                onClick={handleOpenUserManagementModal} // Updated to toggle modal
+              >
+                <img src={addicon} alt="user management" />
+              </Button>
+            </Col>
+
             <Col span={2}>
               <div
                 style={{
@@ -258,6 +283,7 @@ const Navbar = () => {
                 <Button
                   type="primary"
                   style={{ height: 32, fontFamily: "roboto" }}
+                  onClick={handleOpenUserManagementModal} // Updated to toggle modal
                 >
                   User Management
                 </Button>
@@ -276,12 +302,13 @@ const Navbar = () => {
           </Col>
         </Row>
       )}
+      {/* Notification Modal */}
       <Modal
         title="Notifications"
-        open={modalVisible}
-        onCancel={handleCloseModal}
+        open={notificationModalVisible}
+        onCancel={handleCloseNotificationModal}
         footer={[
-          <Button key="close" onClick={handleCloseModal}>
+          <Button key="close" onClick={handleCloseNotificationModal}>
             Close
           </Button>,
           <Button key="test" onClick={handleNewNotification}>
@@ -291,6 +318,20 @@ const Navbar = () => {
       >
         <p>No new notifications</p>
         {/* Replace with actual notification content */}
+      </Modal>
+      {/* User Management Modal */}
+      <Modal
+        title="User Management"
+        open={userManagementModalVisible}
+        onCancel={handleCloseUserManagementModal}
+        footer={[
+          <Button key="close" onClick={handleCloseUserManagementModal}>
+            Close
+          </Button>,
+        ]}
+        width={1000} // Adjust width as needed
+      >
+        <UserManagement />
       </Modal>
     </div>
   );

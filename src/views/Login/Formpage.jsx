@@ -1,126 +1,13 @@
-// import { useEffect, useState } from "react";
-// import { LockOutlined, UserOutlined } from "@ant-design/icons";
-// import { Button, Form, Input, Typography } from "antd";
-// import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-// const { Title } = Typography;
-// function Formpage() {
-//   const [passwordVisible, setPasswordVisible] = useState(false);
-//   const [form] = Form.useForm();
-//   const [clientReady, setClientReady] = useState(false);
-
-//   useEffect(() => {
-//     setClientReady(true);
-//   }, []);
-//   const onFinish = (values) => {
-//     console.log("Finish:", values);
-//   };
-//   return (
-//     <div
-//       style={{
-//         height: "100vh",
-//         width: "50vh",
-//         alignContent: "center",
-//         justifyContent: "center",
-//         marginLeft: "40px",
-//       }}
-//     >
-//       <div style={{ marginLeft: "100px" }}>
-//         <Title
-//           level={3}
-//           style={{ marginLeft: "12px", fontSize: "34px", lineHeight: "22px" }}
-//         >
-//           Admin Login
-//         </Title>
-//         <Title level={5}>please enter your login details</Title>
-//       </div>
-//       <Form
-//         form={form}
-//         name="horizontal_login"
-//         layout="block"
-//         onFinish={onFinish}
-//         style={{
-//           width: "50vh",
-//           padding: "24px",
-//           background: "white",
-//           boxshadow: " 0 0 10px rgba(0, 0, 0, 0.1)",
-//           borderradius: "8px",
-//           marginLeft: "60px",
-//         }}
-//       >
-//         <Form.Item
-//           name="username"
-//           rules={[
-//             {
-//               required: true,
-//               message: "Please input your username!",
-//             },
-//           ]}
-//         >
-//           <Input
-//             prefix={<UserOutlined className="site-form-item-icon" />}
-//             placeholder="Username"
-//           />
-//         </Form.Item>
-//         <Form.Item
-//           name="password"
-//           rules={[
-//             {
-//               required: true,
-//               message: "Please input your password!",
-//             },
-//           ]}
-//         >
-//           <Input
-//             prefix={<LockOutlined className="site-form-item-icon" />}
-//             type={passwordVisible ? "text" : "password"}
-//             placeholder="Password"
-//             suffix={
-//               passwordVisible ? (
-//                 <EyeTwoTone onClick={() => setPasswordVisible(false)} />
-//               ) : (
-//                 <EyeInvisibleOutlined
-//                   onClick={() => setPasswordVisible(true)}
-//                 />
-//               )
-//             }
-//           />
-//         </Form.Item>
-//         <p style={{ marginLeft: "170px" }}> Forgot Password?</p>
-//         <Form.Item shouldUpdate>
-//           {() => (
-//             <Button
-//               style={{
-//                 width: "43vh",
-//                 marginTop: "8px",
-//                 backgroundColor: "#034147",
-//                 color: "white",
-//               }}
-//               type="primary"
-//               htmlType="submit"
-//               disabled={
-//                 !clientReady ||
-//                 !form.isFieldsTouched(true) ||
-//                 !!form.getFieldsError().filter(({ errors }) => errors.length)
-//                   .length
-//               }
-//             >
-//               Continue
-//             </Button>
-//           )}
-//         </Form.Item>
-//       </Form>
-//     </div>
-//   );
-// }
-
-// export default Formpage;
 import { useState, useEffect, useContext } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Typography, Alert } from "antd";
+import { Button, Form, Input, Typography, Alert, Modal } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { loginUser } from "../../services/authService";
+import SignupPage from "./SignupPage";
+
+import { ForgotPassword } from "./ForgotPassword";
 
 const { Title } = Typography;
 
@@ -129,8 +16,12 @@ function Formpage() {
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState(false);
   const [error, setError] = useState("");
+  const [isSignupModalVisible, setIsSignupModalVisible] = useState(false);
+  const [isForgotPasswordModalVisible, setIsForgotPasswordModalVisible] =
+    useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
     setClientReady(true);
@@ -138,32 +29,62 @@ function Formpage() {
 
   const onFinish = async (values) => {
     try {
-      const { token } = await loginUser(values); // Call API with username and password
-      login(token); // Store token in context and localStorage
-      setError(""); // Clear any previous errors
-      navigate("/"); // Redirect to root (Board)
+      const { token } = await loginUser(values);
+      login(token);
+      setError("");
+      navigate("/");
     } catch (err) {
       setError(err.message || "Failed to login. Please try again.");
     }
+  };
+
+  const showSignupModal = () => {
+    setIsSignupModalVisible(true);
+  };
+
+  const handleSignupCancel = () => {
+    setIsSignupModalVisible(false);
+  };
+
+  const showForgotPasswordModal = () => {
+    setIsForgotPasswordModalVisible(true);
+  };
+
+  const handleForgotPasswordCancel = () => {
+    setIsForgotPasswordModalVisible(false);
   };
 
   return (
     <div
       style={{
         height: "100vh",
-
         alignContent: "center",
         justifyContent: "center",
       }}
     >
-      <div style={{ marginLeft: "80px" }}>
+      <div style={{ marginLeft: isMobile ? "150px" : "80px" }}>
         <Title
           level={3}
-          style={{ marginLeft: "12px", fontSize: "34px", lineHeight: "22px" }}
+          style={{
+            marginLeft: "14px",
+            fontSize: "26px",
+            lineHeight: "22px",
+            fontFamily: "NeueHaasDisplayMediu",
+          }}
         >
           Admin Login
         </Title>
-        <Title level={5}>please enter your login details</Title>
+        <Title
+          level={4}
+          style={{
+            fontSize: "16px",
+            lineHeight: "24px",
+            fontFamily: "NeueHaasDisplayRoman",
+            fontWeight: 500,
+          }}
+        >
+          Please enter your login details
+        </Title>
       </div>
       {error && (
         <Alert
@@ -181,8 +102,6 @@ function Formpage() {
         style={{
           width: "50vh",
           padding: "24px",
-
-          // boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
           borderRadius: "8px",
           marginLeft: "25px",
         }}
@@ -225,7 +144,18 @@ function Formpage() {
             }
           />
         </Form.Item>
-        <p style={{ marginLeft: "120px" }}>Forgot Password?</p>
+        <Button
+          style={{
+            border: "none",
+            marginLeft: "160px",
+            fontSize: "16px",
+            lineHeight: "30px",
+            color: "#666",
+          }}
+          onClick={showForgotPasswordModal}
+        >
+          Forgot Password?
+        </Button>
         <Form.Item shouldUpdate>
           {() => (
             <Button
@@ -248,7 +178,61 @@ function Formpage() {
             </Button>
           )}
         </Form.Item>
+        <div
+          style={{
+            justifyContent: "space-between",
+            alignContent: "center",
+            display: "flex",
+          }}
+        >
+          <p
+            style={{
+              fontSize: "16px",
+              lineHeight: "30px",
+              fontFamily: "NeueHaasDisplayRoman",
+              color: "#666",
+            }}
+          >
+            {"Don't have an account yet? "}
+          </p>
+          <Button
+            style={{
+              border: "none",
+              color: "#1890ff",
+              fontSize: "16px",
+              lineHeight: "28px",
+              fontFamily: "NeueHaasDisplayLight",
+            }}
+            onClick={showSignupModal}
+          >
+            Sign up
+          </Button>
+        </div>
       </Form>
+
+      {/* Modal for SignupPage */}
+      <Modal
+        title="Sign Up"
+        open={isSignupModalVisible}
+        onCancel={handleSignupCancel}
+        footer={null}
+        width={500}
+        maskClosable={false}
+      >
+        <SignupPage />
+      </Modal>
+
+      {/* Modal for ForgotPasswordPage */}
+      <Modal
+        title="Forgot Password"
+        open={isForgotPasswordModalVisible}
+        onCancel={handleForgotPasswordCancel}
+        footer={null}
+        width={500}
+        maskClosable={false}
+      >
+        <ForgotPassword />
+      </Modal>
     </div>
   );
 }

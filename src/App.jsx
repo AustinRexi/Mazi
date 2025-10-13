@@ -87,7 +87,7 @@ import Orders from "./views/Orders/Order";
 import Customers from "./views/Customers/Customers";
 import Settings from "./views/Settings/Settings";
 import Support from "./views/Support/Support";
-import Wallet from "./views/Wallet/Wallet";
+import Wallet from "./views/Wallet/index";
 import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
 import Courier from "./views/Courier/Courier";
 import CongratulationsCard from "./Components/Product/CongratulationsCard";

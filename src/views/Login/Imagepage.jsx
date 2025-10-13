@@ -36,7 +36,7 @@ function Imagepage() {
             <Title level={5} style={{ color: "white" }}>
               Buy fresh ingredients, try dishes from different places and easily
               convert currencies-
-              <span style={{ color: "orange" }}>all in one app</span>
+              <span style={{ color: "orange" }}>All in one app</span>
             </Title>
           </div>
         </div>
