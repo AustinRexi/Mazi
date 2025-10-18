@@ -1,0 +1,62 @@
+export const MOCK_TRANSACTIONS = [
+  {
+    id: "TXN-001",
+    type: "credit",
+    amount: 149.99,
+    description: "Order payment - Wireless Headphones",
+    status: "completed",
+    date: "2024-03-15T10:30:00Z",
+    orderId: "ORD-12345",
+  },
+  {
+    id: "TXN-002",
+    type: "withdrawal",
+    amount: -500.0,
+    description: "Withdrawal to Bank Account",
+    status: "completed",
+    date: "2024-03-14T14:22:00Z",
+  },
+  {
+    id: "TXN-003",
+    type: "credit",
+    amount: 279.97,
+    description: "Order payment - Smart Watch & Phone Case",
+    status: "pending",
+    date: "2024-03-15T16:45:00Z",
+    orderId: "ORD-12346",
+  },
+  {
+    id: "TXN-004",
+    type: "debit",
+    amount: -25.0,
+    description: "Platform commission fee",
+    status: "completed",
+    date: "2024-03-14T09:15:00Z",
+  },
+  {
+    id: "TXN-005",
+    type: "credit",
+    amount: 99.99,
+    description: "Order payment - Bluetooth Speaker",
+    status: "completed",
+    date: "2024-03-13T11:20:00Z",
+    orderId: "ORD-12347",
+  },
+  {
+    id: "TXN-006",
+    type: "withdrawal",
+    amount: -300.0,
+    description: "Withdrawal to PayPal",
+    status: "failed",
+    date: "2024-03-12T15:30:00Z",
+  },
+];
+
+export const earningsData = [
+  { month: "Jan", earnings: 2100 },
+  { month: "Feb", earnings: 2800 },
+  { month: "Mar", earnings: 3200 },
+  { month: "Apr", earnings: 2900 },
+  { month: "May", earnings: 3800 },
+  { month: "Jun", earnings: 4200 },
+];

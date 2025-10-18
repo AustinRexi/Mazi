@@ -10,6 +10,7 @@ import { AuthContext } from "../context/AuthContext"; // Adjust path to your Aut
 import notification from "../utils/icons/notification.svg";
 import UserManagement from "../views/usermanagement";
 import addicon from "../Assets/Lineicons/Addicon.svg";
+
 const Navbar = () => {
   const { Option } = Select;
   const { user } = useContext(AuthContext);
@@ -280,13 +281,15 @@ const Navbar = () => {
                     <img src={notification} alt="notifications" />
                   </div>
                 </Badge>
-                <Button
-                  type="primary"
-                  style={{ height: 32, fontFamily: "roboto" }}
-                  onClick={handleOpenUserManagementModal} // Updated to toggle modal
-                >
-                  User Management
-                </Button>
+                {user?.role === "admin" && (
+                  <Button
+                    type="primary"
+                    style={{ height: 32, fontFamily: "roboto" }}
+                    onClick={handleOpenUserManagementModal} // Updated to toggle modal
+                  >
+                    User Management
+                  </Button>
+                )}
                 <img
                   src={user?.profileImage || avatar}
                   alt="Profile"

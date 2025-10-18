@@ -31,7 +31,6 @@ import {
   EnvironmentOutlined,
   CodeSandboxOutlined,
 } from "@ant-design/icons";
-import "antd/dist/reset.css";
 
 const { Title, Text } = Typography;
 
@@ -284,7 +283,6 @@ const Support = () => {
     setReplyMessage("");
   };
 
-  // Stats
   const totalTickets = tickets.length;
   const openTickets = tickets.filter((t) => t.status === "open").length;
   const inProgressTickets = tickets.filter(

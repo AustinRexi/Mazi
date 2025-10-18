@@ -4,9 +4,8 @@ import { Button, Form, Input, Typography, Alert, Modal } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { loginUser } from "../../services/authService";
+import { loginUser } from "../../services/authService"; // ensure this is the version with admin/vendor logic
 import SignupPage from "./SignupPage";
-
 import { ForgotPassword } from "./ForgotPassword";
 
 const { Title } = Typography;
@@ -19,6 +18,7 @@ function Formpage() {
   const [isSignupModalVisible, setIsSignupModalVisible] = useState(false);
   const [isForgotPasswordModalVisible, setIsForgotPasswordModalVisible] =
     useState(false);
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
@@ -29,10 +29,22 @@ function Formpage() {
 
   const onFinish = async (values) => {
     try {
-      const { token } = await loginUser(values);
-      login(token);
+      // get role + token from loginUser service
+      const { token, role } = await loginUser(values);
+
+      // store login in global context
+      login(token, role);
+
       setError("");
-      navigate("/");
+
+      // redirect based on role
+      if (role === "admin") {
+        navigate("/");
+      } else if (role === "vendor") {
+        navigate("/vendors/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       setError(err.message || "Failed to login. Please try again.");
     }
@@ -72,7 +84,7 @@ function Formpage() {
             fontFamily: "NeueHaasDisplayMediu",
           }}
         >
-          Admin Login
+          Admin / Vendor Login
         </Title>
         <Title
           level={4}
@@ -86,6 +98,7 @@ function Formpage() {
           Please enter your login details
         </Title>
       </div>
+
       {error && (
         <Alert
           message={error}
@@ -94,6 +107,7 @@ function Formpage() {
           style={{ marginBottom: 16, marginLeft: "60px", width: "50vh" }}
         />
       )}
+
       <Form
         form={form}
         name="horizontal_login"
@@ -120,6 +134,7 @@ function Formpage() {
             placeholder="Username"
           />
         </Form.Item>
+
         <Form.Item
           name="password"
           rules={[
@@ -144,6 +159,7 @@ function Formpage() {
             }
           />
         </Form.Item>
+
         <Button
           style={{
             border: "none",
@@ -156,6 +172,7 @@ function Formpage() {
         >
           Forgot Password?
         </Button>
+
         <Form.Item shouldUpdate>
           {() => (
             <Button
@@ -178,6 +195,7 @@ function Formpage() {
             </Button>
           )}
         </Form.Item>
+
         <div
           style={{
             justifyContent: "space-between",
