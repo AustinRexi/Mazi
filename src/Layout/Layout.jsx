@@ -43,7 +43,7 @@ const LayoutDesign = () => {
           >
             <Sidebar />
           </Sider>
-          <Content style={{ padding: 12 }}>
+          <Content style={{ padding: 10 }}>
             {" "}
             <Outlet />{" "}
           </Content>

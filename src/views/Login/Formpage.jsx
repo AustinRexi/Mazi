@@ -69,16 +69,16 @@ function Formpage() {
   return (
     <div
       style={{
-        height: "100vh",
+        height: "100%",
         alignContent: "center",
         justifyContent: "center",
       }}
     >
-      <div style={{ marginLeft: isMobile ? "150px" : "80px" }}>
+      <div style={{ marginLeft: isMobile ? "150px" : "60px" }}>
         <Title
           level={3}
           style={{
-            marginLeft: "14px",
+            // marginLeft: "8px",
             fontSize: "26px",
             lineHeight: "22px",
             fontFamily: "NeueHaasDisplayMediu",
@@ -163,7 +163,7 @@ function Formpage() {
         <Button
           style={{
             border: "none",
-            marginLeft: "160px",
+            marginLeft: "138px",
             fontSize: "16px",
             lineHeight: "30px",
             color: "#666",

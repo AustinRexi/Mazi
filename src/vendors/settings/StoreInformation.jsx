@@ -158,9 +158,7 @@ const StoreInformation = ({ storeSettings, setStoreSettings, onSave }) => {
               <Button type="primary" icon={<SaveOutlined />} onClick={onSave}>
                 Save Store Information
               </Button>
-              <Button danger icon={<LogoutOutlined />} onClick={handleLogout}>
-                Logout
-              </Button>
+              <Button onClick={handleLogout}>Logout</Button>
             </div>
           </Form>
         </Col>
