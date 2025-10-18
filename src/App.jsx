@@ -1,5 +1,6 @@
 import "antd/dist/reset.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
+
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -29,7 +30,7 @@ import VendorSettings from "./vendors/settings";
 import VendorProduct from "./vendors/product";
 import VendorOrder from "./vendors/orders";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: (
