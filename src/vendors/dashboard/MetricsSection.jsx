@@ -1,70 +1,88 @@
 import { Row, Col, Card, Statistic, Typography } from "antd";
-import {
-  DollarOutlined,
-  ShoppingCartOutlined,
-  InboxOutlined,
-  StarFilled,
-  ArrowUpOutlined,
-} from "@ant-design/icons";
+import { StarFilled, ArrowUpOutlined } from "@ant-design/icons";
+import chartIcon from "../../utils/icons/chart.svg";
+import orderIcon from "../../utils/icons/orders.svg";
+import productIcon from "../../utils/icons/product.svg";
 
 const { Text } = Typography;
 
-const MetricsSection = () => (
-  <Row gutter={[16, 16]}>
-    <Col xs={24} sm={12} lg={6}>
-      <Card>
-        <Statistic
-          title="Total Revenue"
-          value={8500}
-          prefix={<DollarOutlined style={{ color: "#16a34a" }} />}
-          precision={2}
+const MetricsSection = () => {
+  // Dynamic metrics configuration
+  const metrics = [
+    {
+      key: "revenue",
+      title: "Total Revenue",
+      value: 8500,
+      icon: (
+        <img
+          src={chartIcon}
+          alt="revenue"
+          style={{ height: 30, borderRadius: 5 }}
         />
-        <Text type="success">
-          <ArrowUpOutlined /> +12.5% from last month
-        </Text>
-      </Card>
-    </Col>
+      ),
+      suffix: "$",
+      precision: 2,
+      growth: "+12.5%",
+      description: "from last month",
+    },
+    {
+      key: "orders",
+      title: "Total Orders",
+      value: 85,
+      icon: (
+        <img
+          src={orderIcon}
+          alt="orders"
+          style={{ height: 30, borderRadius: 5 }}
+        />
+      ),
+      growth: "+8.2%",
+      description: "from last month",
+    },
+    {
+      key: "products",
+      title: "Products Sold",
+      value: 717,
+      icon: (
+        <img
+          src={productIcon}
+          alt="products"
+          style={{ height: 30, borderRadius: 5 }}
+        />
+      ),
+      growth: "+15.1%",
+      description: "from last month",
+    },
+    {
+      key: "rating",
+      title: "Store Rating",
+      value: 4.8,
+      icon: <StarFilled style={{ color: "#fadb14" }} />,
+      precision: 1,
+      growth: "+0.2",
+      description: "from last month",
+    },
+  ];
 
-    <Col xs={24} sm={12} lg={6}>
-      <Card>
-        <Statistic
-          title="Total Orders"
-          value={85}
-          prefix={<ShoppingCartOutlined style={{ color: "#1677ff" }} />}
-        />
-        <Text type="success">
-          <ArrowUpOutlined /> +8.2% from last month
-        </Text>
-      </Card>
-    </Col>
-
-    <Col xs={24} sm={12} lg={6}>
-      <Card>
-        <Statistic
-          title="Products Sold"
-          value={717}
-          prefix={<InboxOutlined style={{ color: "#722ed1" }} />}
-        />
-        <Text type="success">
-          <ArrowUpOutlined /> +15.1% from last month
-        </Text>
-      </Card>
-    </Col>
-
-    <Col xs={24} sm={12} lg={6}>
-      <Card>
-        <Statistic
-          title="Store Rating"
-          value={4.8}
-          prefix={<StarFilled style={{ color: "#fadb14" }} />}
-          precision={1}
-        />
-        <Text type="success">
-          <ArrowUpOutlined /> +0.2 from last month
-        </Text>
-      </Card>
-    </Col>
-  </Row>
-);
+  return (
+    <Row gutter={[16, 16]}>
+      {metrics.map((metric) => (
+        <Col key={metric.key} xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title={metric.title}
+              value={metric.value}
+              prefix={metric.icon}
+              precision={metric.precision}
+            />
+            <Text type="success">
+              <ArrowUpOutlined /> {metric.growth} {metric.description}
+            </Text>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  );
+};
 
 export default MetricsSection;

@@ -29,6 +29,7 @@ import VendorSupport from "./vendors/support";
 import VendorSettings from "./vendors/settings";
 import VendorProduct from "./vendors/product";
 import VendorOrder from "./vendors/orders";
+import HomeRoute from "./Components/protectedroute/HomeRoute";
 
 const router = createHashRouter([
   {
@@ -40,7 +41,9 @@ const router = createHashRouter([
     ),
     children: [
       // 🔵 Admin Routes
-      { path: "", element: <Board /> },
+      { path: "", element: <HomeRoute /> },
+
+      // { path: "", element: <Board /> },
       { path: "Product", element: <Product /> },
       { path: "addproduct", element: <AddProduct /> },
       { path: "Orders", element: <Orders /> },
