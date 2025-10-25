@@ -111,14 +111,15 @@ const Navbar = () => {
               <img src={logo} alt="Logo" style={{ height: 40 }} />
             </Col>
             <Col span={5}>
-              {" "}
-              <Button
-                type="primary"
-                style={{ height: 22 }}
-                onClick={handleOpenUserManagementModal} // Updated to toggle modal
-              >
-                <img src={addicon} alt="user management" />
-              </Button>
+              {user?.role === "admin" && (
+                <Button
+                  type="primary"
+                  style={{ height: 22 }}
+                  onClick={handleOpenUserManagementModal} // Updated to toggle modal
+                >
+                  <img src={addicon} alt="user management" />
+                </Button>
+              )}
             </Col>
 
             <Col span={2}>
