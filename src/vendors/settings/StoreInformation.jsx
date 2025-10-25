@@ -17,7 +17,6 @@ import {
   MailOutlined,
   PhoneOutlined,
   EnvironmentOutlined,
-  LogoutOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -61,7 +60,7 @@ const StoreInformation = ({ storeSettings, setStoreSettings, onSave }) => {
               style={{ position: "absolute", bottom: 0, right: 0 }}
             />
           </div>
-          <Paragraph>Upload a logo for your store (200x200px)</Paragraph>
+          <Paragraph> logo for your store </Paragraph>
           <Button icon={<UploadOutlined />}>Upload New Logo</Button>
         </Col>
 

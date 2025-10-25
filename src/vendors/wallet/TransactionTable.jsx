@@ -1,4 +1,3 @@
-import React from "react";
 import { Table, Tag, Typography } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
@@ -82,8 +81,13 @@ const TransactionTable = ({ transactions, loading }) => {
       columns={columns}
       dataSource={transactions}
       rowKey="id"
-      loading={loading} // 👈 Adds spinner overlay on table
+      loading={loading}
       pagination={{ pageSize: 5 }}
+      scroll={{ x: 600 }} // 👈 Enables horizontal scroll on small screens
+      style={{
+        width: "100%",
+        overflowX: "auto",
+      }}
     />
   );
 };

@@ -8,39 +8,46 @@ import {
 
 const { Text } = Typography;
 
-const StoreStats = () => (
-  <Card title="Store Statistics">
-    <Space direction="vertical" style={{ width: "100%" }}>
-      <div className="flex-between">
-        <Space>
-          <StarFilled style={{ color: "#fadb14" }} />
-          <Text>Average Rating</Text>
-        </Space>
-        <Text strong>4.8/5.0</Text>
-      </div>
-      <div className="flex-between">
-        <Space>
-          <UserOutlined style={{ color: "#1677ff" }} />
-          <Text>Total Reviews</Text>
-        </Space>
-        <Text strong>247</Text>
-      </div>
-      <div className="flex-between">
-        <Space>
-          <EyeOutlined style={{ color: "#722ed1" }} />
-          <Text>Store Views</Text>
-        </Space>
-        <Text strong>1,542</Text>
-      </div>
-      <div className="flex-between">
-        <Space>
-          <InboxOutlined style={{ color: "#16a34a" }} />
-          <Text>Total Products</Text>
-        </Space>
-        <Text strong>28</Text>
-      </div>
-    </Space>
-  </Card>
-);
+// ✅ You can pass stats as props to make it reusable and dynamic
+const StoreStats = ({ stats }) => {
+  const statItems = [
+    {
+      label: "Average Rating",
+      value: stats?.rating || "0.0/5.0",
+      icon: <StarFilled style={{ color: "#fadb14" }} />,
+    },
+    {
+      label: "Total Reviews",
+      value: stats?.reviews || "10",
+      icon: <UserOutlined />,
+    },
+    {
+      label: "Store Views",
+      value: stats?.views || "120",
+      icon: <EyeOutlined />,
+    },
+    {
+      label: "Total Products",
+      value: stats?.products || "150",
+      icon: <InboxOutlined style={{ color: "#16a34a" }} />,
+    },
+  ];
+
+  return (
+    <Card title="Store Statistics">
+      <Space direction="vertical" style={{ width: "100%" }}>
+        {statItems.map((item, index) => (
+          <div className="flex-between" key={index}>
+            <Space>
+              {item.icon}
+              <Text>{item.label}</Text>
+            </Space>
+            <Text strong>{item.value}</Text>
+          </div>
+        ))}
+      </Space>
+    </Card>
+  );
+};
 
 export default StoreStats;

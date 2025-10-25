@@ -7,51 +7,48 @@ import {
 
 const { Title, Paragraph } = Typography;
 
+// Define all quick actions in an array
+const actions = [
+  {
+    key: "payment",
+    title: "Payment Setup",
+    description: "Configure your payment methods and withdrawal options.",
+    icon: <CreditCardOutlined style={{ color: "#52c41a", marginRight: 8 }} />,
+    buttonText: "Manage Payment Methods",
+  },
+  {
+    key: "analytics",
+    title: "Store Analytics",
+    description: "View detailed analytics and performance metrics.",
+    icon: <GlobalOutlined style={{ color: "#1677ff", marginRight: 8 }} />,
+    buttonText: "View Analytics",
+  },
+  {
+    key: "security",
+    title: "Account Security",
+    description: "Manage password, 2FA, and security settings.",
+    icon: <SafetyOutlined style={{ color: "#ff4d4f", marginRight: 8 }} />,
+    buttonText: "Security Settings",
+  },
+];
+
 const QuickActions = () => (
   <Row gutter={[24, 24]}>
-    <Col xs={24} md={8}>
-      <Card
-        title={
-          <Title level={5}>
-            <CreditCardOutlined style={{ color: "#52c41a", marginRight: 8 }} />
-            Payment Setup
-          </Title>
-        }
-      >
-        <Paragraph>
-          Configure your payment methods and withdrawal options.
-        </Paragraph>
-        <Button block>Manage Payment Methods</Button>
-      </Card>
-    </Col>
-
-    <Col xs={24} md={8}>
-      <Card
-        title={
-          <Title level={5}>
-            <GlobalOutlined style={{ color: "#1677ff", marginRight: 8 }} />
-            Store Analytics
-          </Title>
-        }
-      >
-        <Paragraph>View detailed analytics and performance metrics.</Paragraph>
-        <Button block>View Analytics</Button>
-      </Card>
-    </Col>
-
-    <Col xs={24} md={8}>
-      <Card
-        title={
-          <Title level={5}>
-            <SafetyOutlined style={{ color: "#ff4d4f", marginRight: 8 }} />
-            Account Security
-          </Title>
-        }
-      >
-        <Paragraph>Manage password, 2FA, and security settings.</Paragraph>
-        <Button block>Security Settings</Button>
-      </Card>
-    </Col>
+    {actions.map((action) => (
+      <Col xs={24} md={8} key={action.key}>
+        <Card
+          title={
+            <Title level={5}>
+              {action.icon}
+              {action.title}
+            </Title>
+          }
+        >
+          <Paragraph>{action.description}</Paragraph>
+          <Button block>{action.buttonText}</Button>
+        </Card>
+      </Col>
+    ))}
   </Row>
 );
 

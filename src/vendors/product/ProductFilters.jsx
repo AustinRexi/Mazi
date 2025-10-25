@@ -1,4 +1,3 @@
-import React from "react";
 import { Row, Col, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
@@ -29,8 +28,8 @@ const ProductFilters = ({
           style={{ width: "100%" }}
         >
           <Option value="all">All Categories</Option>
-          <Option value="Electronics">Electronics</Option>
-          <Option value="Wearables">Wearables</Option>
+          <Option value="Food">Food</Option>
+          <Option value="Groceries">Groceries</Option>
           <Option value="Audio">Audio</Option>
           <Option value="Accessories">Accessories</Option>
         </Select>
