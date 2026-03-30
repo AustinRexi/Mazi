@@ -21,7 +21,7 @@ function OrdersFilterBar({
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </Col>
-      <Col xs={24} sm={6} md={4}>
+      <Col xs={24} sm={6} md={5}>
         <Select
           value={statusFilter}
           onChange={setStatusFilter}
@@ -29,13 +29,15 @@ function OrdersFilterBar({
         >
           <Option value="all">All Orders</Option>
           <Option value="pending">Pending</Option>
-          <Option value="confirmed">Confirmed</Option>
-          <Option value="shipped">Shipped</Option>
+          <Option value="broadcasted">Broadcasted</Option>
+          <Option value="active">Active</Option>
+          <Option value="arrived">Arrived</Option>
+          <Option value="on_the_way">On The Way</Option>
           <Option value="delivered">Delivered</Option>
           <Option value="cancelled">Cancelled</Option>
         </Select>
       </Col>
-      <Col xs={24} sm={6} md={4}>
+      <Col xs={24} sm={6} md={5}>
         <Select
           value={paymentFilter}
           onChange={setPaymentFilter}

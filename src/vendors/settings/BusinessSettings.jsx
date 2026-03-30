@@ -8,6 +8,7 @@ const BusinessSettings = ({
   businessSettings,
   setBusinessSettings,
   onSave,
+  saving,
 }) => (
   <Card
     title={
@@ -26,10 +27,10 @@ const BusinessSettings = ({
             <Input
               value={businessSettings.taxId}
               onChange={(e) =>
-                setBusinessSettings({
-                  ...businessSettings,
+                setBusinessSettings((current) => ({
+                  ...current,
                   taxId: e.target.value,
-                })
+                }))
               }
             />
           </Form.Item>
@@ -39,10 +40,10 @@ const BusinessSettings = ({
             <Input
               value={businessSettings.businessLicense}
               onChange={(e) =>
-                setBusinessSettings({
-                  ...businessSettings,
+                setBusinessSettings((current) => ({
+                  ...current,
                   businessLicense: e.target.value,
-                })
+                }))
               }
             />
           </Form.Item>
@@ -54,10 +55,10 @@ const BusinessSettings = ({
           rows={3}
           value={businessSettings.returnPolicy}
           onChange={(e) =>
-            setBusinessSettings({
-              ...businessSettings,
+            setBusinessSettings((current) => ({
+              ...current,
               returnPolicy: e.target.value,
-            })
+            }))
           }
         />
       </Form.Item>
@@ -67,10 +68,10 @@ const BusinessSettings = ({
           rows={3}
           value={businessSettings.shippingPolicy}
           onChange={(e) =>
-            setBusinessSettings({
-              ...businessSettings,
+            setBusinessSettings((current) => ({
+              ...current,
               shippingPolicy: e.target.value,
-            })
+            }))
           }
         />
       </Form.Item>
@@ -80,15 +81,15 @@ const BusinessSettings = ({
           rows={3}
           value={businessSettings.privacyPolicy}
           onChange={(e) =>
-            setBusinessSettings({
-              ...businessSettings,
+            setBusinessSettings((current) => ({
+              ...current,
               privacyPolicy: e.target.value,
-            })
+            }))
           }
         />
       </Form.Item>
 
-      <Button type="primary" icon={<SaveOutlined />} onClick={onSave}>
+      <Button type="primary" icon={<SaveOutlined />} onClick={onSave} loading={saving}>
         Save Business Settings
       </Button>
     </Form>

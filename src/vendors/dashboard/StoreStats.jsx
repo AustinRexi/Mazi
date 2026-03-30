@@ -1,43 +1,50 @@
 import { Card, Space, Typography } from "antd";
 import {
-  StarFilled,
-  UserOutlined,
-  EyeOutlined,
+  ShopOutlined,
+  CoffeeOutlined,
+  ShoppingOutlined,
   InboxOutlined,
 } from "@ant-design/icons";
 
 const { Text } = Typography;
 
-// ✅ You can pass stats as props to make it reusable and dynamic
 const StoreStats = ({ stats }) => {
   const statItems = [
     {
-      label: "Average Rating",
-      value: stats?.rating || "0.0/5.0",
-      icon: <StarFilled style={{ color: "#fadb14" }} />,
+      label: "Restaurants",
+      value: stats?.restaurants || 0,
+      icon: <ShopOutlined style={{ color: "#1677ff" }} />,
     },
     {
-      label: "Total Reviews",
-      value: stats?.reviews || "10",
-      icon: <UserOutlined />,
+      label: "Foods Listed",
+      value: stats?.foods || 0,
+      icon: <CoffeeOutlined style={{ color: "#fa8c16" }} />,
     },
     {
-      label: "Store Views",
-      value: stats?.views || "120",
-      icon: <EyeOutlined />,
+      label: "Groceries Listed",
+      value: stats?.groceries || 0,
+      icon: <ShoppingOutlined style={{ color: "#722ed1" }} />,
     },
     {
       label: "Total Products",
-      value: stats?.products || "150",
+      value: stats?.products || 0,
       icon: <InboxOutlined style={{ color: "#16a34a" }} />,
     },
   ];
 
   return (
-    <Card title="Store Statistics">
+    <Card title="Store Summary">
       <Space direction="vertical" style={{ width: "100%" }}>
         {statItems.map((item, index) => (
-          <div className="flex-between" key={index}>
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             <Space>
               {item.icon}
               <Text>{item.label}</Text>

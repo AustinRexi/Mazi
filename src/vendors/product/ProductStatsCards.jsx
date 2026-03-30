@@ -1,5 +1,9 @@
 import React from "react";
-import { Card, Col, Row, Typography, Space } from "antd";
+import {
+  formatVendorMoney,
+  useVendorCurrencyCode,
+} from "../utils/currency";
+import { Card, Col, Row, Typography, Space, Button } from "antd";
 import {
   AppstoreOutlined,
   DollarOutlined,
@@ -9,56 +13,84 @@ import {
 
 const { Title, Text } = Typography;
 
-const ProductStatsCards = ({ products }) => {
-  const totalValue = products.reduce((acc, p) => acc + p.price * p.stock, 0);
-  const lowStockCount = products.filter(
-    (p) => p.stock < 20 && p.stock > 0
-  ).length;
-  const outOfStockCount = products.filter((p) => p.stock === 0).length;
+const ProductStatsCards = ({ products, onOpenLowStock }) => {
+  const currencyCode = useVendorCurrencyCode();
+  const totalValue = products.reduce((acc, p) => {
+    if (p.resourceType === "grocery") {
+      return acc + p.price * (p.stock || 0);
+    }
 
-  const stats = [
-    {
-      icon: <AppstoreOutlined style={{ color: "#1890ff" }} />,
-      title: "Total Products",
-      value: products.length,
-      subtitle: "Active products",
-    },
-    {
-      icon: <DollarOutlined style={{ color: "#52c41a" }} />,
-      title: "Total Value",
-      value: `$${totalValue.toLocaleString()}`,
-      subtitle: "Inventory value",
-    },
-    {
-      icon: <WarningOutlined style={{ color: "#faad14" }} />,
-      title: "Low Stock",
-      value: lowStockCount,
-      subtitle: "Need restock",
-    },
-    {
-      icon: <ExclamationCircleOutlined style={{ color: "#ff4d4f" }} />,
-      title: "Out of Stock",
-      value: outOfStockCount,
-      subtitle: "Unavailable",
-    },
-  ];
+    return acc + p.price;
+  }, 0);
+
+  const lowStockProducts = products.filter(
+    (p) => p.resourceType === "grocery" && p.stock < 20 && p.stock > 0
+  );
+  const lowStockCount = lowStockProducts.length;
+
+  const outOfStockCount = products.filter((p) => {
+    if (p.resourceType === "food") {
+      return p.status === "out-of-stock";
+    }
+
+    return p.stock === 0;
+  }).length;
 
   return (
     <Row gutter={[16, 16]}>
-      {stats.map((s) => (
-        <Col xs={24} sm={12} md={6} key={s.title}>
-          <Card>
-            <Space direction="vertical">
-              <Space align="center">
-                {s.icon}
-                <Text>{s.title}</Text>
-              </Space>
-              <Title level={3}>{s.value}</Title>
-              <Text type="secondary">{s.subtitle}</Text>
+      <Col xs={24} sm={12} md={6}>
+        <Card>
+          <Space direction="vertical">
+            <Space align="center">
+              <AppstoreOutlined style={{ color: "#1890ff" }} />
+              <Text>Total Products</Text>
             </Space>
-          </Card>
-        </Col>
-      ))}
+            <Title level={3}>{products.length}</Title>
+            <Text type="secondary">Foods and groceries</Text>
+          </Space>
+        </Card>
+      </Col>
+      <Col xs={24} sm={12} md={6}>
+        <Card>
+          <Space direction="vertical">
+            <Space align="center">
+              <DollarOutlined style={{ color: "#52c41a" }} />
+              <Text>Total Value</Text>
+            </Space>
+            <Title level={3}>{formatVendorMoney(totalValue, currencyCode)}</Title>
+            <Text type="secondary">Inventory value</Text>
+          </Space>
+        </Card>
+      </Col>
+      <Col xs={24} sm={12} md={6}>
+        <Card>
+          <Space direction="vertical">
+            <Space align="center">
+              <ExclamationCircleOutlined style={{ color: "#ff4d4f" }} />
+              <Text>Out of Stock</Text>
+            </Space>
+            <Title level={3}>{outOfStockCount}</Title>
+            <Text type="secondary">Unavailable</Text>
+          </Space>
+        </Card>
+      </Col>
+      <Col xs={24} md={6}>
+        <Card
+          title={
+            <Space>
+              <WarningOutlined style={{ color: "#faad14" }} />
+              <span>Low Stock ({lowStockCount})</span>
+            </Space>
+          }
+        >
+          <Space direction="vertical">
+            <Text type="secondary">Need restock</Text>
+            <Button type="primary" onClick={() => onOpenLowStock?.(lowStockProducts)}>
+              View Low Stock
+            </Button>
+          </Space>
+        </Card>
+      </Col>
     </Row>
   );
 };

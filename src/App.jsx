@@ -28,7 +28,9 @@ import VendorWallet from "./vendors/wallet";
 import VendorSupport from "./vendors/support";
 import VendorSettings from "./vendors/settings";
 import VendorProduct from "./vendors/product";
+import VendorDrinks from "./vendors/drinks";
 import VendorOrder from "./vendors/orders";
+import VendorAnalytics from "./vendors/analytics";
 import HomeRoute from "./Components/protectedroute/HomeRoute";
 
 const router = createHashRouter([
@@ -58,7 +60,9 @@ const router = createHashRouter([
       // 🟢 Vendor Routes (same layout)
       { path: "vendors/dashboard", element: <VendorDashboard /> },
       { path: "vendors/product", element: <VendorProduct /> },
+      { path: "vendors/drinks", element: <VendorDrinks /> },
       { path: "vendors/orders", element: <VendorOrder /> },
+      { path: "vendors/analytics", element: <VendorAnalytics /> },
       { path: "vendors/wallet", element: <VendorWallet /> },
       { path: "vendors/support", element: <VendorSupport /> },
       { path: "vendors/settings", element: <VendorSettings /> },

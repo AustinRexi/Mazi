@@ -9,13 +9,45 @@ import {
   Modal,
   Descriptions,
   message,
+  Avatar,
 } from "antd";
 import { EyeOutlined, InboxOutlined } from "@ant-design/icons";
+import { formatVendorMoney, useVendorCurrencyCode } from "../utils/currency";
 
 const { Text } = Typography;
 const { Option } = Select;
+const REBROADCAST_INTERVAL_MS = 20 * 60 * 1000;
+
+const formatStatusLabel = (status) =>
+  String(status || "")
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
+const getBroadcastLabel = (order) => {
+  if (!order.isBroadcasted) {
+    return { color: "default", text: "Not Broadcasted" };
+  }
+
+  if (order.status !== "pending" || !order.lastBroadcastAt) {
+    return { color: "processing", text: "Broadcasted" };
+  }
+
+  const nextRebroadcastAt = order.lastBroadcastAt + REBROADCAST_INTERVAL_MS;
+  const msLeft = nextRebroadcastAt - Date.now();
+  if (msLeft <= 0) {
+    return { color: "orange", text: "Rebroadcast Due" };
+  }
+
+  const totalMinutes = Math.ceil(msLeft / 60000);
+  return {
+    color: "processing",
+    text: `Rebroadcast in ${totalMinutes}m`,
+  };
+};
 
 function OrdersTable({ orders, updateOrderStatus }) {
+  const currencyCode = useVendorCurrencyCode();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -50,50 +82,49 @@ function OrdersTable({ orders, updateOrderStatus }) {
     {
       title: "Order ID",
       dataIndex: "id",
-      render: (id) => <Text strong>{id}</Text>,
+      width: 95,
+      render: (id) => <Text strong style={{ fontSize: 13 }}>{id}</Text>,
       fixed: "left",
     },
     {
-      title: "Customer",
-      render: (order) => (
-        <>
-          <Text strong>{order.customer.name}</Text>
-          <br />
-          <Text type="secondary">{order.customer.email}</Text>
-        </>
-      ),
-    },
-    {
-      title: "Products",
-      render: (order) =>
-        order.products.map((p, i) => (
-          <div key={i}>
-            {p.name} ×{p.quantity}
-          </div>
-        )),
-    },
-    {
       title: "Total",
-      render: (order) => `$${order.total.toFixed(2)}`,
+      width: 85,
+      align: "right",
+      render: (order) => <Text strong>{formatVendorMoney(order.total, currencyCode)}</Text>,
     },
     {
       title: "Order Status",
+      width: 130,
+      align: "center",
       render: (order) => (
         <Select
           value={order.status}
           onChange={(value) => updateOrderStatus(order.id, value)}
-          style={{ width: 120 }}
+          size="small"
+          style={{ width: 100 }}
         >
           <Option value="pending">Pending</Option>
-          <Option value="confirmed">Confirmed</Option>
-          <Option value="shipped">Shipped</Option>
+          <Option value="active">Active</Option>
+          <Option value="arrived">Arrived</Option>
+          <Option value="on_the_way">On The Way</Option>
           <Option value="delivered">Delivered</Option>
           <Option value="cancelled">Cancelled</Option>
         </Select>
       ),
     },
     {
+      title: "Broadcast",
+      width: 150,
+      align: "center",
+      render: (order) => {
+        const broadcast = getBroadcastLabel(order);
+        return <Tag color={broadcast.color}>{broadcast.text}</Tag>;
+      },
+    },
+    {
       title: "Payment",
+      width: 110,
+      align: "center",
       render: (order) => (
         <Tag color={getPaymentColor(order.paymentStatus)}>
           {order.paymentStatus.toUpperCase()}
@@ -102,6 +133,7 @@ function OrdersTable({ orders, updateOrderStatus }) {
     },
     {
       title: "Date",
+      width: 130,
       render: (order) =>
         new Date(order.orderDate).toLocaleDateString("en-US", {
           year: "numeric",
@@ -111,12 +143,19 @@ function OrdersTable({ orders, updateOrderStatus }) {
     },
     {
       title: "Actions",
+      width: 110,
+      align: "center",
       fixed: "right",
       render: (order) => (
-        <Space>
-          <Button icon={<EyeOutlined />} onClick={() => handleView(order)} />
+        <Space size={6}>
+          <Button
+            icon={<EyeOutlined />}
+            size="small"
+            onClick={() => handleView(order)}
+          />
           <Button
             icon={<InboxOutlined />}
+            size="small"
             onClick={() => handleMessageCustomer(order)}
           />
         </Space>
@@ -132,8 +171,15 @@ function OrdersTable({ orders, updateOrderStatus }) {
           columns={columns}
           dataSource={orders}
           rowKey="id"
-          pagination={{ pageSize: 5 }}
-          scroll={{ x: 900 }} // ✅ Enables horizontal scroll
+          bordered
+          size="middle"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: false,
+            showTotal: (total) => `${total} orders`,
+          }}
+          scroll={{ x: 980 }}
+          locale={{ emptyText: "No orders found" }}
         />
       </div>
 
@@ -160,7 +206,7 @@ function OrdersTable({ orders, updateOrderStatus }) {
               {selectedOrder.customer.email}
             </Descriptions.Item>
             <Descriptions.Item label="Total">
-              ${selectedOrder.total.toFixed(2)}
+              {formatVendorMoney(selectedOrder.total, currencyCode)}
             </Descriptions.Item>
             <Descriptions.Item label="Payment Status">
               <Tag color={getPaymentColor(selectedOrder.paymentStatus)}>
@@ -168,17 +214,36 @@ function OrdersTable({ orders, updateOrderStatus }) {
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="Order Status">
-              {selectedOrder.status}
+              {formatStatusLabel(selectedOrder.status)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Broadcast">
+              <Tag color={getBroadcastLabel(selectedOrder).color}>
+                {getBroadcastLabel(selectedOrder).text}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="Last Broadcast">
+              {selectedOrder.lastBroadcastAt
+                ? new Date(selectedOrder.lastBroadcastAt).toLocaleString()
+                : "-"}
             </Descriptions.Item>
             <Descriptions.Item label="Order Date">
               {new Date(selectedOrder.orderDate).toLocaleString()}
             </Descriptions.Item>
             <Descriptions.Item label="Products">
-              {selectedOrder.products.map((p, i) => (
-                <div key={i}>
-                  • {p.name} ×{p.quantity}
-                </div>
-              ))}
+              <Space wrap>
+                {selectedOrder.products.map((p, i) => (
+                  <Tag key={`${p.name}-${i}`} color="blue">
+                    <Space size={6}>
+                      <Avatar size="small" src={p.image || undefined}>
+                        {String(p.name || "P").charAt(0).toUpperCase()}
+                      </Avatar>
+                      <span>
+                        {p.name} x{p.quantity}
+                      </span>
+                    </Space>
+                  </Tag>
+                ))}
+              </Space>
             </Descriptions.Item>
           </Descriptions>
         )}

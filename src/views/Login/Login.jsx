@@ -4,12 +4,22 @@ import Formpage from "./Formpage";
 
 function Login() {
   return (
-    <div style={{ height: "100%" }}>
-      <Row gutter={[0, 6]}>
+    <div style={{ minHeight: "100vh", background: "#f5f7fa" }}>
+      <Row style={{ minHeight: "100vh" }}>
         <Col xs={0} md={8} lg={12}>
           <Imagepage />
         </Col>
-        <Col xs={24} md={16} lg={12} style={{ marginTop: "30px" }}>
+        <Col
+          xs={24}
+          md={16}
+          lg={12}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "24px 20px",
+          }}
+        >
           <Formpage />
         </Col>
       </Row>

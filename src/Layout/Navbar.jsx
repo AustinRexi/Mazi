@@ -1,6 +1,7 @@
 import { Row, Col, Select, Button, Drawer, Menu, Badge, Modal } from "antd";
 import { useState, useEffect, useContext } from "react";
 import { MenuOutlined } from "@ant-design/icons";
+import axios from "axios";
 import avatar from "../utils/icons/avatar.svg"; // Fallback image
 import flag from "../utils/icons/flag.svg";
 import menu from "../utils/icons/menu.svg";
@@ -10,13 +11,26 @@ import { AuthContext } from "../context/AuthContext"; // Adjust path to your Aut
 import notification from "../utils/icons/notification.svg";
 import UserManagement from "../views/usermanagement";
 import addicon from "../Assets/Lineicons/Addicon.svg";
+import { formatVendorMoney, useVendorCurrencyCode } from "../vendors/utils/currency";
+import {
+  getVendorRestaurantScope,
+  setVendorRestaurantScope,
+} from "../vendors/utils/restaurantScope";
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
 const Navbar = () => {
   const { Option } = Select;
   const { user } = useContext(AuthContext);
+  const currencyCode = useVendorCurrencyCode();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(7);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [pendingOrderNotifications, setPendingOrderNotifications] = useState([]);
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState(() =>
+    getVendorRestaurantScope()
+  );
   const [notificationModalVisible, setNotificationModalVisible] =
     useState(false);
   const [userManagementModalVisible, setUserManagementModalVisible] =
@@ -51,18 +65,105 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (user?.role !== "vendor") {
+      return;
+    }
+
+    let isMounted = true;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setNotificationCount(0);
+      return;
+    }
+
+    const fetchPendingOrdersCount = async () => {
+      try {
+        if (!selectedRestaurantId) {
+          const restaurantsResponse = await axios.get(
+            `${API_BASE_URL}/vendor/restaurants?limit=100`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+              },
+            }
+          );
+          const restaurantRows = restaurantsResponse.data?.data || [];
+          const fallbackRestaurantId = restaurantRows[0]?.id || null;
+          if (fallbackRestaurantId) {
+            setSelectedRestaurantId(fallbackRestaurantId);
+            setVendorRestaurantScope(fallbackRestaurantId);
+          }
+        }
+
+        const query = new URLSearchParams({ limit: "100" });
+        const effectiveRestaurantId = selectedRestaurantId || getVendorRestaurantScope();
+        if (effectiveRestaurantId) {
+          query.set("restaurant_id", String(effectiveRestaurantId));
+        }
+
+        const response = await axios.get(`${API_BASE_URL}/vendor/orders?${query.toString()}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+        const rows = response.data?.data || [];
+        const pendingOrders = rows.filter(
+          (order) => String(order.order_status || "").toLowerCase() === "pending"
+        );
+        const pendingCount = pendingOrders.length;
+
+        const pendingItems = pendingOrders
+          .map((order) => {
+            const timestamp = new Date(
+              order.created_at || order.order_date || order.createdAt || Date.now()
+            );
+            const amount = Number(
+              order.total_amount ??
+                order.order_amount ??
+                order.total ??
+                order.amount ??
+                0
+            );
+            return {
+              id: order.order_number || `ORD-${order.id}`,
+              sortTs: Number.isFinite(timestamp.getTime()) ? timestamp.getTime() : 0,
+              time: Number.isFinite(timestamp.getTime())
+                ? timestamp.toLocaleString()
+                : "-",
+              amount: Number.isFinite(amount) ? amount : 0,
+            };
+          })
+          .sort((a, b) => b.sortTs - a.sortTs);
+
+        if (isMounted) {
+          setNotificationCount(pendingCount);
+          setPendingOrderNotifications(pendingItems);
+        }
+      } catch {
+        if (isMounted) {
+          setNotificationCount(0);
+          setPendingOrderNotifications([]);
+        }
+      }
+    };
+
+    fetchPendingOrdersCount();
+    const interval = setInterval(fetchPendingOrdersCount, 10 * 1000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [user?.role, selectedRestaurantId]);
+
   const toggleDrawer = () => {
     setDrawerOpen((prev) => !prev);
   };
 
-  // Function to handle incoming notifications
-  const handleNewNotification = () => {
-    setNotificationCount((prev) => prev + 1);
-  };
-
   // Function to handle opening the notification modal
   const handleOpenNotifications = () => {
-    setNotificationCount(0); // Reset count to 0
     setNotificationModalVisible(true); // Open the notification modal
   };
 
@@ -315,13 +416,35 @@ const Navbar = () => {
           <Button key="close" onClick={handleCloseNotificationModal}>
             Close
           </Button>,
-          <Button key="test" onClick={handleNewNotification}>
-            Simulate New Notification
-          </Button>,
         ]}
       >
-        <p>No new notifications</p>
-        {/* Replace with actual notification content */}
+        {user?.role === "vendor" ? (
+          pendingOrderNotifications.length > 0 ? (
+            <div style={{ maxHeight: 320, overflowY: "auto" }}>
+              {pendingOrderNotifications.map((item) => (
+                <div
+                  key={`${item.id}-${item.time}`}
+                  style={{
+                    border: "1px solid #f0f0f0",
+                    borderRadius: 8,
+                    padding: 10,
+                    marginBottom: 10,
+                  }}
+                >
+                  <div><strong>Order ID:</strong> {item.id}</div>
+                  <div><strong>Time:</strong> {item.time}</div>
+                  <div>
+                    <strong>Amount:</strong> {formatVendorMoney(item.amount, currencyCode)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No pending orders.</p>
+          )
+        ) : (
+          <p>No new notifications</p>
+        )}
       </Modal>
       {/* User Management Modal */}
       <Modal

@@ -1,11 +1,11 @@
-import React from "react";
 import { Card, Typography } from "antd";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { formatVendorMoney } from "../utils/currency";
 
 const { Title, Text } = Typography;
 
-const EarningsChart = ({ data }) => {
+const EarningsChart = ({ data, currencyCode = "" }) => {
   // Transform data into Highcharts series
   const months = data.map((item) => item.month);
   const earnings = data.map((item) => item.earnings);
@@ -25,7 +25,7 @@ const EarningsChart = ({ data }) => {
       lineColor: "#e8e8e8",
     },
     yAxis: {
-      title: { text: "Earnings ($)" },
+      title: { text: `Earnings (${currencyCode || "$"})` },
       gridLineColor: "#f0f0f0",
     },
     legend: {
@@ -40,7 +40,7 @@ const EarningsChart = ({ data }) => {
       formatter: function () {
         return `<b>${
           this.x
-        }</b><br/>Earnings: <b>$${this.y.toLocaleString()}</b>`;
+        }</b><br/>Earnings: <b>${formatVendorMoney(this.y, currencyCode)}</b>`;
       },
     },
     series: [

@@ -1,18 +1,18 @@
 import { Row, Col, Card, Statistic, Typography } from "antd";
-import { StarFilled, ArrowUpOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined } from "@ant-design/icons";
 import chartIcon from "../../utils/icons/chart.svg";
 import orderIcon from "../../utils/icons/orders.svg";
 import productIcon from "../../utils/icons/product.svg";
+import { formatVendorMoney } from "../utils/currency";
 
 const { Text } = Typography;
 
-const MetricsSection = () => {
-  // Dynamic metrics configuration
-  const metrics = [
+const MetricsSection = ({ metrics, currencyCode = "" }) => {
+  const metricItems = [
     {
       key: "revenue",
       title: "Total Revenue",
-      value: 8500,
+      value: Number(metrics?.revenue || 0),
       icon: (
         <img
           src={chartIcon}
@@ -20,15 +20,13 @@ const MetricsSection = () => {
           style={{ height: 30, borderRadius: 5 }}
         />
       ),
-      suffix: "$",
       precision: 2,
-      growth: "+12.5%",
-      description: "from last month",
+      description: "paid orders",
     },
     {
       key: "orders",
       title: "Total Orders",
-      value: 85,
+      value: Number(metrics?.orders || 0),
       icon: (
         <img
           src={orderIcon}
@@ -36,13 +34,12 @@ const MetricsSection = () => {
           style={{ height: 30, borderRadius: 5 }}
         />
       ),
-      growth: "+8.2%",
-      description: "from last month",
+      description: "vendor orders",
     },
     {
       key: "products",
       title: "Products Sold",
-      value: 717,
+      value: Number(metrics?.productsSold || 0),
       icon: (
         <img
           src={productIcon}
@@ -50,23 +47,20 @@ const MetricsSection = () => {
           style={{ height: 30, borderRadius: 5 }}
         />
       ),
-      growth: "+15.1%",
-      description: "from last month",
+      description: "units ordered",
     },
     {
-      key: "rating",
-      title: "Store Rating",
-      value: 4.8,
-      icon: <StarFilled style={{ color: "#fadb14" }} />,
-      precision: 1,
-      growth: "+0.2",
-      description: "from last month",
+      key: "pendingOrders",
+      title: "Pending Orders",
+      value: Number(metrics?.pendingOrders || 0),
+      icon: <ClockCircleOutlined style={{ color: "#faad14" }} />,
+      description: "awaiting action",
     },
   ];
 
   return (
     <Row gutter={[16, 16]}>
-      {metrics.map((metric) => (
+      {metricItems.map((metric) => (
         <Col key={metric.key} xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
@@ -74,10 +68,16 @@ const MetricsSection = () => {
               value={metric.value}
               prefix={metric.icon}
               precision={metric.precision}
+              formatter={(value) =>
+                metric.key === "revenue"
+                  ? formatVendorMoney(value, currencyCode)
+                  : Number(value).toLocaleString(undefined, {
+                      minimumFractionDigits: metric.precision || 0,
+                      maximumFractionDigits: metric.precision || 0,
+                    })
+              }
             />
-            <Text type="success">
-              <ArrowUpOutlined /> {metric.growth} {metric.description}
-            </Text>
+            <Text type="secondary">{metric.description}</Text>
           </Card>
         </Col>
       ))}

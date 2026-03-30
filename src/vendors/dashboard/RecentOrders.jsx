@@ -1,32 +1,30 @@
 import { Card, Space, Typography, Tag, Button } from "antd";
+import { formatVendorMoney } from "../utils/currency";
 
 const { Text } = Typography;
 
-const orders = [
-  {
-    id: "#12345",
-    customer: "Sarah Johnson",
-    amount: "$149.99",
-    status: "shipped",
-  },
-  { id: "#12346", customer: "Mike Chen", amount: "$199.99", status: "pending" },
-  {
-    id: "#12347",
-    customer: "Lisa Brown",
-    amount: "$99.99",
-    status: "completed",
-  },
-  {
-    id: "#12348",
-    customer: "David Wilson",
-    amount: "$39.99",
-    status: "shipped",
-  },
-];
+const getStatusColor = (status) => {
+  if (status === "delivered" || status === "completed") {
+    return "green";
+  }
 
-const RecentOrders = () => (
+  if (status === "shipped" || status === "processing") {
+    return "blue";
+  }
+
+  if (status === "pending") {
+    return "orange";
+  }
+
+  return "red";
+};
+
+const RecentOrders = ({ orders = [], currencyCode = "" }) => (
   <Card title="Recent Orders" extra={<Text type="secondary">Latest</Text>}>
     <Space direction="vertical" style={{ width: "100%" }}>
+      {orders.length === 0 ? (
+        <Text type="secondary">No recent orders yet.</Text>
+      ) : null}
       {orders.map((order) => (
         <div
           key={order.id}
@@ -45,18 +43,9 @@ const RecentOrders = () => (
             </Text>
           </div>
           <div style={{ textAlign: "right" }}>
-            <Text>{order.amount}</Text>
+            <Text>{formatVendorMoney(order.amount || 0, currencyCode)}</Text>
             <br />
-            <Tag
-              color={
-                order.status === "completed"
-                  ? "green"
-                  : order.status === "shipped"
-                  ? "blue"
-                  : "red"
-              }
-              style={{ fontSize: 10 }}
-            >
+            <Tag color={getStatusColor(order.status)} style={{ fontSize: 10 }}>
               {order.status}
             </Tag>
           </div>

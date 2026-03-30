@@ -1,5 +1,6 @@
 import { Row, Col, Card, Button, Typography } from "antd";
 import { WalletOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { formatVendorMoney, useVendorCurrencyCode } from "../utils/currency";
 
 const { Title, Text } = Typography;
 
@@ -11,6 +12,7 @@ const BalanceCards = ({
   totalWithdrawals,
   onWithdrawClick,
 }) => {
+  const currencyCode = useVendorCurrencyCode();
   return (
     <Row gutter={[16, 16]}>
       <Col xs={24} md={12} lg={8}>
@@ -21,18 +23,18 @@ const BalanceCards = ({
             </span>
           }
         >
-          <Title level={3}>${totalBalance?.toFixed(2)}</Title>
+          <Title level={3}>{formatVendorMoney(totalBalance, currencyCode)}</Title>
           <Text>Total Balance</Text>
           <Row gutter={16} style={{ marginTop: 16 }}>
             <Col span={12}>
               <Text strong style={{ color: "green" }}>
-                ${availableBalance?.toFixed(2)}
+                {formatVendorMoney(availableBalance, currencyCode)}
               </Text>
               <p>Available</p>
             </Col>
             <Col span={12}>
               <Text strong style={{ color: "#faad14" }}>
-                ${pendingBalance?.toFixed(2)}
+                {formatVendorMoney(pendingBalance, currencyCode)}
               </Text>
               <p>Pending</p>
             </Col>
@@ -57,7 +59,7 @@ const BalanceCards = ({
             </span>
           }
         >
-          <Title level={4}>${totalCredits?.toFixed(2)}</Title>
+          <Title level={4}>{formatVendorMoney(totalCredits, currencyCode)}</Title>
           <Text type="secondary">All time earnings</Text>
         </Card>
       </Col>
@@ -70,7 +72,9 @@ const BalanceCards = ({
             </span>
           }
         >
-          <Title level={4}>${totalWithdrawals?.toFixed(2)}</Title>
+          <Title level={4}>
+            {formatVendorMoney(totalWithdrawals, currencyCode)}
+          </Title>
           <Text type="secondary">Total withdrawn</Text>
         </Card>
       </Col>

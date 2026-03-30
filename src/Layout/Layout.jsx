@@ -32,18 +32,37 @@ const LayoutDesign = () => {
             marginTop: 2,
             margin: 0,
             padding: 0,
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            width: "100%",
           }}
         >
           <Navbar />
         </Header>
-        <Layout>
+        <Layout style={{ paddingTop: 78 }}>
           <Sider
-            style={{ backgroundColor: "white" }}
+            style={{
+              backgroundColor: "white",
+              position: isMobile ? "static" : "fixed",
+              top: isMobile ? "auto" : 78,
+              left: isMobile ? "auto" : 0,
+              height: isMobile ? "auto" : "calc(100vh - 78px)",
+              overflow: isMobile ? "visible" : "auto",
+              zIndex: 20,
+            }}
             width={isMobile ? 0 : 258}
           >
             <Sidebar />
           </Sider>
-          <Content style={{ padding: 10 }}>
+          <Content
+            style={{
+              padding: 10,
+              marginLeft: isMobile ? 0 : 258,
+            }}
+          >
             {" "}
             <Outlet />{" "}
           </Content>

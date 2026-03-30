@@ -187,6 +187,7 @@ import courierIcon from "../utils/icons/courier.svg";
 import walletIcon from "../utils/icons/wallet.svg";
 import supportIcon from "../utils/icons/support.svg";
 import settingIcon from "../utils/icons/settings.svg";
+import chartIcon from "../utils/icons/chart.svg";
 import homefilled from "../utils/icons/homefilled.svg";
 import productfilled from "../utils/icons/productfilled.svg";
 import orderfilled from "../utils/icons/ordersfilled.svg";
@@ -267,10 +268,22 @@ const vendorMenu = [
     link: "/vendors/dashboard",
   },
   {
+    name: "Analytics",
+    icon: chartIcon,
+    activeIcon: chartIcon,
+    link: "/vendors/analytics",
+  },
+  {
     name: "Products",
     icon: productIcon,
     activeIcon: productfilled,
     link: "/vendors/product",
+  },
+  {
+    name: "Drinks",
+    icon: productIcon,
+    activeIcon: productfilled,
+    link: "/vendors/drinks",
   },
   {
     name: "Orders",

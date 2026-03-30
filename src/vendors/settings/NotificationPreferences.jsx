@@ -7,6 +7,7 @@ const NotificationPreferences = ({
   notifications,
   setNotifications,
   onSave,
+  saving,
 }) => {
   const labels = {
     orderNotifications: "Order Notifications",
@@ -57,14 +58,22 @@ const NotificationPreferences = ({
               <Switch
                 checked={value}
                 onChange={(checked) =>
-                  setNotifications({ ...notifications, [key]: checked })
+                  setNotifications((current) => ({
+                    ...current,
+                    [key]: checked,
+                  }))
                 }
               />
             </Col>
           </Row>
         ))}
 
-        <Button type="primary" icon={<SaveOutlined />} onClick={onSave}>
+        <Button
+          type="primary"
+          icon={<SaveOutlined />}
+          onClick={onSave}
+          loading={saving}
+        >
           Save Notification Settings
         </Button>
       </Form>

@@ -32,7 +32,7 @@ const actions = [
   },
 ];
 
-const QuickActions = () => (
+const QuickActions = ({ onAction }) => (
   <Row gutter={[24, 24]}>
     {actions.map((action) => (
       <Col xs={24} md={8} key={action.key}>
@@ -45,7 +45,9 @@ const QuickActions = () => (
           }
         >
           <Paragraph>{action.description}</Paragraph>
-          <Button block>{action.buttonText}</Button>
+          <Button block onClick={() => onAction?.(action.key)}>
+            {action.buttonText}
+          </Button>
         </Card>
       </Col>
     ))}

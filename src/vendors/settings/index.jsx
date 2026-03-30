@@ -1,46 +1,517 @@
-import { useState } from "react";
-import { message } from "antd";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Form, Input, Modal, Select, Switch, Typography, message } from "antd";
+import { useNavigate } from "react-router-dom";
 import StoreInformation from "./StoreInformation";
 import NotificationPreferences from "./NotificationPreferences";
 import BusinessSettings from "./BusinessSettings";
 import QuickActions from "./QuickActions";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
+const STORE_SETTINGS_DRAFT_KEY = "vendor_store_settings_draft";
+const NOTIFICATION_SETTINGS_KEY = "vendor_notification_settings_draft";
+const BUSINESS_SETTINGS_KEY = "vendor_business_settings_draft";
+const { Text } = Typography;
+
+const buildImageUrl = (path) => {
+  if (!path) {
+    return "";
+  }
+
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  return `${API_BASE_URL.replace(/\/api\/?$/, "")}/storage/${String(path).replace(
+    /^\/+/, 
+    ""
+  )}`;
+};
+
+const getStoredLocalData = (key, fallback) => {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? { ...fallback, ...JSON.parse(value) } : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const persistStoreDraft = (key, settings) => {
+  const draft = {
+    storeName: settings.storeName || "",
+    storeDescription: settings.storeDescription || "",
+    storeEmail: settings.storeEmail || "",
+    storePhone: settings.storePhone || "",
+    storeAddress: settings.storeAddress || "",
+    storeWebsite: settings.storeWebsite || "",
+    storeLogo: settings.storeLogo || "",
+    storeBanner: settings.storeBanner || "",
+    storeCountry: settings.storeCountry || "",
+    storeCurrency: settings.storeCurrency || "",
+  };
+
+  localStorage.setItem(key, JSON.stringify(draft));
+};
+
+const mergeNotificationSettings = (restaurantSettings, fallback) => ({
+  ...fallback,
+  ...(restaurantSettings || {}),
+});
+
+const mergeBusinessSettings = (restaurantSettings, fallback) => ({
+  ...fallback,
+  ...(restaurantSettings || {}),
+});
+
+const mapRestaurantToStoreSettings = (restaurant, fallback = {}) => ({
+  storeName: restaurant?.restaurant_name || "",
+  storeDescription:
+    restaurant?.restaurant_description || restaurant?.description || "",
+  storeEmail: restaurant?.restaurant_email || "",
+  storePhone: restaurant?.restaurant_phone || "",
+  storeAddress: restaurant?.restaurant_address || "",
+  storeLogo: buildImageUrl(restaurant?.restaurant_logo || fallback.storeLogo || ""),
+  storeBanner: buildImageUrl(
+    restaurant?.restaurant_banner || fallback.storeBanner || ""
+  ),
+  storeWebsite: restaurant?.restaurant_website || restaurant?.website || "",
+  storeCountry: restaurant?.restaurant_country || "",
+  storeCurrency: String(restaurant?.restaurant_currency || "").toUpperCase(),
+  storeLogoFile: null,
+  storeBannerFile: null,
+});
+
 const VendorSettings = () => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token") || "";
+  const storageScope = token ? token.slice(-16) : "guest";
+  const storeDraftKey = `${STORE_SETTINGS_DRAFT_KEY}_${storageScope}`;
+  const notificationSettingsKey = `${NOTIFICATION_SETTINGS_KEY}_${storageScope}`;
+  const businessSettingsKey = `${BUSINESS_SETTINGS_KEY}_${storageScope}`;
+
+  const storedDraft = getStoredLocalData(storeDraftKey, {});
   const [storeSettings, setStoreSettings] = useState({
-    storeName: "John's Electronics",
-    storeDescription:
-      "Premium electronics and gadgets for the modern lifestyle.",
-    storeEmail: "john@electronics.com",
-    storePhone: "+1 (555) 123-4567",
-    storeAddress: "123 Tech Street, Silicon Valley, CA 94000",
-    storeLogo:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces",
-    storeWebsite: "https://johnselectronics.com",
+    storeName: storedDraft.storeName || "",
+    storeDescription: storedDraft.storeDescription || "",
+    storeEmail: storedDraft.storeEmail || "",
+    storePhone: storedDraft.storePhone || "",
+    storeAddress: storedDraft.storeAddress || "",
+    storeLogo: storedDraft.storeLogo || "",
+    storeLogoFile: null,
+    storeBanner: storedDraft.storeBanner || "",
+    storeBannerFile: null,
+    storeWebsite: storedDraft.storeWebsite || "",
+    storeCountry: storedDraft.storeCountry || "",
+    storeCurrency: storedDraft.storeCurrency || "",
   });
+  const [loadingStore, setLoadingStore] = useState(true);
+  const [savingStore, setSavingStore] = useState(false);
+  const [restaurants, setRestaurants] = useState([]);
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
 
   const [notifications, setNotifications] = useState({
-    orderNotifications: true,
-    paymentNotifications: true,
-    inventoryAlerts: true,
-    customerMessages: true,
-    marketingEmails: false,
-    promotionalSms: false,
+    ...getStoredLocalData(notificationSettingsKey, {
+      orderNotifications: true,
+      paymentNotifications: true,
+      inventoryAlerts: true,
+      customerMessages: true,
+      marketingEmails: false,
+      promotionalSms: false,
+    }),
   });
+  const [savingNotifications, setSavingNotifications] = useState(false);
 
   const [businessSettings, setBusinessSettings] = useState({
-    taxId: "12-3456789",
-    businessLicense: "BL-987654321",
-    returnPolicy: "30-day return policy.",
-    shippingPolicy: "Free shipping on orders over $50.",
-    privacyPolicy: "We protect your personal information.",
+    ...getStoredLocalData(businessSettingsKey, {
+      taxId: "12-3456789",
+      businessLicense: "BL-987654321",
+      returnPolicy: "30-day return policy.",
+      shippingPolicy: "Free shipping on orders over $50.",
+      privacyPolicy: "We protect your personal information.",
+    }),
   });
+  const [savingBusiness, setSavingBusiness] = useState(false);
+  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+  const [loadingSecurity, setLoadingSecurity] = useState(false);
+  const [savingSecurity, setSavingSecurity] = useState(false);
+  const [securitySettings, setSecuritySettings] = useState({
+    twoFactorEnabled: false,
+    twoFactorChannel: "email",
+  });
+  const [securityForm] = Form.useForm();
 
-  const handleSaveStore = () =>
-    message.success("Store settings updated successfully");
-  const handleSaveNotifications = () =>
-    message.success("Notification preferences updated");
-  const handleSaveBusiness = () =>
-    message.success("Business settings updated successfully");
+  useEffect(() => {
+    const fetchStoreInfo = async () => {
+      if (!token) {
+        setLoadingStore(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${API_BASE_URL}/vendor/restaurants?limit=100`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+
+        const restaurantRows = response.data?.data || [];
+        setRestaurants(restaurantRows);
+        const restaurant = restaurantRows[0];
+        if (restaurant) {
+          setSelectedRestaurantId(restaurant.id);
+          const nextSettings = mapRestaurantToStoreSettings(restaurant, storedDraft);
+          setStoreSettings((current) => ({
+            ...current,
+            ...nextSettings,
+          }));
+          setNotifications((current) =>
+            mergeNotificationSettings(
+              restaurant.restaurant_notification_settings,
+              current
+            )
+          );
+          setBusinessSettings((current) =>
+            mergeBusinessSettings(restaurant.restaurant_business_settings, current)
+          );
+          persistStoreDraft(storeDraftKey, nextSettings);
+        }
+      } catch (error) {
+        message.error(
+          error.response?.data?.message || "Failed to load store information"
+        );
+      } finally {
+        setLoadingStore(false);
+      }
+    };
+
+    fetchStoreInfo();
+  }, [token, storeDraftKey]);
+
+  useEffect(() => {
+    if (!selectedRestaurantId || restaurants.length === 0) {
+      return;
+    }
+
+    const selectedRestaurant = restaurants.find(
+      (restaurant) => restaurant.id === selectedRestaurantId
+    );
+    if (!selectedRestaurant) {
+      return;
+    }
+
+    const nextSettings = mapRestaurantToStoreSettings(selectedRestaurant, storeSettings);
+    setStoreSettings((current) => ({
+      ...current,
+      ...nextSettings,
+    }));
+    setNotifications((current) =>
+      mergeNotificationSettings(
+        selectedRestaurant.restaurant_notification_settings,
+        current
+      )
+    );
+    setBusinessSettings((current) =>
+      mergeBusinessSettings(selectedRestaurant.restaurant_business_settings, current)
+    );
+    persistStoreDraft(storeDraftKey, nextSettings);
+  }, [selectedRestaurantId, restaurants, storeDraftKey]);
+
+  const handleSaveStore = async () => {
+    if (!token) {
+      message.error("You need to log in as a vendor.");
+      return;
+    }
+
+    try {
+      setSavingStore(true);
+
+      const formData = new FormData();
+      if (selectedRestaurantId) {
+        formData.append("restaurant_id", String(selectedRestaurantId));
+      }
+      formData.append("restaurant_name", storeSettings.storeName);
+      formData.append("restaurant_email", storeSettings.storeEmail);
+      formData.append("restaurant_phone", storeSettings.storePhone);
+      formData.append("restaurant_address", storeSettings.storeAddress);
+      formData.append("restaurant_description", storeSettings.storeDescription);
+      formData.append("restaurant_website", storeSettings.storeWebsite);
+      formData.append("restaurant_country", storeSettings.storeCountry || "");
+      formData.append(
+        "restaurant_currency",
+        String(storeSettings.storeCurrency || "").toUpperCase()
+      );
+
+      if (storeSettings.storeBannerFile) {
+        formData.append("restaurant_banner", storeSettings.storeBannerFile);
+      }
+      if (storeSettings.storeLogoFile) {
+        formData.append(
+          "restaurant_logo",
+          storeSettings.storeLogoFile,
+          storeSettings.storeLogoFile.name
+        );
+        formData.append(
+          "logo",
+          storeSettings.storeLogoFile,
+          storeSettings.storeLogoFile.name
+        );
+      }
+
+      const response = await axios.post(
+        `${API_BASE_URL}/vendor/restaurants/update-info`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const updatedRestaurant = response.data?.data;
+      if (updatedRestaurant) {
+        const nextSettings = mapRestaurantToStoreSettings(updatedRestaurant, storeSettings);
+        setStoreSettings((current) => ({
+          ...current,
+          ...nextSettings,
+        }));
+        persistStoreDraft(storeDraftKey, nextSettings);
+      } else {
+        const nextSettings = {
+          ...storeSettings,
+          storeLogoFile: null,
+          storeBannerFile: null,
+        };
+        setStoreSettings((current) => ({
+          ...current,
+          storeLogoFile: null,
+          storeBannerFile: null,
+        }));
+        persistStoreDraft(storeDraftKey, nextSettings);
+      }
+
+      const refreshed = await axios.get(
+        `${API_BASE_URL}/vendor/restaurants?limit=100`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+      const refreshedRows = refreshed.data?.data || [];
+      setRestaurants(refreshedRows);
+      const refreshedRestaurant =
+        refreshedRows.find((row) => row.id === selectedRestaurantId) ||
+        refreshedRows[0];
+      if (refreshedRestaurant) {
+        if (selectedRestaurantId !== refreshedRestaurant.id) {
+          setSelectedRestaurantId(refreshedRestaurant.id);
+        }
+        const nextSettings = mapRestaurantToStoreSettings(refreshedRestaurant, storeSettings);
+        setStoreSettings((current) => ({
+          ...current,
+          ...nextSettings,
+        }));
+        persistStoreDraft(storeDraftKey, nextSettings);
+      }
+
+      message.success("Store settings updated successfully");
+    } catch (error) {
+      message.error(
+        error.response?.data?.message || "Failed to update store information"
+      );
+    } finally {
+      setSavingStore(false);
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    if (!token) {
+      message.error("You need to log in as a vendor.");
+      return;
+    }
+
+    setSavingNotifications(true);
+    try {
+      await axios.post(
+        `${API_BASE_URL}/vendor/restaurants/update-notification-settings`,
+        {
+          ...notifications,
+          ...(selectedRestaurantId ? { restaurant_id: selectedRestaurantId } : {}),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+      localStorage.setItem(
+        notificationSettingsKey,
+        JSON.stringify(notifications)
+      );
+      message.success("Notification preferences updated");
+    } finally {
+      setSavingNotifications(false);
+    }
+  };
+
+  const handleSaveBusiness = async () => {
+    if (!token) {
+      message.error("You need to log in as a vendor.");
+      return;
+    }
+
+    setSavingBusiness(true);
+    try {
+      await axios.post(
+        `${API_BASE_URL}/vendor/restaurants/update-business-settings`,
+        {
+          ...businessSettings,
+          ...(selectedRestaurantId ? { restaurant_id: selectedRestaurantId } : {}),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+      localStorage.setItem(
+        businessSettingsKey,
+        JSON.stringify(businessSettings)
+      );
+      message.success("Business settings updated successfully");
+    } finally {
+      setSavingBusiness(false);
+    }
+  };
+
+  const handleQuickAction = (actionKey) => {
+    if (actionKey === "analytics") {
+      navigate("/vendors/analytics");
+      return;
+    }
+
+    if (actionKey === "payment") {
+      navigate("/vendors/wallet");
+      return;
+    }
+
+    if (actionKey === "security") {
+      setIsSecurityModalOpen(true);
+      fetchSecuritySettings();
+    }
+  };
+
+  const fetchSecuritySettings = async () => {
+    if (!token) {
+      return;
+    }
+
+    setLoadingSecurity(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/vendor/security-settings`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      const settings = response.data?.data || {};
+      const nextState = {
+        twoFactorEnabled: Boolean(settings.two_factor_enabled),
+        twoFactorChannel: settings.two_factor_channel || "email",
+      };
+      setSecuritySettings(nextState);
+      securityForm.setFieldsValue({
+        twoFactorEnabled: nextState.twoFactorEnabled,
+        twoFactorChannel: nextState.twoFactorChannel,
+        currentPassword: "",
+        newPassword: "",
+        newPasswordConfirmation: "",
+      });
+    } catch (error) {
+      message.error(
+        error.response?.data?.message || "Failed to load security settings."
+      );
+    } finally {
+      setLoadingSecurity(false);
+    }
+  };
+
+  const handleSaveSecurity = async () => {
+    if (!token) {
+      message.error("You need to log in as a vendor.");
+      return;
+    }
+
+    const values = await securityForm.validateFields();
+    const hasPasswordInput =
+      values.currentPassword || values.newPassword || values.newPasswordConfirmation;
+
+    try {
+      setSavingSecurity(true);
+
+      if (hasPasswordInput) {
+        await axios.post(
+          `${API_BASE_URL}/vendor/change-password`,
+          {
+            current_password: values.currentPassword,
+            new_password: values.newPassword,
+            new_password_confirmation: values.newPasswordConfirmation,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
+      }
+
+      await axios.post(
+        `${API_BASE_URL}/vendor/security-settings`,
+        {
+          two_factor_enabled: Boolean(values.twoFactorEnabled),
+          two_factor_channel: values.twoFactorEnabled
+            ? values.twoFactorChannel || "email"
+            : null,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      setSecuritySettings({
+        twoFactorEnabled: Boolean(values.twoFactorEnabled),
+        twoFactorChannel: values.twoFactorChannel || "email",
+      });
+      message.success("Security settings updated successfully.");
+      setIsSecurityModalOpen(false);
+      securityForm.resetFields();
+    } catch (error) {
+      const validationErrors = error.response?.data?.errors;
+      if (validationErrors && typeof validationErrors === "object") {
+        const firstError = Object.values(validationErrors)[0];
+        message.error(Array.isArray(firstError) ? firstError[0] : "Validation failed.");
+      } else {
+        message.error(
+          error.response?.data?.message || "Failed to update security settings."
+        );
+      }
+    } finally {
+      setSavingSecurity(false);
+    }
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -48,18 +519,142 @@ const VendorSettings = () => {
         storeSettings={storeSettings}
         setStoreSettings={setStoreSettings}
         onSave={handleSaveStore}
+        saving={savingStore}
+        loading={loadingStore}
       />
       <NotificationPreferences
         notifications={notifications}
         setNotifications={setNotifications}
         onSave={handleSaveNotifications}
+        saving={savingNotifications}
       />
       <BusinessSettings
         businessSettings={businessSettings}
         setBusinessSettings={setBusinessSettings}
         onSave={handleSaveBusiness}
+        saving={savingBusiness}
       />
-      <QuickActions />
+      <QuickActions onAction={handleQuickAction} />
+
+      <Modal
+        open={isSecurityModalOpen}
+        title="Security Settings"
+        onCancel={() => setIsSecurityModalOpen(false)}
+        onOk={handleSaveSecurity}
+        okText="Save Security Settings"
+        confirmLoading={savingSecurity}
+        destroyOnClose
+      >
+        <Form
+          form={securityForm}
+          layout="vertical"
+          initialValues={{
+            twoFactorEnabled: securitySettings.twoFactorEnabled,
+            twoFactorChannel: securitySettings.twoFactorChannel,
+          }}
+        >
+          <Form.Item name="twoFactorEnabled" label="Enable 2FA" valuePropName="checked">
+            <Switch checkedChildren="Enabled" unCheckedChildren="Disabled" />
+          </Form.Item>
+
+          <Form.Item
+            noStyle
+            shouldUpdate={(prev, curr) =>
+              prev.twoFactorEnabled !== curr.twoFactorEnabled
+            }
+          >
+            {({ getFieldValue }) =>
+              getFieldValue("twoFactorEnabled") ? (
+                <Form.Item
+                  name="twoFactorChannel"
+                  label="2FA Channel"
+                  rules={[{ required: true, message: "Select a 2FA channel." }]}
+                >
+                  <Select
+                    options={[
+                      { label: "Email OTP", value: "email" },
+                      { label: "SMS OTP", value: "sms" },
+                    ]}
+                  />
+                </Form.Item>
+              ) : null
+            }
+          </Form.Item>
+
+          <Text strong>Change Password</Text>
+          <div style={{ marginBottom: 8 }} />
+
+          <Form.Item
+            name="currentPassword"
+            label="Current Password"
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!getFieldValue("newPassword") && !value) {
+                    return Promise.resolve();
+                  }
+                  if (value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("Current password is required."));
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="Enter current password" />
+          </Form.Item>
+
+          <Form.Item
+            name="newPassword"
+            label="New Password"
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!getFieldValue("currentPassword") && !value) {
+                    return Promise.resolve();
+                  }
+                  if (!value) {
+                    return Promise.reject(new Error("New password is required."));
+                  }
+                  if (String(value).length < 8) {
+                    return Promise.reject(
+                      new Error("New password must be at least 8 characters.")
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="Enter new password" />
+          </Form.Item>
+
+          <Form.Item
+            name="newPasswordConfirmation"
+            label="Confirm New Password"
+            dependencies={["newPassword"]}
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const newPassword = getFieldValue("newPassword");
+                  if (!newPassword && !value) {
+                    return Promise.resolve();
+                  }
+                  if (!value) {
+                    return Promise.reject(new Error("Please confirm the new password."));
+                  }
+                  if (value !== newPassword) {
+                    return Promise.reject(new Error("Passwords do not match."));
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="Confirm new password" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

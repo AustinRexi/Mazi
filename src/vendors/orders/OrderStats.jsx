@@ -1,4 +1,5 @@
 import { Card, Row, Col, Typography, Space } from "antd";
+import { formatVendorMoney, useVendorCurrencyCode } from "../utils/currency";
 import {
   ShoppingCartOutlined,
   ClockCircleOutlined,
@@ -14,6 +15,8 @@ function OrderStats({
   completedOrders,
   totalRevenue,
 }) {
+  const currencyCode = useVendorCurrencyCode();
+
   return (
     <Row gutter={[16, 16]}>
       <Col xs={24} sm={12} md={6}>
@@ -55,7 +58,7 @@ function OrderStats({
             <DollarOutlined style={{ color: "#52c41a" }} />
             <Text>Revenue</Text>
           </Space>
-          <Title level={3}>${totalRevenue.toFixed(2)}</Title>
+          <Title level={3}>{formatVendorMoney(totalRevenue, currencyCode)}</Title>
           <Text type="secondary">From paid orders</Text>
         </Card>
       </Col>

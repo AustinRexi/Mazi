@@ -1,9 +1,11 @@
 import { Table, Tag, Typography } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
+import { formatVendorMoney, useVendorCurrencyCode } from "../utils/currency";
 
 const { Text } = Typography;
 
 const TransactionTable = ({ transactions, loading }) => {
+  const currencyCode = useVendorCurrencyCode();
   const getStatusTag = (status) => {
     switch (status) {
       case "completed":
@@ -41,9 +43,12 @@ const TransactionTable = ({ transactions, loading }) => {
       ellipsis: true,
     },
     {
-      title: "Amount",
+      title: "Order Amount",
       dataIndex: "amount",
-      render: (amount, record) => (
+      render: (_, record) => (
+        !record.orderId ? (
+          <Text type="secondary">—</Text>
+        ) : (
         <Text
           strong
           style={{
@@ -55,8 +60,10 @@ const TransactionTable = ({ transactions, loading }) => {
                 : "inherit",
           }}
         >
-          {record.type === "credit" ? "+" : ""}${Math.abs(amount).toFixed(2)}
+          {record.type === "credit" ? "+" : ""}
+          {formatVendorMoney(Math.abs(Number(record.orderProductTotal || 0)), currencyCode)}
         </Text>
+        )
       ),
     },
     {

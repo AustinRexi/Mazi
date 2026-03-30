@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Form,
@@ -6,22 +6,19 @@ import {
   Button,
   Card,
   Checkbox,
-  Radio,
-  Space,
-  Row,
-  Col,
   Typography,
+  Divider,
+  Alert,
+  message,
 } from "antd";
 import {
   UserOutlined,
   MailOutlined,
   LockOutlined,
   PhoneOutlined,
-  ShopOutlined,
-  CustomerServiceOutlined,
 } from "@ant-design/icons";
-
-// Dynamic form field configuration
+import { registerVendor } from "../../services/authService";
+import { AuthContext } from "../../context/AuthContext";
 
 const formFields = [
   {
@@ -30,7 +27,6 @@ const formFields = [
     rules: [{ required: true, message: "First name is required" }],
     prefix: <UserOutlined />,
     placeholder: "John",
-    span: 12,
   },
   {
     name: "lastName",
@@ -38,7 +34,6 @@ const formFields = [
     rules: [{ required: true, message: "Last name is required" }],
     prefix: <UserOutlined />,
     placeholder: "Doe",
-    span: 12,
   },
   {
     name: "email",
@@ -53,7 +48,13 @@ const formFields = [
   {
     name: "phone",
     label: "Phone Number",
-    rules: [{ required: true, message: "Phone number is required" }],
+    rules: [
+      { required: true, message: "Phone number is required" },
+      {
+        pattern: /^\+?[0-9\s()-]{7,20}$/,
+        message: "Enter a valid phone number",
+      },
+    ],
     prefix: <PhoneOutlined />,
     placeholder: "+1 (555) 123-4567",
   },
@@ -89,40 +90,135 @@ const formFields = [
   },
 ];
 
-// Role options configuration
-const roleOptions = [
-  {
-    value: "vendor",
-    label: "Vendor",
-    description: "Manage your store, products, and orders",
-    icon: ShopOutlined,
-  },
-  {
-    value: "support",
-    label: "Support Staff",
-    description: "Handle customer inquiries and tickets",
-    icon: CustomerServiceOutlined,
-  },
-];
-
 const SignupPage = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const selectedRole = Form.useWatch("role", form);
+  const [error, setError] = useState("");
+  const [locationData, setLocationData] = useState({
+    lat: 0,
+    lng: 0,
+    country: "",
+    location: "",
+  });
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fallbackCountryFromLocale = () => {
+      const locale = navigator.language || "";
+      const region = locale.includes("-") ? locale.split("-")[1] : "";
+      return region ? region.toUpperCase() : "";
+    };
+
+    const getCountryName = (countryCode) => {
+      try {
+        if (!countryCode) return "";
+        const displayNames = new Intl.DisplayNames(["en"], { type: "region" });
+        return displayNames.of(countryCode.toUpperCase()) || "";
+      } catch {
+        return countryCode || "";
+      }
+    };
+
+    if (!navigator.geolocation) {
+      const fallback = fallbackCountryFromLocale();
+      setLocationData((prev) => ({
+        ...prev,
+        country: getCountryName(fallback) || fallback,
+      }));
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = Number(position.coords.latitude || 0);
+        const lng = Number(position.coords.longitude || 0);
+        let country = "";
+        let location = `${lat},${lng}`;
+
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            country = data?.address?.country || "";
+            location =
+              data?.address?.city ||
+              data?.address?.town ||
+              data?.address?.state ||
+              data?.display_name ||
+              location;
+          }
+        } catch {
+          // Ignore reverse geocode errors and keep coordinate fallback.
+        }
+
+        if (!country) {
+          const fallback = fallbackCountryFromLocale();
+          country = getCountryName(fallback) || fallback;
+        }
+
+        setLocationData({
+          lat,
+          lng,
+          country,
+          location,
+        });
+      },
+      () => {
+        const fallback = fallbackCountryFromLocale();
+        setLocationData((prev) => ({
+          ...prev,
+          country: getCountryName(fallback) || fallback,
+        }));
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 300000,
+      }
+    );
+  }, []);
+
   const signIn = () => {
-    navigate("/");
+    navigate("/login");
   };
 
-  const handleSubmit = (values) => {
-    setLoading(true);
-    console.log("Form data:", values);
-    setTimeout(() => {
+  const handleSubmit = async (values) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const payload = {
+        firstname: values.firstName,
+        lastname: values.lastName,
+        phone: values.phone,
+        email: values.email,
+        password: values.password,
+        location: locationData.location || "",
+        lat: Number(locationData.lat || 0),
+        lng: Number(locationData.lng || 0),
+        country: locationData.country || "",
+      };
+
+      const response = await registerVendor(payload);
+
+      if (response?.token) {
+        login(response.token, "vendor");
+        message.success(response.message || "Account created successfully.");
+        navigate("/vendors/dashboard");
+        return;
+      }
+
+      throw new Error("Signup succeeded but no token was returned.");
+    } catch (submitError) {
+      setError(submitError.message || "Failed to create account.");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
-  // Dynamic form item renderer
   const renderFormItem = ({
     name,
     label,
@@ -131,109 +227,94 @@ const SignupPage = () => {
     placeholder,
     type,
     dependencies,
-    span,
   }) => (
-    <Col span={span || 24} key={name}>
-      <Form.Item
-        name={name}
-        label={label}
-        rules={rules}
-        dependencies={dependencies}
-      >
-        {type === "password" ? (
-          <Input.Password prefix={prefix} placeholder={placeholder} />
-        ) : (
-          <Input prefix={prefix} placeholder={placeholder} />
-        )}
-      </Form.Item>
-    </Col>
+    <Form.Item
+      key={name}
+      name={name}
+      label={label}
+      rules={rules}
+      dependencies={dependencies}
+      style={{ marginBottom: 14 }}
+    >
+      {type === "password" ? (
+        <Input.Password
+          size="large"
+          prefix={prefix}
+          placeholder={placeholder}
+          autoComplete={name === "password" ? "new-password" : "off"}
+        />
+      ) : (
+        <Input
+          size="large"
+          prefix={prefix}
+          placeholder={placeholder}
+          autoComplete={name === "email" ? "email" : "off"}
+        />
+      )}
+    </Form.Item>
   );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Card bordered={false} style={{ width: "100%" }}>
-        <div style={{ textAlign: "center", paddingBottom: 24 }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Card
+        bordered={false}
+        style={{
+          width: "100%",
+          borderRadius: 14,
+          border: "1px solid #e6ebf1",
+          boxShadow: "0 14px 30px rgba(2, 6, 23, 0.08)",
+        }}
+      >
+        <div style={{ textAlign: "center", paddingBottom: 20 }}>
           <div
             style={{
-              width: 64,
-              height: 64,
-              background: "#1890ff",
-              borderRadius: 16,
+              width: 56,
+              height: 56,
+              background: "#034147",
+              borderRadius: 14,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 16px",
+              margin: "0 auto 14px",
             }}
           >
-            <UserOutlined style={{ fontSize: 32, color: "#fff" }} />
+            <UserOutlined style={{ fontSize: 28, color: "#fff" }} />
           </div>
-          <Typography.Title level={3}>Create Your Account</Typography.Title>
-          <Typography.Paragraph level={4}>
-            Join our platform and start your journey today
-          </Typography.Paragraph>
+          <Typography.Title
+            level={3}
+            style={{ marginBottom: 8, fontFamily: "NeueHaasDisplayMediu" }}
+          >
+            Create Vendor Account
+          </Typography.Title>
+          <Typography.Text style={{ color: "#667085" }}>
+            Set up your vendor account in a few steps.
+          </Typography.Text>
         </div>
 
-        <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Row gutter={16}>
-            {formFields.map((field) => renderFormItem(field))}
-          </Row>
+        {error ? (
+          <Alert
+            type="error"
+            showIcon
+            message={error}
+            style={{ marginBottom: 14 }}
+          />
+        ) : null}
 
-          <Form.Item
-            label="Select Your Role"
-            name="role"
-            rules={[{ required: true, message: "Please select a role" }]}
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          layout="vertical"
+          requiredMark={false}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: 12,
+            }}
           >
-            <Radio.Group style={{ width: "100%" }}>
-              <Space
-                direction="vertical"
-                style={{ width: "100%" }}
-                size="middle"
-              >
-                {roleOptions.map((role) => {
-                  const IconComponent = role.icon;
-                  return (
-                    <Radio value={role.value} key={role.value}>
-                      <Card
-                        hoverable
-                        style={{
-                          ...(selectedRole === role.value
-                            ? {
-                                border: "2px solid #1890ff",
-                                background: "#f0fdf4",
-                              }
-                            : {}),
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 12,
-                          }}
-                        >
-                          <IconComponent
-                            style={{ fontSize: 20, color: "#1890ff" }}
-                          />
-                          <div>
-                            <div style={{ fontWeight: 500 }}>{role.label}</div>
-                            <div style={{ fontSize: 12, color: "#666" }}>
-                              {role.description}
-                            </div>
-                          </div>
-                        </div>
-                      </Card>
-                    </Radio>
-                  );
-                })}
-              </Space>
-            </Radio.Group>
-          </Form.Item>
+            {formFields.map((field) => renderFormItem(field))}
+          </div>
 
           <Form.Item
             name="agreed"
@@ -249,44 +330,47 @@ const SignupPage = () => {
           >
             <Checkbox>
               I agree to the{" "}
-              <a href="#" style={{ color: "#1890ff" }}>
+              <a href="#" style={{ color: "#034147" }}>
                 Terms of Service
               </a>{" "}
               and{" "}
-              <a href="#" style={{ color: "#1890ff" }}>
+              <a href="#" style={{ color: "#034147" }}>
                 Privacy Policy
               </a>
             </Checkbox>
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item style={{ marginBottom: 12 }}>
             <Button
               type="primary"
               htmlType="submit"
               loading={loading}
               block
               size="large"
+              style={{ height: 44, background: "#034147" }}
             >
               {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </Form.Item>
         </Form>
 
-        <div style={{ textAlign: "center", paddingTop: 16 }}>
-          <Typography.Paragraph style={{ fontSize: 16, color: "#666" }}>
+        <Divider style={{ margin: "10px 0 14px" }} />
+
+        <div style={{ textAlign: "center" }}>
+          <Typography.Text style={{ color: "#667085" }}>
             Already have an account?{" "}
-            <Button
-              style={{
-                border: "none",
-                color: "#1890ff",
-                fontWeight: 500,
-                fontSize: "16px",
-              }}
-              onClick={signIn}
-            >
-              Sign In Instead
-            </Button>
-          </Typography.Paragraph>
+          </Typography.Text>
+          <Button
+            style={{
+              border: "none",
+              color: "#034147",
+              fontWeight: 600,
+              paddingInline: 4,
+            }}
+            onClick={signIn}
+          >
+            Sign In Instead
+          </Button>
         </div>
       </Card>
     </div>
