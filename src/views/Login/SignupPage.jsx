@@ -90,7 +90,7 @@ const formFields = [
   },
 ];
 
-const SignupPage = () => {
+const SignupPage = ({ onClose }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -100,9 +100,11 @@ const SignupPage = () => {
     country: "",
     location: "",
   });
+
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
+  // Location detection effect
   useEffect(() => {
     const fallbackCountryFromLocale = () => {
       const locale = navigator.language || "";
@@ -138,7 +140,7 @@ const SignupPage = () => {
 
         try {
           const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
           );
           if (response.ok) {
             const data = await response.json();
@@ -151,7 +153,7 @@ const SignupPage = () => {
               location;
           }
         } catch {
-          // Ignore reverse geocode errors and keep coordinate fallback.
+          // Ignore reverse geocode errors
         }
 
         if (!country) {
@@ -177,12 +179,16 @@ const SignupPage = () => {
         enableHighAccuracy: false,
         timeout: 10000,
         maximumAge: 300000,
-      }
+      },
     );
   }, []);
 
-  const signIn = () => {
-    navigate("/login");
+  const handleBackToLogin = () => {
+    if (onClose) {
+      onClose(); // Close the modal when inside ForgotPassword/Signup modal
+    } else {
+      navigate("/login"); // Fallback if component is used directly
+    }
   };
 
   const handleSubmit = async (values) => {
@@ -255,7 +261,13 @@ const SignupPage = () => {
   );
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Card
         bordered={false}
         style={{
@@ -367,7 +379,7 @@ const SignupPage = () => {
               fontWeight: 600,
               paddingInline: 4,
             }}
-            onClick={signIn}
+            onClick={handleBackToLogin}
           >
             Sign In Instead
           </Button>

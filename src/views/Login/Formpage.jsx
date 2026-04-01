@@ -1,10 +1,23 @@
 import { useState, useEffect, useContext } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Typography, Alert, Modal, Card, Space } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Typography,
+  Alert,
+  Modal,
+  Card,
+  Space,
+} from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { loginUser, resendVendor2FA, verifyVendor2FA } from "../../services/authService";
+import {
+  loginUser,
+  resendVendor2FA,
+  verifyVendor2FA,
+} from "../../services/authService";
 import SignupPage from "./SignupPage";
 import { ForgotPassword } from "./ForgotPassword";
 
@@ -36,8 +49,14 @@ function Formpage() {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-      const { token, role, requires2FA, challengeId, channel, message: loginMessage } =
-        await loginUser(values);
+      const {
+        token,
+        role,
+        requires2FA,
+        challengeId,
+        channel,
+        message: loginMessage,
+      } = await loginUser(values);
 
       if (requires2FA && role === "vendor") {
         setOtpChallengeId(challengeId || "");
@@ -169,7 +188,7 @@ function Formpage() {
               color: "#101828",
             }}
           >
-            Admin / Vendor Login
+            Login
           </Title>
           <Text
             style={{
@@ -203,14 +222,8 @@ function Formpage() {
             name="email"
             label="Email Address"
             rules={[
-              {
-                required: true,
-                message: "Please input your email!",
-              },
-              {
-                type: "email",
-                message: "Please enter a valid email address!",
-              },
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email address!" },
             ]}
           >
             <Input
@@ -224,12 +237,7 @@ function Formpage() {
           <Form.Item
             name="password"
             label="Password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your password!",
-              },
-            ]}
+            rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Input
               size="large"
@@ -321,37 +329,36 @@ function Formpage() {
         </Form>
       </Card>
 
+      {/* Signup Modal */}
       <Modal
         title="Sign Up"
         open={isSignupModalVisible}
         onCancel={handleSignupCancel}
         footer={null}
-        width={860}
         maskClosable={false}
         styles={{ body: { maxHeight: "75vh", overflowY: "auto" } }}
       >
-        <SignupPage />
+        <SignupPage onClose={handleSignupCancel} />
       </Modal>
 
+      {/* Forgot Password Modal */}
       <Modal
         title="Forgot Password"
         open={isForgotPasswordModalVisible}
         onCancel={handleForgotPasswordCancel}
         footer={null}
-        width={860}
         maskClosable={false}
-        styles={{ body: { maxHeight: "75vh", overflowY: "auto" } }}
+        styles={{ body: { maxHeight: "75vh" } }}
       >
-        <ForgotPassword />
+        <ForgotPassword onClose={handleForgotPasswordCancel} />
       </Modal>
 
+      {/* OTP Modal */}
       <Modal
         title="Two-Factor Authentication"
         open={isOtpModalVisible}
         onCancel={() => {
-          if (otpLoading) {
-            return;
-          }
+          if (otpLoading) return;
           setIsOtpModalVisible(false);
           setOtpCode("");
           setOtpChallengeId("");
@@ -374,7 +381,10 @@ function Formpage() {
         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
           <Text type="secondary">
             Enter the OTP sent to your{" "}
-            {otpChannel === "sms" ? "configured channel (email fallback)" : "email"}.
+            {otpChannel === "sms"
+              ? "configured channel (email fallback)"
+              : "email"}
+            .
           </Text>
           <Input
             value={otpCode}

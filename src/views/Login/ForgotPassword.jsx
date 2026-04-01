@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, Alert, Typography, Form, Row, Col, message } from "antd";
+import {
+  Button,
+  Input,
+  Alert,
+  Typography,
+  Form,
+  Row,
+  Col,
+  message,
+} from "antd";
 import {
   MailOutlined,
   ArrowLeftOutlined,
@@ -16,7 +25,7 @@ const { Title, Paragraph, Text } = Typography;
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
-export const ForgotPassword = () => {
+export const ForgotPassword = ({ onClose }) => {
   const [form] = Form.useForm();
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
@@ -28,7 +37,11 @@ export const ForgotPassword = () => {
   const emailValue = Form.useWatch("email", form);
 
   const handleBackToLogin = () => {
-    navigate("/login");
+    if (onClose) {
+      onClose();
+    } else {
+      navigate("/login");
+    }
   };
 
   const handleSendOtp = async () => {
@@ -53,7 +66,7 @@ export const ForgotPassword = () => {
       setError(
         sendError.response?.data?.message ||
           sendError.message ||
-          "Failed to send OTP."
+          "Failed to send OTP.",
       );
     } finally {
       setIsSendingOtp(false);
@@ -78,7 +91,7 @@ export const ForgotPassword = () => {
       setError(
         resetError.response?.data?.message ||
           resetError.message ||
-          "Failed to reset password."
+          "Failed to reset password.",
       );
     } finally {
       setIsResetting(false);
@@ -107,8 +120,8 @@ export const ForgotPassword = () => {
             Password Reset Complete
           </Title>
           <Paragraph style={{ marginBottom: 0 }}>
-            Your password has been updated successfully. You can now sign in with
-            your new password.
+            Your password has been updated successfully. You can now sign in
+            with your new password.
           </Paragraph>
         </div>
 
@@ -208,10 +221,7 @@ export const ForgotPassword = () => {
               name="password"
               rules={[
                 { required: true, message: "Please enter new password" },
-                {
-                  min: 8,
-                  message: "Password must be at least 8 characters",
-                },
+                { min: 8, message: "Password must be at least 8 characters" },
               ]}
             >
               <Input.Password
@@ -276,7 +286,11 @@ export const ForgotPassword = () => {
 
         <div style={{ marginTop: 14, textAlign: "center" }}>
           <Text style={{ color: "#667085" }}>Remember your password? </Text>
-          <Button type="link" onClick={handleBackToLogin} style={{ padding: 0 }}>
+          <Button
+            type="link"
+            onClick={handleBackToLogin}
+            style={{ padding: 0 }}
+          >
             <ArrowLeftOutlined /> Back to Sign In
           </Button>
         </div>
