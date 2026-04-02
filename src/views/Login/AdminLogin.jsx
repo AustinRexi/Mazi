@@ -2,7 +2,7 @@ import { Col, Row } from "antd";
 import Imagepage from "./Imagepage";
 import Formpage from "./Formpage";
 
-function Login() {
+function AdminLogin() {
   return (
     <div style={{ minHeight: "100vh", background: "#f5f7fa" }}>
       <Row style={{ minHeight: "100vh" }}>
@@ -20,11 +20,11 @@ function Login() {
             padding: "24px 20px",
           }}
         >
-          <Formpage mode="vendor" />
+          <Formpage mode="admin" />
         </Col>
       </Row>
     </div>
   );
 }
 
-export default Login;
+export default AdminLogin;

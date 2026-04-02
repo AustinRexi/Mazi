@@ -188,6 +188,7 @@ import walletIcon from "../utils/icons/wallet.svg";
 import supportIcon from "../utils/icons/support.svg";
 import settingIcon from "../utils/icons/settings.svg";
 import chartIcon from "../utils/icons/chart.svg";
+import heartIcon from "../utils/icons/heart.svg";
 import homefilled from "../utils/icons/homefilled.svg";
 import productfilled from "../utils/icons/productfilled.svg";
 import orderfilled from "../utils/icons/ordersfilled.svg";
@@ -214,13 +215,18 @@ const navLinkStyles = ({ isActive }) => ({
 });
 
 const adminMenu = [
-  { name: "Dashboard", icon: homeIcon, activeIcon: homefilled, link: "/" },
   {
-    name: "Products",
-    icon: productIcon,
-    activeIcon: productfilled,
-    link: "/Product",
+    name: "Dashboard",
+    icon: homeIcon,
+    activeIcon: homefilled,
+    link: "/admin/dashboard",
   },
+  // {
+  //   name: "Products",
+  //   icon: productIcon,
+  //   activeIcon: productfilled,
+  //   link: "/Product",
+  // },
   { name: "Orders", icon: orderIcon, activeIcon: orderfilled, link: "/Orders" },
   {
     name: "Customers",
@@ -290,6 +296,12 @@ const vendorMenu = [
     icon: orderIcon,
     activeIcon: orderfilled,
     link: "/vendors/orders",
+  },
+  {
+    name: "Wishlist",
+    icon: heartIcon,
+    activeIcon: heartIcon,
+    link: "/vendors/wishlist",
   },
   {
     name: "Wallet",

@@ -10,8 +10,8 @@ import Layout from "./Layout/Layout";
 
 // Views (Admin)
 import Login from "./views/Login/Login";
+import AdminLogin from "./views/Login/AdminLogin";
 import AddProduct from "./views/Product/Addproduct";
-import Board from "./views/Dashboard/Board";
 import Product from "./views/Product/Product";
 import Orders from "./views/Orders/Order";
 import Customers from "./views/Customers/Customers";
@@ -20,6 +20,7 @@ import Support from "./views/Support/Support";
 import Wallet from "./views/Wallet/index";
 import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
 import Courier from "./views/Courier/Courier";
+import Board from "./views/Dashboard/Board";
 import CongratulationsCard from "./Components/Product/CongratulationsCard";
 
 // Vendor Views
@@ -31,6 +32,7 @@ import VendorProduct from "./vendors/product";
 import VendorDrinks from "./vendors/drinks";
 import VendorOrder from "./vendors/orders";
 import VendorAnalytics from "./vendors/analytics";
+import VendorWishlist from "./vendors/wishlist";
 import HomeRoute from "./Components/protectedroute/HomeRoute";
 
 const router = createHashRouter([
@@ -44,6 +46,7 @@ const router = createHashRouter([
     children: [
       // 🔵 Admin Routes
       { path: "", element: <HomeRoute /> },
+      { path: "admin/dashboard", element: <Board /> },
 
       // { path: "", element: <Board /> },
       { path: "Product", element: <Product /> },
@@ -62,6 +65,7 @@ const router = createHashRouter([
       { path: "vendors/product", element: <VendorProduct /> },
       { path: "vendors/drinks", element: <VendorDrinks /> },
       { path: "vendors/orders", element: <VendorOrder /> },
+      { path: "vendors/wishlist", element: <VendorWishlist /> },
       { path: "vendors/analytics", element: <VendorAnalytics /> },
       { path: "vendors/wallet", element: <VendorWallet /> },
       { path: "vendors/support", element: <VendorSupport /> },
@@ -69,6 +73,7 @@ const router = createHashRouter([
     ],
   },
   { path: "/login", element: <Login /> },
+  { path: "/admin/login", element: <AdminLogin /> },
   { path: "*", element: <h1>404 - Page Not Found</h1> },
 ]);
 

@@ -1,22 +1,80 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
-import { Carousel } from "antd";
-import Allorder from "./data.js/Allorder";
-import MaziSpecialOrder from "./data.js/MaziSpecialOrder";
+import { useState, useMemo, useEffect } from "react";
+import { Carousel, Alert, Spin, Pagination } from "antd";
 import CourierCard from "../../Components/Courier/CourierCard";
 import CardOrder from "./CardOrder";
 import Calender from "../Dashboard/Calender";
-import { Badge } from "antd";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
-import Tabbutton from "../../Components/Product/Tabbutton";
-import Addbutton from "../../Components/Product/Addbutton";
 import Search from "../../Components/Product/Search";
 import allorderstatus from "./data.js/allorderstatusdata";
-import mazispecialstatus from "./data.js/mazispecialorderstatusdata";
 import OrderDetails from "./orderdetails/OrderDetails";
+import { fetchAdminOrderCards } from "../../services/adminOrderService";
+import banktransfer from "../../Assets/Ordericons/banktransfer.svg";
+import activeIcon from "../../Assets/Ordericons/activeicon.svg";
+import cancelIcon from "../../Assets/Ordericons/cancelicon.svg";
+import completeIcon from "../../Assets/Ordericons/completedicon.svg";
+import mastercard from "../../Assets/Ordericons/mastercard.svg";
+import mazitoken from "../../Assets/Ordericons/mazitoken.svg";
+import paypal from "../../Assets/Ordericons/paypal.svg";
+import pendingIcon from "../../Assets/Ordericons/pendingicon.svg";
+import refundedIcon from "../../Assets/Ordericons/refundedicon.svg";
+import dp from "../../Assets/Ordericons/displayimageicon.svg";
 
-const dataRefrence = { tab1: allorderstatus, tab2: mazispecialstatus };
-const orders = { tab1: Allorder, tab2: MaziSpecialOrder };
+const paymentIconMap = {
+  cash: banktransfer,
+  bank_transfer: banktransfer,
+  transfer: banktransfer,
+  card: mastercard,
+  token: mazitoken,
+  mazi_token: mazitoken,
+  paypal,
+};
+
+const statusIconMap = {
+  active: activeIcon,
+  accepted: activeIcon,
+  on_the_way: activeIcon,
+  arrived: activeIcon,
+  shipped: activeIcon,
+  collected: activeIcon,
+  pending: pendingIcon,
+  canceled: cancelIcon,
+  cancelled: cancelIcon,
+  refund: refundedIcon,
+  refunded: refundedIcon,
+  delivered: completeIcon,
+  complete: completeIcon,
+  completed: completeIcon,
+};
+
+const formatAmount = (value) => {
+  const numericValue = Number(value || 0);
+  return `N${numericValue.toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+};
+
+const formatCardDate = (value) => {
+  if (!value) {
+    return "-";
+  }
+
+  const parsed = dayjs(value);
+  if (!parsed.isValid()) {
+    return "-";
+  }
+
+  return parsed.format("MMM.DD,YYYY | hh:mma");
+};
+
+const matchesOrderDate = (value, selectedDate) => {
+  if (!selectedDate) {
+    return true;
+  }
+
+  const parsed = dayjs(value);
+  return parsed.isValid() ? parsed.isSame(selectedDate, "day") : false;
+};
 
 const getUserCardGridStyles = (width) => {
   const baseStyles = {
@@ -66,8 +124,11 @@ const styles = {
     padding: "0 16px",
   },
   calendar: {
-    marginTop: "6px",
-    height: "48px",
+    marginTop: 0,
+    height: "56px",
+    padding: 0,
+    display: "flex",
+    alignItems: "center",
     cursor: "pointer",
   },
   listContainer: {
@@ -93,15 +154,6 @@ const styles = {
     fontSize: "24px",
     margin: "0",
   },
-  badge: {
-    padding: "2px 8px",
-    marginLeft: "100px",
-    marginTop: "18px",
-    border: "1px solid #B5B6B5",
-    borderRadius: "16px",
-    height: "50px",
-    width: "278px",
-  },
   heading: {
     marginTop: "20px",
     color: "#000000",
@@ -109,6 +161,13 @@ const styles = {
     fontSize: "24px",
     lineHeight: "32px",
     marginLeft: 20,
+  },
+  headerControls: {
+    marginLeft: "auto",
+    display: "flex",
+    alignItems: "center",
+    gap: 7,
+    flexWrap: "wrap",
   },
 };
 
@@ -120,11 +179,25 @@ const presets = [
 ];
 
 function Order() {
-  const [activeTabKey, setActiveTabKey] = useState("tab1");
-  const [isVisible, setIsVisible] = useState(activeTabKey === "tab1");
+  const [isVisible] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [detailsInitialTab, setDetailsInitialTab] = useState("tab1");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const navigate = useNavigate();
+  const [orderCards, setOrderCards] = useState([]);
+  const [summary, setSummary] = useState({
+    active: 0,
+    pending: 0,
+    cancelled: 0,
+    refunded: 0,
+    completed: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(24);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -132,35 +205,157 @@ function Order() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleViewDetails = useCallback(
-    (order) => {
-      setSelectedOrder(order);
-      setIsVisible(activeTabKey === "tab1");
-    },
-    [activeTabKey]
-  );
-
-  const handleBackToOrders = useCallback(() => {
+  const handleBackToOrders = () => {
     setSelectedOrder(null);
-  }, []);
-
-  const onTabChange = useCallback((key) => {
-    setActiveTabKey(key);
-    setIsVisible(key === "tab1");
-  }, []);
-
-  const handleAddButtonClick = () => {
-    navigate("/addproduct");
+    setDetailsInitialTab("tab1");
   };
 
   const onCarouselChange = (currentSlide) => {
     console.log(currentSlide);
   };
 
-  const iconData = useMemo(() => dataRefrence[activeTabKey], [activeTabKey]);
-  const orderData = useMemo(() => orders[activeTabKey], [activeTabKey]);
-  const text = "New Order";
-  const getPlaceholderText = "Stores, food or groceries";
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadOrderCards = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const result = await fetchAdminOrderCards({
+          per_page: pageSize,
+          page: currentPage,
+        });
+
+        if (!isMounted) {
+          return;
+        }
+
+        const cards = Array.isArray(result.cards)
+          ? result.cards.map((card) => {
+              const status = String(card.status || "pending").toLowerCase();
+              const paymentMethod = String(
+                card.payment_method || "cash"
+              ).toLowerCase();
+
+              return {
+                id: card.id,
+                icon: statusIconMap[status] || pendingIcon,
+                title: String(card.title || "Order").toUpperCase(),
+                displayimg: dp,
+                name: card.name || "Customer",
+                orderid: card.orderid || card.id || "-",
+                createdAt: card.date || null,
+                method: {
+                  icon: paymentIconMap[paymentMethod] || banktransfer,
+                  details: card.payment_details || paymentMethod,
+                },
+                date: formatCardDate(card.date),
+                Amount: formatAmount(card.amount),
+                rawStatus: String(card.raw_status || card.status || "pending"),
+              };
+            })
+          : [];
+
+        const apiSummary = result.summary || {};
+        const apiMeta = result.meta || {};
+        setOrderCards(cards);
+        setSummary({
+          active: Number(apiSummary.active || 0),
+          pending: Number(apiSummary.pending || 0),
+          cancelled: Number(apiSummary.cancelled || 0),
+          refunded: Number(apiSummary.refunded || 0),
+          completed: Number(apiSummary.completed || 0),
+        });
+        setTotalOrders(Number(apiMeta.total || 0));
+      } catch (fetchError) {
+        if (!isMounted) {
+          return;
+        }
+        setError(
+          fetchError?.response?.data?.message ||
+            fetchError?.message ||
+            "Failed to load admin orders."
+        );
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadOrderCards();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentPage, pageSize]);
+
+  const iconData = useMemo(
+    () =>
+      allorderstatus.map((item) => {
+        const key = item.title.toLowerCase();
+        return {
+          ...item,
+          amount: String(summary[key] ?? 0),
+        };
+      }),
+    [summary]
+  );
+
+  const filteredOrderCards = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return orderCards.filter((item) => {
+      const matchesSearch =
+        !normalizedQuery ||
+        String(item.orderid || "")
+          .toLowerCase()
+          .includes(normalizedQuery) ||
+        String(item.name || "")
+          .toLowerCase()
+          .includes(normalizedQuery);
+
+      return matchesSearch && matchesOrderDate(item.createdAt, selectedDate);
+    });
+  }, [orderCards, searchQuery, selectedDate]);
+
+  const getPlaceholderText = "Search by order ID or buyer name";
+  const isTrackableStatus = (status) => {
+    const normalized = String(status || "")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_")
+      .replace(/-/g, "_");
+
+    return normalized === "accepted" || normalized === "on_the_way";
+  };
+
+  const getStatusBorderColor = (status) => {
+    const normalized = String(status || "")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_")
+      .replace(/-/g, "_");
+
+    if (normalized === "accepted") {
+      return "#0B9843";
+    }
+
+    if (normalized === "on_the_way") {
+      return "#D76514";
+    }
+
+    return null;
+  };
+
+  const handleOrderCardClick = (item) => {
+    if (!isTrackableStatus(item?.rawStatus)) {
+      return;
+    }
+
+    setDetailsInitialTab("tab1");
+    setSelectedOrder(item);
+  };
 
   const userCardGridStyles = getUserCardGridStyles(windowWidth);
 
@@ -211,67 +406,88 @@ function Order() {
           isVisible={isVisible}
           order={selectedOrder}
           onBack={handleBackToOrders}
+          initialTab={detailsInitialTab}
         />
       ) : (
         <div>
           <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
             <h2 style={styles.heading}>Order</h2>
-            <div style={styles.badge}>
-              <Badge count={252}>
-                <div style={{ display: "flex", gap: 16 }}>
-                  {[
-                    { id: "tab1", label: "All Orders" },
-                    { id: "tab2", label: "Mazi Special Orders" },
-                  ].map(({ id, label }) => (
-                    <Tabbutton
-                      key={id}
-                      activeTabKey={activeTabKey}
-                      id={id}
-                      handleClick={onTabChange}
-                      style={{
-                        width: "115px",
-                        color: "#494949",
-                        fontSize: "16px",
-                        lineHeight: "24px",
-                        borderRadius: "2px",
-                        marginTop: "8px",
-                      }}
-                    >
-                      {label}
-                    </Tabbutton>
-                  ))}
-                </div>
-              </Badge>
+            <div style={styles.headerControls}>
+              {/* <Addbutton text={text} onClick={handleAddButtonClick} /> */}
+              <Search
+                placeholder={getPlaceholderText}
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                style={{
+                  width: "260px",
+                  height: "56px",
+                  marginTop: 0,
+                  padding: "16px",
+                  border: "1px solid #B5C3C3",
+                }}
+              />
+              <Calender
+                placeholder="Filter by date"
+                data={presets}
+                value={selectedDate}
+                onChange={(value) => setSelectedDate(value)}
+                style={styles.calendar}
+              />
             </div>
-            <Addbutton text={text} onClick={handleAddButtonClick} />
-            <Search
-              placeholder={getPlaceholderText}
-              style={{
-                width: "260px",
-                height: "56px",
-                padding: "16px",
-                border: "1px solid #B5C3C3",
-              }}
-            />
-            <Calender
-              placeholder="Today"
-              data={presets}
-              style={styles.calendar}
-            />
           </div>
 
           {renderCourierList()}
 
+          {error ? (
+            <Alert
+              type="error"
+              showIcon
+              style={{ margin: "12px 20px" }}
+              message={error}
+            />
+          ) : null}
+
           <div style={userCardGridStyles}>
-            {orderData.map((item, index) => (
-              <CardOrder
-                item={item}
-                key={index}
-                isActiveTab={activeTabKey === "tab1"}
-                onViewDetails={handleViewDetails}
-              />
-            ))}
+            {loading ? (
+              <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "24px 0" }}>
+                <Spin />
+              </div>
+            ) : (
+              filteredOrderCards.map((item) => (
+                <CardOrder
+                  item={item}
+                  key={item.id || item.orderid}
+                  isClickable={isTrackableStatus(item.rawStatus)}
+                  onClick={() => handleOrderCardClick(item)}
+                  borderColor={getStatusBorderColor(item.rawStatus)}
+                />
+              ))
+            )}
           </div>
+
+          {!loading && !filteredOrderCards.length ? (
+            <div style={{ margin: "12px 20px", color: "#545E5E" }}>
+              No orders matched the current search or date filter.
+            </div>
+          ) : null}
+
+          {!loading && totalOrders > pageSize ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                margin: "16px 20px 0 20px",
+              }}
+            >
+              <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={totalOrders}
+                showSizeChanger={false}
+                onChange={(page) => setCurrentPage(page)}
+              />
+            </div>
+          ) : null}
         </div>
       )}
     </div>

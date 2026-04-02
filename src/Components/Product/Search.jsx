@@ -2,7 +2,7 @@ import { Input } from "antd";
 import Line from "../../Assets/Lineicons/Line.svg";
 import Searchicon from "../../Assets/Lineicons/Searchicon.svg";
 
-function Search({ placeholder, style }) {
+function Search({ placeholder, style, ...inputProps }) {
   return (
     <div>
       <Input
@@ -36,6 +36,7 @@ function Search({ placeholder, style }) {
           </span>
         }
         placeholder={placeholder}
+        {...inputProps}
       />
       <style>
         {`

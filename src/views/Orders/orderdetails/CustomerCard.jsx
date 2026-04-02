@@ -9,8 +9,9 @@ import Chat from "../../../Components/Courier/Chat";
 import { useState } from "react";
 import dayjs from "dayjs";
 import Address from "./Address";
+import { deriveInitials } from "./orderDataUtils";
 
-const CustomerCard = () => {
+const CustomerCard = ({ order }) => {
   const [isCallingModalVisible, setIsCallingModalVisible] = useState(false);
   const [isChatModalVisible, setIsChatModalVisible] = useState(false);
 
@@ -19,6 +20,22 @@ const CustomerCard = () => {
 
   const showChatModal = () => setIsChatModalVisible(true);
   const hideChatModal = () => setIsChatModalVisible(false);
+
+  const buyer = order?.buyer || {};
+  const buyerName =
+    [buyer.firstname, buyer.lastname].filter(Boolean).join(" ").trim() ||
+    order?.name ||
+    "Unknown Buyer";
+  const joinedDate = buyer?.created_at || order?.created_at;
+  const buyerEmail = buyer?.email || order?.email || "N/A";
+  const buyerPhone = buyer?.phone || "N/A";
+  const buyerInitials = deriveInitials(buyerName);
+  const fullAddress = String(order?.order_address || "").trim();
+  const [addressLine1 = "No address", ...restAddress] = fullAddress
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const addressLine2 = restAddress.join(", ");
   return (
     <>
       <Card
@@ -42,7 +59,7 @@ const CustomerCard = () => {
           style={{ display: "flex", alignItems: "center", marginBottom: 16 }}
         >
           <Avatar size={48} style={{ backgroundColor: "#00B2A9" }}>
-            US
+            {buyerInitials}
           </Avatar>
           <div style={{ marginLeft: 16 }}>
             <Typography.Title
@@ -54,13 +71,14 @@ const CustomerCard = () => {
                 lineHeight: "24px",
               }}
             >
-              Usman Salawatu
+              {buyerName}
             </Typography.Title>
             <Typography.Text
               type="secondary"
               style={{ fontSize: "16px", fontWeight: 500, lineHeight: "24px" }}
             >
-              Joined {dayjs("2024-03-16").format("MMM D, YYYY")}
+              Joined{" "}
+              {joinedDate ? dayjs(joinedDate).format("MMM D, YYYY") : "N/A"}
             </Typography.Text>
           </div>
         </div>
@@ -80,11 +98,11 @@ const CustomerCard = () => {
           </h6>
           <div style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
             <img src={email} alt="mailicon" style={{ marginRight: 8 }} />
-            <Typography.Text>tiamiyu.w.o@gmail.com</Typography.Text>
+            <Typography.Text>{buyerEmail}</Typography.Text>
           </div>
           <div style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
             <img src={callicon} alt="callicon" style={{ marginRight: 8 }} />
-            <Typography.Text>08160178711</Typography.Text>
+            <Typography.Text>{buyerPhone}</Typography.Text>
           </div>
         </div>
 
@@ -105,7 +123,11 @@ const CustomerCard = () => {
         </div>
 
         <Divider />
-        <Address />
+        <Address
+          addressLine1={addressLine1}
+          addressLine2={addressLine2}
+          note={order?.delivery_note}
+        />
       </Card>
       {isCallingModalVisible && (
         <ModalComponent

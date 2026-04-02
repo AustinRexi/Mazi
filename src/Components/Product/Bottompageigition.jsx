@@ -3,18 +3,40 @@ import { Select, Button, Input, Flex } from "antd";
 
 const { Option } = Select;
 
-const Bottompageignition = ({ isVisible, style }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const totalItems = 1534;
+const Bottompageignition = ({
+  isVisible,
+  style,
+  currentPage: controlledCurrentPage,
+  pageSize: controlledPageSize,
+  totalItems: controlledTotalItems,
+  onPageChange,
+  onPageSizeChange,
+}) => {
+  const [internalCurrentPage, setInternalCurrentPage] = useState(1);
+  const [internalPageSize, setInternalPageSize] = useState(10);
+  const totalItems = Number(controlledTotalItems ?? 0);
+  const currentPage = Number(controlledCurrentPage ?? internalCurrentPage);
+  const pageSize = Number(controlledPageSize ?? internalPageSize);
+  const maxPage = Math.max(1, Math.ceil(totalItems / pageSize));
+  const showingFrom = totalItems === 0 ? 0 : Math.min((currentPage - 1) * pageSize + 1, totalItems);
+  const showingTo = totalItems === 0 ? 0 : Math.min(currentPage * pageSize, totalItems);
 
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    const nextPage = Math.min(Math.max(1, page), maxPage);
+    if (typeof onPageChange === "function") {
+      onPageChange(nextPage);
+      return;
+    }
+    setInternalCurrentPage(nextPage);
   };
 
   const handlePageSizeChange = (value) => {
-    setPageSize(value);
-    setCurrentPage(1);
+    if (typeof onPageSizeChange === "function") {
+      onPageSizeChange(value);
+      return;
+    }
+    setInternalPageSize(value);
+    setInternalCurrentPage(1);
   };
   const options = [10, 20, 50].map((value) => (
     <Option key={value} value={value}>
@@ -57,8 +79,7 @@ const Bottompageignition = ({ isVisible, style }) => {
           color: "#8D8E8D",
         }}
       >
-        Showing {Math.min((currentPage - 1) * pageSize + 1, totalItems)} -{" "}
-        {Math.min(currentPage * pageSize, totalItems)} of {totalItems}
+        Showing {showingFrom} - {showingTo} of {totalItems}
       </span>
       <div
         style={{
@@ -105,7 +126,7 @@ const Bottompageignition = ({ isVisible, style }) => {
               backgroundColor: "#034147",
               color: "#FFFFFF",
             }}
-            disabled={currentPage === Math.ceil(totalItems / pageSize)}
+            disabled={currentPage === maxPage}
             onClick={() => handlePageChange(currentPage + 1)}
           >
             Next &raquo;
@@ -126,7 +147,7 @@ const Bottompageignition = ({ isVisible, style }) => {
             value={currentPage}
             readOnly
           />{" "}
-          of {Math.ceil(totalItems / pageSize)}
+          of {maxPage}
         </span>
       </div>
     </div>

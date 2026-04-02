@@ -1,10 +1,10 @@
 import { Button, Space, Flex, Row, Col } from "antd";
 import { useState } from "react";
-import { CalendarOutlined } from "@ant-design/icons";
+import { CalendarOutlined, LeftOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import PrevandNext from "../../../Components/shared/PrevandNext";
 
-function OrderHeader({ isVisible: initialIsVisible }) {
+function OrderHeader({ isVisible: initialIsVisible, onBack, order }) {
   const [hoveredButton, setHoveredButton] = useState(null);
   const [isButtonVisible, setIsButtonVisible] = useState(initialIsVisible);
 
@@ -16,9 +16,41 @@ function OrderHeader({ isVisible: initialIsVisible }) {
     setHoveredButton(null);
   };
 
-  const orderDate = dayjs("2024-02-13T10:15:00");
+  const orderDate = dayjs(order?.created_at || "2024-02-13T10:15:00");
+  const getPersonName = (person, fallback = "") => {
+    if (!person) {
+      return fallback;
+    }
+    const fullName = [
+      person.firstname || person.firstName,
+      person.lastname || person.lastName,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+    return fullName || person.name || fallback;
+  };
+
+  const buyerName =
+    order?.buyer_fullname ||
+    getPersonName(order?.buyer, "") ||
+    order?.buyer_name ||
+    order?.name ||
+    "Unknown Buyer";
+  const courierName =
+    order?.courier_fullname ||
+    getPersonName(order?.courier, "") ||
+    order?.courier_name ||
+    "Not assigned";
+
   return (
     <div style={{ paddingRight: 70 }}>
+      <div style={{ marginBottom: 6 }}>
+        <Button type="link" onClick={onBack} style={{ paddingLeft: 0 }}>
+          <LeftOutlined />
+          Back to Orders
+        </Button>
+      </div>
       <Row>
         <Col
           xs={{ span: 10, order: 3 }}
@@ -35,8 +67,29 @@ function OrderHeader({ isVisible: initialIsVisible }) {
               fontFamily: "NeueHaasDisplayRoman",
             }}
           >
-            Order #465765322
+            Order #{order?.order_number || order?.orderid || order?.id || "-"}
           </h2>
+          <div style={{ marginTop: 2 }}>
+            <span
+              style={{
+                fontSize: "14px",
+                lineHeight: "20px",
+                color: "#545E5E",
+                marginRight: 16,
+              }}
+            >
+              Buyer: {buyerName}
+            </span>
+            <span
+              style={{
+                fontSize: "14px",
+                lineHeight: "20px",
+                color: "#545E5E",
+              }}
+            >
+              Courier: {courierName}
+            </span>
+          </div>
         </Col>
         <Col
           xs={{ span: 24, order: 4 }}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import {
   Table,
   Tag,
@@ -10,6 +11,8 @@ import {
   Descriptions,
   message,
   Avatar,
+  Form,
+  Input,
 } from "antd";
 import { EyeOutlined, InboxOutlined } from "@ant-design/icons";
 import { formatVendorMoney, useVendorCurrencyCode } from "../utils/currency";
@@ -46,10 +49,14 @@ const getBroadcastLabel = (order) => {
   };
 };
 
-function OrdersTable({ orders, updateOrderStatus }) {
+function OrdersTable({ orders, updateOrderStatus, sendOrderMessage }) {
   const currencyCode = useVendorCurrencyCode();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isMessageModalVisible, setIsMessageModalVisible] = useState(false);
+  const [messageOrder, setMessageOrder] = useState(null);
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [messageForm] = Form.useForm();
 
   // 🔹 Payment tag colors
   const getPaymentColor = (status) => {
@@ -71,11 +78,50 @@ function OrdersTable({ orders, updateOrderStatus }) {
     setIsModalVisible(true);
   };
 
-  // 📩 Send message to customer (placeholder for API)
+  // 📩 Send message modal for a specific order
   const handleMessageCustomer = (order) => {
-    message.info(`Preparing to send message to ${order.customer.email}...`);
-    // 🔜 When API is ready:
-    // await sendMessageAPI(order.customer.email, "Your message content");
+    setMessageOrder(order);
+    messageForm.setFieldsValue({
+      title: `Update for order ${order.id}`,
+      body: "",
+    });
+    setIsMessageModalVisible(true);
+  };
+
+  const closeMessageModal = () => {
+    setIsMessageModalVisible(false);
+    setMessageOrder(null);
+    messageForm.resetFields();
+  };
+
+  const handleSubmitMessage = async () => {
+    if (!messageOrder) {
+      return;
+    }
+
+    try {
+      const values = await messageForm.validateFields();
+      setSendingMessage(true);
+
+      await sendOrderMessage(messageOrder, {
+        title: values.title,
+        message: values.body,
+      });
+
+      message.success(`Message sent for ${messageOrder.id}.`);
+      closeMessageModal();
+    } catch (error) {
+      if (error?.errorFields) {
+        return;
+      }
+      message.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to send message."
+      );
+    } finally {
+      setSendingMessage(false);
+    }
   };
 
   const columns = [
@@ -248,8 +294,52 @@ function OrdersTable({ orders, updateOrderStatus }) {
           </Descriptions>
         )}
       </Modal>
+
+      <Modal
+        open={isMessageModalVisible}
+        title={messageOrder ? `Send Message - ${messageOrder.id}` : "Send Message"}
+        onCancel={closeMessageModal}
+        onOk={handleSubmitMessage}
+        okText="Send"
+        confirmLoading={sendingMessage}
+      >
+        {messageOrder ? (
+          <Form form={messageForm} layout="vertical">
+            <Form.Item label="Customer" style={{ marginBottom: 12 }}>
+              <Text>{messageOrder.customer?.name || "-"}</Text>
+              <br />
+              <Text type="secondary">{messageOrder.customer?.email || "-"}</Text>
+            </Form.Item>
+            <Form.Item
+              name="title"
+              label="Title"
+              rules={[{ required: true, message: "Enter a title" }]}
+            >
+              <Input maxLength={150} placeholder="Message title" />
+            </Form.Item>
+            <Form.Item
+              name="body"
+              label="Message"
+              rules={[{ required: true, message: "Enter a message" }]}
+            >
+              <Input.TextArea
+                rows={5}
+                showCount
+                maxLength={2000}
+                placeholder="Type your message for this order..."
+              />
+            </Form.Item>
+          </Form>
+        ) : null}
+      </Modal>
     </>
   );
 }
 
 export default OrdersTable;
+
+OrdersTable.propTypes = {
+  orders: PropTypes.arrayOf(PropTypes.object).isRequired,
+  updateOrderStatus: PropTypes.func.isRequired,
+  sendOrderMessage: PropTypes.func.isRequired,
+};

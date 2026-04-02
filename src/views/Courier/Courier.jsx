@@ -2,13 +2,11 @@ import { useState, useEffect } from "react";
 import { Carousel } from "antd";
 import Search from "../../Components/Product/Search";
 import dayjs from "dayjs";
-import Addbutton from "../../Components/Product/Addbutton";
 import Calender from "../Dashboard/Calender";
 import data from "../../Components/CourierandOrder/data";
 import CourierCard from "../../Components/Courier/CourierCard";
 import courierdata from "../../Components/Courier/courierdata";
 import UserCard from "../../Components/Courier/UserCard";
-import { useNavigate } from "react-router-dom";
 
 const getUserCardGridStyles = (width) => {
   const baseStyles = {
@@ -92,7 +90,6 @@ const presets = [
 ];
 
 const Courier = () => {
-  const navigate = useNavigate();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -100,10 +97,6 @@ const Courier = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const handleAddButtonClick = () => {
-    navigate("/addproduct");
-  };
 
   const onCarouselChange = (currentSlide) => {
     console.log(currentSlide);
@@ -162,7 +155,6 @@ const Courier = () => {
             width: windowWidth <= 480 ? "100%" : "531px",
           }}
         />
-        <Addbutton text="Add Courier" onClick={handleAddButtonClick} />
         <Calender placeholder="Active" data={presets} style={styles.calendar} />
       </div>
 

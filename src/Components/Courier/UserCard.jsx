@@ -24,8 +24,9 @@ const UserCard = ({ datas }) => {
     <Menu
       items={[
         { key: "1", label: "View" },
-        { key: "2", label: "Remove" },
-        { key: "3", label: "Pay now" },
+        { key: "2", label: "Approve" },
+        { key: "3", label: "Suspend" },
+        { key: "4", label: "Delete" },
       ]}
     />
   );

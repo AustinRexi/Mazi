@@ -214,6 +214,8 @@ const normalizeOrder = (order) => {
   return {
     id: order.order_number || `ORD-${order.id}`,
     backendId: order.id,
+    userId: order.buyer_id || order.user_id || order.buyer?.id || null,
+    vendorId: order.vendor_id || order.vendor?.id || null,
     restaurantId: order.restaurant_id || order.restaurant?.id || null,
     customer: {
       name:
@@ -517,6 +519,50 @@ function VendorOrder() {
     }
   };
 
+  const sendOrderMessage = async (order, payload) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("You need to log in as a vendor.");
+    }
+
+    const orderId = order?.backendId || order?.raw?.id || null;
+    const userId = order?.userId || order?.raw?.buyer_id || null;
+    const vendorId = order?.vendorId || order?.raw?.vendor_id || null;
+    const restaurantId =
+      order?.restaurantId || order?.raw?.restaurant_id || null;
+
+    if (!orderId) {
+      throw new Error("Missing order id for this message.");
+    }
+    if (!userId) {
+      throw new Error("Missing user id for this message.");
+    }
+    if (!vendorId) {
+      throw new Error("Missing vendor id for this message.");
+    }
+    if (!restaurantId) {
+      throw new Error("Missing restaurant id for this message.");
+    }
+
+    await axios.post(
+      `${API_BASE_URL}/vendor/messages`,
+      {
+        user_id: userId,
+        vendor_id: vendorId,
+        restaurant_id: restaurantId,
+        title: payload.title,
+        message: payload.message,
+        order_id: orderId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    );
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
@@ -686,6 +732,7 @@ function VendorOrder() {
           <OrdersTable
             orders={filteredOrders}
             updateOrderStatus={updateOrderStatus}
+            sendOrderMessage={sendOrderMessage}
           />
         </Spin>
       </Card>

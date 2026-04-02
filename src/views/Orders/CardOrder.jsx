@@ -1,46 +1,10 @@
-import {
-  Card,
-  Avatar,
-  Typography,
-  Row,
-  Col,
-  Divider,
-  Menu,
-  Dropdown,
-} from "antd";
+import { Card, Avatar, Typography, Row, Col, Divider } from "antd";
 import { useState } from "react";
-import options from "../../Assets/Couriericons/options.svg";
 
 const { Text } = Typography;
 
-const CardOrder = ({ item, isActiveTab, onViewDetails }) => {
+const CardOrder = ({ item, onClick, isClickable = false, borderColor = null }) => {
   const [hovered, setHovered] = useState(false);
-
-  const [isOptionsVisible, setIsOptionsVisible] = useState(false);
-  const handleMenuClick = ({ key }) => {
-    if (key === "1") {
-      onViewDetails(item);
-    }
-  };
-  const menu = (
-    <Menu
-      onClick={handleMenuClick}
-      items={
-        isActiveTab
-          ? [
-              { key: "1", label: "View" },
-              { key: "2", label: "Cancel" },
-              { key: "3", label: "Refund" },
-            ]
-          : [
-              { key: "1", label: "View" },
-              { key: "2", label: "Fulfil" },
-              { key: "3", label: "Cancel" },
-              { key: "4", label: "Refund" },
-            ]
-      }
-    />
-  );
 
   return (
     <Card
@@ -56,12 +20,12 @@ const CardOrder = ({ item, isActiveTab, onViewDetails }) => {
         boxShadow: hovered
           ? "0 6px 20px rgba(0, 0, 0, 0.1)"
           : "0 1px 3px rgba(0, 0, 0, 0.1)",
+        cursor: isClickable ? "pointer" : "default",
+        border: borderColor ? `1.5px solid ${borderColor}` : undefined,
       }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => {
-        setHovered(false);
-        setIsOptionsVisible(false); // Hide options when not hovered
-      }}
+      onMouseLeave={() => setHovered(false)}
+      onClick={isClickable ? onClick : undefined}
     >
       <Row justify="space-between" align="middle">
         <img src={item.icon} alt="Order Icon" />
@@ -71,24 +35,6 @@ const CardOrder = ({ item, isActiveTab, onViewDetails }) => {
         >
           {item.title}
         </Text>
-
-        {hovered && (
-          <Dropdown
-            overlay={menu}
-            trigger={["click"]}
-            placement="bottomRight"
-            onVisibleChange={setIsOptionsVisible}
-          >
-            <img
-              src={options}
-              alt="options"
-              style={{
-                cursor: "pointer",
-              }}
-              onClick={() => setIsOptionsVisible(!isOptionsVisible)}
-            />
-          </Dropdown>
-        )}
       </Row>
 
       <Row style={{ marginTop: 16, marginBottom: 16 }} align="middle">
@@ -188,16 +134,19 @@ const CardOrder = ({ item, isActiveTab, onViewDetails }) => {
           style={{
             textAlign: "right",
             display: "flex",
-            flexWrap: "wrap",
+            justifyContent: "flex-end",
           }}
         >
           <Text
             style={{
-              whiteSpace: "nowrap",
               fontWeight: 500,
               fontSize: "12px",
               lineHeight: "24px",
               color: " #545E5E",
+              maxWidth: "100%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {item.date}

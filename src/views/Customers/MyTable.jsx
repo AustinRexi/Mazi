@@ -2,15 +2,38 @@ import { Table, Tag, Avatar, Dropdown, Menu } from "antd";
 import { MoreOutlined } from "@ant-design/icons";
 import { useMemo, useState, useEffect } from "react";
 
-const handleDelete = (record) => {
-  console.log("Delete action for", record);
-};
-
-const menu = (record) => (
+const menu = (
+  record,
+  activeTabKey,
+  {
+    onStoreView,
+    onStoreApprove,
+    onStoreSuspend,
+    onStoreDelete,
+    onUserDelete,
+  }
+) => (
   <Menu>
-    <Menu.Item key="1" onClick={() => handleDelete(record)}>
-      Delete
-    </Menu.Item>
+    {activeTabKey === "store" ? (
+      <>
+        <Menu.Item key="1" onClick={() => onStoreView?.(record)}>
+          View
+        </Menu.Item>
+        <Menu.Item key="2" onClick={() => onStoreApprove?.(record)}>
+          Approve
+        </Menu.Item>
+        <Menu.Item key="3" onClick={() => onStoreSuspend?.(record)}>
+          Suspend
+        </Menu.Item>
+        <Menu.Item key="4" onClick={() => onStoreDelete?.(record)}>
+          Delete
+        </Menu.Item>
+      </>
+    ) : (
+      <Menu.Item key="1" onClick={() => onUserDelete?.(record)}>
+        Delete
+      </Menu.Item>
+    )}
   </Menu>
 );
 
@@ -21,7 +44,30 @@ const cellStyle = {
   lineHeight: "24px",
 };
 
-const MyTable = ({ data, activeTabKey }) => {
+const MyTable = ({
+  data,
+  activeTabKey,
+  loading = false,
+  pagination = false,
+  onTableChange,
+  onStoreView,
+  onStoreApprove,
+  onStoreSuspend,
+  onStoreDelete,
+  onUserDelete,
+}) => {
+  const getInitials = (value) => {
+    const title = String(value || "").trim();
+    if (!title) {
+      return "NA";
+    }
+    const parts = title.split(/\s+/).filter(Boolean);
+    return parts
+      .slice(0, 2)
+      .map((part) => part[0].toUpperCase())
+      .join("");
+  };
+
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
 
   useEffect(() => {
@@ -40,7 +86,12 @@ const MyTable = ({ data, activeTabKey }) => {
         key: "name",
         render: (name) => (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <Avatar src={name.icon} style={{ marginRight: 8 }} />
+            <Avatar
+              src={name?.icon || undefined}
+              style={{ marginRight: 8, backgroundColor: name?.icon ? undefined : "#00B2A9" }}
+            >
+              {name?.icon ? null : getInitials(name?.title)}
+            </Avatar>
             <span style={cellStyle}>{name.title}</span>
           </div>
         ),
@@ -159,14 +210,31 @@ const MyTable = ({ data, activeTabKey }) => {
           },
         }),
         render: (text, record) => (
-          <Dropdown overlay={menu(record)} trigger={["click"]}>
+          <Dropdown
+            overlay={menu(record, activeTabKey, {
+              onStoreView,
+              onStoreApprove,
+              onStoreSuspend,
+              onStoreDelete,
+              onUserDelete,
+            })}
+            trigger={["click"]}
+          >
             <MoreOutlined style={{ fontSize: 18, cursor: "pointer" }} />
           </Dropdown>
         ),
       },
     ];
     return columns;
-  }, [activeTabKey, isMobile]);
+  }, [
+    activeTabKey,
+    isMobile,
+    onStoreView,
+    onStoreApprove,
+    onStoreSuspend,
+    onStoreDelete,
+    onUserDelete,
+  ]);
 
   const tableContainerStyle = {
     padding: isMobile ? 10 : 20,
@@ -184,7 +252,9 @@ const MyTable = ({ data, activeTabKey }) => {
       <Table
         dataSource={data}
         columns={visibleColumns}
-        pagination={false}
+        loading={loading}
+        pagination={pagination}
+        onChange={onTableChange}
         rowSelection={{
           type: "checkbox",
         }}

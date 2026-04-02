@@ -2,15 +2,7 @@ import dayjs from "dayjs";
 import { CalendarOutlined, DownOutlined } from "@ant-design/icons";
 import { Space, DatePicker } from "antd";
 
-const Calender = ({ data, placeholder, style }) => {
-  const onChange = (date) => {
-    if (date) {
-      console.log("Date: ", date);
-    } else {
-      console.log("Clear");
-    }
-  };
-
+const Calender = ({ data, placeholder, style, value, onChange }) => {
   const defaultPresets = [
     {
       label: "This Month",
@@ -30,7 +22,7 @@ const Calender = ({ data, placeholder, style }) => {
     },
   ];
 
-  const presets = defaultPresets || data;
+  const presets = data || defaultPresets;
 
   return (
     <div style={{ padding: 10, ...style }}>
@@ -63,7 +55,9 @@ const Calender = ({ data, placeholder, style }) => {
             placeholder={placeholder || "This Month"}
             suffixIcon={<DownOutlined />}
             presets={presets}
+            value={value}
             onChange={onChange}
+            allowClear
           />
         </div>
       </Space>

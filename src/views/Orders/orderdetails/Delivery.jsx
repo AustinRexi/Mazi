@@ -1,6 +1,9 @@
 import { Card, Row, Col, Avatar } from "antd";
 import icon from "../../../Assets/Ordericons/delivery.svg";
-function Delivery() {
+import { formatNaira } from "./orderDataUtils";
+
+function Delivery({ order }) {
+  const deliveryFee = Number(order?.delivery_fee || 0);
   return (
     <Card style={{ width: "600px" }}>
       <h3
@@ -19,7 +22,7 @@ function Delivery() {
         </Col>
         <Col xs={6} md={16} lg={16}>
           <h4 style={{ fontWeight: 400, lineHeight: "28px", fontSize: "16px" }}>
-            Mazi Delivery
+            {order?.courier ? "Courier Delivery" : "Mazi Delivery"}
           </h4>
         </Col>
         <Col xs={3} md={6} lg={6}>
@@ -31,7 +34,7 @@ function Delivery() {
               marginLeft: "20px",
             }}
           >
-            Free
+            {deliveryFee > 0 ? formatNaira(deliveryFee) : "Free"}
           </h3>
         </Col>
       </Row>

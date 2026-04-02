@@ -1,167 +1,151 @@
-import { useState } from "react";
-import { Menu, Calendar, Button } from "antd";
+import { useEffect, useMemo, useState } from "react";
+import { Button, DatePicker, Select, Space } from "antd";
 import dayjs from "dayjs";
 import Filterbutton from "../../Components/Product/Filterbutton";
-import prev from "../../Assets/Calendaricon/prev.svg";
-import next from "../../Assets/Calendaricon/next.svg";
 
-const FilteredItems = ({ style }) => {
-  const [selectedDate, setSelectedDate] = useState(dayjs("2023-02-17"));
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleFilterApply = (selectedFilterData) => {
-    setFilterData(selectedFilterData);
-    console.log("Filter applied:", selectedFilterData);
-  };
-
-  const filterOptions = [
-    { id: 1, label: "Option 1" },
-    { id: 2, label: "Option 2" },
-    { id: 3, label: "Option 3" },
-  ];
-
-  const filterMenu = (
-    <Menu
-      style={{
-        width: "250px",
-        padding: "10px",
-      }}
-    >
-      <Menu.Item
-        key="1"
-        style={{
-          padding: "8px 0",
-          borderBottom: "1px solid #f0f0f0",
-        }}
-      >
-        Date Joined
-      </Menu.Item>
-      <Menu.Item
-        key="2"
-        style={{
-          padding: "8px 0",
-          borderBottom: "1px solid #f0f0f0",
-        }}
-      >
-        Name
-      </Menu.Item>
-      <Menu.Item
-        key="3"
-        style={{
-          padding: "8px 0",
-          borderBottom: "1px solid #f0f0f0",
-        }}
-      >
-        Email
-      </Menu.Item>
-      <Menu.Item
-        key="4"
-        style={{
-          padding: "8px 0",
-          borderBottom: "1px solid #f0f0f0",
-        }}
-      >
-        Verified
-      </Menu.Item>
-
-      <div
-        style={{
-          padding: "10px 0",
-          borderBottom: "1px solid #f0f0f0",
-        }}
-      >
-        <Calendar
-          fullscreen={false}
-          value={selectedDate}
-          onSelect={handleDateChange}
-          headerRender={({ value, onChange }) => {
-            const currentMonth = value.format("MMMM YYYY");
-
-            const prevMonth = () => {
-              const prev = value.subtract(1, "month");
-              onChange(prev);
-            };
-
-            const nextMonth = () => {
-              const next = value.add(1, "month");
-              onChange(next);
-            };
-
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingBottom: "10px",
-                }}
-              >
-                {" "}
-                <span
-                  style={{
-                    fontSize: "14px",
-                    lineHeight: "28px",
-                    fontWeight: 600,
-                    color: "#EA4E4B",
-                  }}
-                >{`${currentMonth} >`}</span>
-                <Button type="link" onClick={prevMonth}>
-                  <img src={prev} alt="previous" />
-                </Button>
-                <Button type="link" onClick={nextMonth}>
-                  <img src={next} alt="next" />
-                </Button>
-              </div>
-            );
-          }}
-          style={{
-            border: "none",
-          }}
-        />
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "10px 0",
-        }}
-      >
-        <Button
-          type="link"
-          onClick={() => setSelectedDate(null)}
-          style={{
-            color: "#008080",
-          }}
-        >
-          Reset
-        </Button>
-        <Button
-          type="primary"
-          onClick={() => console.log("Date Selected:", selectedDate)}
-          style={{
-            backgroundColor: "#FF8C00",
-            borderColor: "#FF8C00",
-          }}
-        >
-          Done
-        </Button>
-      </div>
-    </Menu>
-  );
-
-  return (
-    <>
-      <Filterbutton
-        data={filterOptions}
-        overlay={filterMenu}
-        onFilterApply={handleFilterApply}
-        style={{ ...style }}
-      />
-    </>
-  );
+const DEFAULT_FILTERS = {
+  status: "all",
+  sortBy: "date-desc",
+  joinedDate: null,
 };
+
+const FILTER_CONFIG = {
+  user: {
+    statusLabel: "User Status",
+    statusOptions: [
+      { label: "All Statuses", value: "all" },
+      { label: "Approved", value: "approved" },
+      { label: "Pending", value: "pending" },
+      { label: "Rejected", value: "rejected" },
+      { label: "Suspended", value: "suspended" },
+      { label: "Verified", value: "verified" },
+    ],
+    sortOptions: [
+      { label: "Newest Joined", value: "date-desc" },
+      { label: "Oldest Joined", value: "date-asc" },
+      { label: "Name A-Z", value: "name-asc" },
+      { label: "Name Z-A", value: "name-desc" },
+      { label: "Email A-Z", value: "email-asc" },
+      { label: "Email Z-A", value: "email-desc" },
+      { label: "Highest Spend", value: "amount-desc" },
+      { label: "Lowest Spend", value: "amount-asc" },
+    ],
+  },
+  store: {
+    statusLabel: "Store Status",
+    statusOptions: [
+      { label: "All Statuses", value: "all" },
+      { label: "Approved", value: "approved" },
+      { label: "Pending", value: "pending" },
+      { label: "Rejected", value: "rejected" },
+      { label: "Suspended", value: "suspended" },
+      { label: "Verified", value: "verified" },
+    ],
+    sortOptions: [
+      { label: "Newest Joined", value: "date-desc" },
+      { label: "Oldest Joined", value: "date-asc" },
+      { label: "Vendor Name A-Z", value: "name-asc" },
+      { label: "Vendor Name Z-A", value: "name-desc" },
+      { label: "Store A-Z", value: "store-asc" },
+      { label: "Store Z-A", value: "store-desc" },
+      { label: "Wallet High-Low", value: "wallet-desc" },
+      { label: "Wallet Low-High", value: "wallet-asc" },
+    ],
+  },
+};
+
+const panelStyle = {
+  width: 320,
+  padding: 16,
+  background: "#FFFFFF",
+  borderRadius: 16,
+  boxShadow: "0 12px 32px rgba(18, 21, 21, 0.12)",
+};
+
+const labelStyle = {
+  display: "block",
+  marginBottom: 6,
+  color: "#121515",
+  fontSize: 14,
+  fontWeight: 500,
+  fontFamily: "NeueHaasDisplayRoman",
+};
+
+function FilteredItems({
+  activeTabKey = "user",
+  filters = DEFAULT_FILTERS,
+  onFilterApply,
+  style,
+}) {
+  const [draftFilters, setDraftFilters] = useState(filters);
+
+  useEffect(() => {
+    setDraftFilters(filters);
+  }, [filters]);
+
+  const config = FILTER_CONFIG[activeTabKey] || FILTER_CONFIG.user;
+
+  const overlay = useMemo(
+    () => (
+      <div style={panelStyle}>
+        <div style={{ marginBottom: 16 }}>
+          <label style={labelStyle}>{config.statusLabel}</label>
+          <Select
+            value={draftFilters.status}
+            onChange={(value) =>
+              setDraftFilters((current) => ({ ...current, status: value }))
+            }
+            options={config.statusOptions}
+            style={{ width: "100%" }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 16 }}>
+          <label style={labelStyle}>Sort By</label>
+          <Select
+            value={draftFilters.sortBy}
+            onChange={(value) =>
+              setDraftFilters((current) => ({ ...current, sortBy: value }))
+            }
+            options={config.sortOptions}
+            style={{ width: "100%" }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 20 }}>
+          <label style={labelStyle}>Joined Date</label>
+          <DatePicker
+            value={draftFilters.joinedDate ? dayjs(draftFilters.joinedDate) : null}
+            onChange={(value) =>
+              setDraftFilters((current) => ({
+                ...current,
+                joinedDate: value ? value.format("YYYY-MM-DD") : null,
+              }))
+            }
+            style={{ width: "100%" }}
+            allowClear
+          />
+        </div>
+
+        <Space style={{ width: "100%", justifyContent: "space-between" }}>
+          <Button
+            onClick={() => {
+              setDraftFilters(DEFAULT_FILTERS);
+              onFilterApply?.(DEFAULT_FILTERS);
+            }}
+          >
+            Reset
+          </Button>
+          <Button type="primary" onClick={() => onFilterApply?.(draftFilters)}>
+            Apply
+          </Button>
+        </Space>
+      </div>
+    ),
+    [config, draftFilters, onFilterApply]
+  );
+
+  return <Filterbutton overlay={overlay} style={{ ...style }} />;
+}
 
 export default FilteredItems;

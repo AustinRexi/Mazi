@@ -1,50 +1,15 @@
 import { Card, Row, Col, Divider } from "antd";
-import rice from "../../../Assets/Ordericons/rice.svg";
-import unfulfilled from "../../../Assets/Ordericons/unfulfill.svg";
-import drink from "../../../Assets/Ordericons/drinks.svg";
-import orange from "../../../Assets/Ordericons/orange.svg";
-import ewedu from "../../../Assets/Ordericons/ewedu.svg";
 import processing from "../../../Assets/Ordericons/process.svg";
+import { parseOrderItems, formatNaira } from "./orderDataUtils";
 
-function Request() {
-  const unfulfillRequest = { icon: unfulfilled, request: "Unfulfilled" };
-  const processingRequest = { icon: processing, request: "In progress" };
-  const specialOrder = [
-    {
-      price: 140,
-      kitchen: "MAZIKITCHEN",
-      product: "Jollof rice and chicken flavour",
-      quantity: 3,
-      icon: rice,
-      description: "$140 per plate",
-    },
-    {
-      price: 0,
-      kitchen: "MAZIKITCHEN",
-      product: "50 Cl of Fearless Drink",
-      quantity: 1,
-      icon: drink,
-      description: "Free",
-    },
-  ];
-  const allOrder = [
-    {
-      price: 520,
-      kitchen: "AZAMAN STORE",
-      product: "Sweet orange",
-      quantity: 1,
-      icon: orange,
-      description: "$7.13 per kg",
-    },
-    {
-      price: 520,
-      kitchen: "INK SHOP GROCERIES",
-      product: "Fresh Ewedu leaf",
-      quantity: 1,
-      icon: ewedu,
-      description: "$7.13 per kg",
-    },
-  ];
+function Request({ order }) {
+  const items = parseOrderItems(order?.order_product);
+  const restaurantName =
+    order?.restaurant?.restaurant_name || order?.title || "ORDER";
+  const status =
+    String(order?.order_status || "pending")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase()) || "Pending";
 
   const blinkAnimation = {
     animation: "blink 1s steps(5, start) infinite",
@@ -58,10 +23,10 @@ function Request() {
           justifyContent: "flex-start",
           alignItems: "center",
           gap: 4,
-          marginBottom: 4,
+          marginBottom: 12,
         }}
       >
-        <img src={processingRequest.icon} style={blinkAnimation} />
+        <img src={processing} alt="status" style={blinkAnimation} />
         <h4
           style={{
             fontFamily: "NeueHaasDisplayBold",
@@ -71,88 +36,70 @@ function Request() {
             margin: 0,
           }}
         >
-          {processingRequest.request}
+          {status}
         </h4>
-        <p
-          style={{
-            fontWeight: 500,
-            fontSize: "16px",
-            lineHeight: "24px",
-            margin: 0,
-          }}
-        >
-          ({allOrder.length})
+        <p style={{ fontWeight: 500, fontSize: "16px", lineHeight: "24px", margin: 0 }}>
+          ({items.length})
         </p>
       </div>
-      {allOrder.map((item, index) => {
-        // Calculate total price for the current item
-        const totalPrice = item.price * item.quantity;
 
-        return (
-          <Row gutter={[10, 16]} style={{ marginLeft: "2px" }} key={index}>
-            <Col xs={0} md={5} lg={5}>
-              <img src={item.icon} alt="Food icon" />
-            </Col>
-            <Col xs={8} md={12} lg={12}>
-              <h5
-                style={{
-                  fontWeight: 500,
-                  fontSize: "15px",
-                  lineHeight: "24px",
-                }}
-              >
-                {item.product}
-              </h5>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <p>{item.description}</p>
-                <h2
+      {items.length === 0 ? (
+        <p style={{ margin: 0, color: "#838D8D" }}>No order items available.</p>
+      ) : (
+        items.map((item, index) => {
+          const totalPrice = item.price * item.quantity;
+          return (
+            <Row gutter={[10, 16]} style={{ marginLeft: "2px" }} key={index}>
+              <Col xs={0} md={5} lg={5} />
+              <Col xs={14} md={12} lg={12}>
+                <h5 style={{ fontWeight: 500, fontSize: "15px", lineHeight: "24px" }}>
+                  {item.name}
+                </h5>
+                <div
                   style={{
-                    backgroundColor: "#F3FAFA",
-                    width: 80,
-                    height: 30,
-                    borderRadius: 4,
-                    textAlign: "center",
-                    lineHeight: "30px",
-                    marginTop: 8,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  {item.quantity}
-                </h2>
-              </div>
-            </Col>
-            <Col
-              xs={4}
-              md={5}
-              lg={5}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h5
+                  <p>{formatNaira(item.price)} each</p>
+                  <h2
+                    style={{
+                      backgroundColor: "#F3FAFA",
+                      width: 80,
+                      height: 30,
+                      borderRadius: 4,
+                      textAlign: "center",
+                      lineHeight: "30px",
+                      marginTop: 8,
+                      fontSize: 16,
+                    }}
+                  >
+                    {item.quantity}
+                  </h2>
+                </div>
+              </Col>
+              <Col
+                xs={10}
+                md={7}
+                lg={7}
                 style={{
-                  color: "#838D8D",
-                  marginLeft: 10,
-                  whiteSpace: "nowrap",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "flex-end",
                 }}
               >
-                {item.kitchen}
-              </h5>
-              <h2 style={{ fontWeight: 500 }}>${totalPrice}</h2>
-            </Col>
-
-            {index < allOrder.length - 1 && <Divider />}
-          </Row>
-        );
-      })}
+                <h5 style={{ color: "#838D8D", marginLeft: 10, whiteSpace: "nowrap" }}>
+                  {restaurantName}
+                </h5>
+                <h2 style={{ fontWeight: 500 }}>{formatNaira(totalPrice)}</h2>
+              </Col>
+              {index < items.length - 1 && <Divider />}
+            </Row>
+          );
+        })
+      )}
     </Card>
   );
 }
@@ -165,9 +112,12 @@ const styles = `
 }
 `;
 
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = styles;
-document.head.appendChild(styleSheet);
+if (typeof document !== "undefined" && !document.getElementById("request-blink-style")) {
+  const styleSheet = document.createElement("style");
+  styleSheet.id = "request-blink-style";
+  styleSheet.type = "text/css";
+  styleSheet.innerText = styles;
+  document.head.appendChild(styleSheet);
+}
 
 export default Request;

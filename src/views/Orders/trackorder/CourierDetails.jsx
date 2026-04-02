@@ -11,7 +11,7 @@ import { useState } from "react";
 import Address from "../orderdetails/Address";
 import ModalComponent from "../../../Components/shared/ModalComponent";
 const { Text } = Typography;
-const CourierDetails = () => {
+const CourierDetails = ({ order }) => {
   const [isCallingModalVisible, setIsCallingModalVisible] = useState(false);
   const [isChatModalVisible, setIsChatModalVisible] = useState(false);
 
@@ -22,17 +22,21 @@ const CourierDetails = () => {
   const hideChatModal = () => setIsChatModalVisible(false);
 
   const data = courierdata.find((item) => item.title === "CAR");
+  const courier = order?.courier || {};
   const items = data
     ? {
-        icon: data.dp,
-        name: data.name,
+        icon: data.dp || courier.profilePics,
+        name:
+          [courier.firstname || courier.firstName, courier.lastname || courier.lastName]
+            .filter(Boolean)
+            .join(" ")
+            .trim() ||
+          data.name,
         rating: data.rating.icon,
         model: data.model,
         drive: data.drive,
       }
     : null;
-  const courierNotes =
-    "Go to counter 4 on the left where the sign for  “pick up”  is and present the order number.";
   return (
     <>
       {/* <style>
@@ -78,7 +82,7 @@ const CourierDetails = () => {
                 lineHeight: "24px",
               }}
             >
-              {items.name}
+              {items?.name || "Not assigned"}
             </Typography.Title>
             <div
               style={{
@@ -116,11 +120,11 @@ const CourierDetails = () => {
           </h6>
           <div style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
             <img src={email} alt="mailicon" style={{ marginRight: 8 }} />
-            <Typography.Text>tiamiyu.w.o@gmail.com</Typography.Text>
+            <Typography.Text>{courier?.email || "N/A"}</Typography.Text>
           </div>
           <div style={{ display: "flex", alignItems: "center", marginTop: 8 }}>
             <img src={callicon} alt="callicon" style={{ marginRight: 8 }} />
-            <Typography.Text>08160178711</Typography.Text>
+            <Typography.Text>{courier?.phone || "N/A"}</Typography.Text>
           </div>
         </div>
 
@@ -184,19 +188,6 @@ const CourierDetails = () => {
           </Col>
         </Row>
 
-        <Text style={{ marginTop: 4 }}>Note for the courier:</Text>
-        <Typography.Paragraph
-          style={{
-            width: "256px",
-            marginTop: 8,
-            border: "1px solid #B5C3C3",
-            borderRadius: "12px",
-            padding: 6,
-          }}
-        >
-          {courierNotes}
-        </Typography.Paragraph>
-
         <Address
           style={{
             fontSize: "20px",
@@ -206,6 +197,13 @@ const CourierDetails = () => {
           }}
           title="Delivery Address"
           info="Additional info"
+          addressLine1={String(order?.order_address || "").split(",")[0] || "No address"}
+          addressLine2={String(order?.order_address || "")
+            .split(",")
+            .slice(1)
+            .join(",")
+            .trim()}
+          hideNote
         />
       </Card>
       {isCallingModalVisible && (

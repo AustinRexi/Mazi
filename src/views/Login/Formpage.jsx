@@ -14,7 +14,8 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import {
-  loginUser,
+  loginAdmin,
+  loginVendor,
   resendVendor2FA,
   verifyVendor2FA,
 } from "../../services/authService";
@@ -23,7 +24,7 @@ import { ForgotPassword } from "./ForgotPassword";
 
 const { Title, Text } = Typography;
 
-function Formpage() {
+function Formpage({ mode = "vendor" }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState(false);
@@ -41,6 +42,15 @@ function Formpage() {
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const isAdminLogin = mode === "admin";
+  const loginTitle = isAdminLogin ? "Admin Login" : "Vendor Login";
+  const loginDescription = isAdminLogin
+    ? "Sign in with your admin account to access the admin dashboard."
+    : "Please enter your vendor login details to continue.";
+  const alternateLoginPath = isAdminLogin ? "/login" : "/admin/login";
+  const alternateLoginLabel = isAdminLogin
+    ? "Sign in as vendor"
+    : "Sign in as admin";
 
   useEffect(() => {
     setClientReady(true);
@@ -49,6 +59,7 @@ function Formpage() {
   const onFinish = async (values) => {
     try {
       setLoading(true);
+      const authenticate = isAdminLogin ? loginAdmin : loginVendor;
       const {
         token,
         role,
@@ -56,7 +67,7 @@ function Formpage() {
         challengeId,
         channel,
         message: loginMessage,
-      } = await loginUser(values);
+      } = await authenticate(values);
 
       if (requires2FA && role === "vendor") {
         setOtpChallengeId(challengeId || "");
@@ -71,7 +82,7 @@ function Formpage() {
       setError("");
 
       if (role === "admin") {
-        navigate("/");
+        navigate("/admin/dashboard");
       } else if (role === "vendor") {
         navigate("/vendors/dashboard");
       } else {
@@ -188,7 +199,7 @@ function Formpage() {
               color: "#101828",
             }}
           >
-            Login
+            {loginTitle}
           </Title>
           <Text
             style={{
@@ -198,7 +209,7 @@ function Formpage() {
               fontFamily: "NeueHaasDisplayRoman",
             }}
           >
-            Please enter your login details to continue.
+            {loginDescription}
           </Text>
         </div>
 
@@ -262,6 +273,7 @@ function Formpage() {
               type="link"
               style={{ paddingInline: 0, color: "#0b6b6f" }}
               onClick={showForgotPasswordModal}
+              disabled={isAdminLogin}
             >
               Forgot Password?
             </Button>
@@ -310,7 +322,9 @@ function Formpage() {
                 marginBottom: 0,
               }}
             >
-              {"Don't have an account yet? "}
+              {isAdminLogin
+                ? "Need vendor access instead?"
+                : "Don't have an account yet? "}
             </p>
             <Button
               style={{
@@ -321,37 +335,53 @@ function Formpage() {
                 fontFamily: "NeueHaasDisplayLight",
                 paddingInline: 4,
               }}
-              onClick={showSignupModal}
+              onClick={
+                isAdminLogin
+                  ? () => navigate(alternateLoginPath)
+                  : showSignupModal
+              }
             >
-              Sign up
+              {isAdminLogin ? alternateLoginLabel : "Sign up"}
             </Button>
           </div>
+
+          {isAdminLogin ? (
+            <div style={{ marginTop: 10, textAlign: "center" }}>
+              <Button type="link" onClick={() => navigate(alternateLoginPath)}>
+                {alternateLoginLabel}
+              </Button>
+            </div>
+          ) : null}
         </Form>
       </Card>
 
-      {/* Signup Modal */}
-      <Modal
-        title="Sign Up"
-        open={isSignupModalVisible}
-        onCancel={handleSignupCancel}
-        footer={null}
-        maskClosable={false}
-        styles={{ body: { maxHeight: "75vh", overflowY: "auto" } }}
-      >
-        <SignupPage onClose={handleSignupCancel} />
-      </Modal>
+      {!isAdminLogin ? (
+        <Modal
+          title="Sign Up"
+          open={isSignupModalVisible}
+          onCancel={handleSignupCancel}
+          footer={null}
+          width={860}
+          maskClosable={false}
+          styles={{ body: { maxHeight: "75vh", overflowY: "auto" } }}
+        >
+          <SignupPage onClose={handleSignupCancel} />
+        </Modal>
+      ) : null}
 
-      {/* Forgot Password Modal */}
-      <Modal
-        title="Forgot Password"
-        open={isForgotPasswordModalVisible}
-        onCancel={handleForgotPasswordCancel}
-        footer={null}
-        maskClosable={false}
-        styles={{ body: { maxHeight: "75vh" } }}
-      >
-        <ForgotPassword onClose={handleForgotPasswordCancel} />
-      </Modal>
+      {!isAdminLogin ? (
+        <Modal
+          title="Forgot Password"
+          open={isForgotPasswordModalVisible}
+          onCancel={handleForgotPasswordCancel}
+          footer={null}
+          width={860}
+          maskClosable={false}
+          styles={{ body: { maxHeight: "75vh", overflowY: "auto" } }}
+        >
+          <ForgotPassword onClose={handleForgotPasswordCancel} />
+        </Modal>
+      ) : null}
 
       {/* OTP Modal */}
       <Modal

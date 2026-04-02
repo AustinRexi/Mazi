@@ -6,13 +6,12 @@ import ProceedCard from "./countdowncard/ProceedCard";
 import FulfillCard from "./countdowncard/FulfillCard";
 import Tabbutton from "../../../Components/Product/Tabbutton";
 import OrderData from "./OrderSummary";
-import TrackOrder from "../trackorder/Index";
 
-const dataRefrence = { tab1: OrderData, tab2: TrackOrder };
+const dataRefrence = { tab1: OrderData };
 
-function OrderTab({ isVisible: initialIsVisible }) {
+function OrderTab({ isVisible: initialIsVisible, initialTab = "tab1", order }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [activeTabKey, setActiveTabKey] = useState("tab1");
+  const [activeTabKey, setActiveTabKey] = useState(initialTab);
   const [currentView, setCurrentView] = useState("proceed");
   const [isButtonVisible, setIsButtonVisible] = useState(initialIsVisible);
 
@@ -23,9 +22,7 @@ function OrderTab({ isVisible: initialIsVisible }) {
 
   const onTabChange = (tab) => {
     setActiveTabKey(tab);
-    if (tab === "tab2") {
-      setIsButtonVisible(initialIsVisible);
-    }
+    setIsButtonVisible(initialIsVisible);
   };
 
   const showModal = () => {
@@ -43,54 +40,28 @@ function OrderTab({ isVisible: initialIsVisible }) {
     <div style={{ marginBottom: 16, marginTop: 10 }}>
       <Row>
         <Col span={9}>
-          {isButtonVisible ? (
-            <Flex>
-              {[
-                { id: "tab1", label: "Order Details" },
-                { id: "tab2", label: "Track Order" },
-              ].map(({ id, label }) => (
-                <Tabbutton
-                  key={id}
-                  activeTabKey={activeTabKey}
-                  id={id}
-                  handleClick={onTabChange}
-                  style={{
-                    marginLeft: 15,
-                    fontWeight: 600,
-                    lineHeight: "24px",
-                    fontSize: "16px",
-                    color: "#27332D",
-                    fontFamily: "NeueHaasDisplayRoman",
-                    borderRadius: 0,
-                  }}
-                >
-                  {label}
-                </Tabbutton>
-              ))}
-            </Flex>
-          ) : (
-            <Flex>
-              {[{ id: "tab1", label: "Order Details" }].map(({ id, label }) => (
-                <Tabbutton
-                  key={id}
-                  activeTabKey={activeTabKey}
-                  id={id}
-                  handleClick={onTabChange}
-                  style={{
-                    marginLeft: 15,
-                    fontWeight: 600,
-                    lineHeight: "24px",
-                    fontSize: "16px",
-                    color: "#27332D",
-                    fontFamily: "NeueHaasDisplayRoman",
-                    borderRadius: 0,
-                  }}
-                >
-                  {label}
-                </Tabbutton>
-              ))}
-            </Flex>
-          )}
+          <Flex>
+            {[{ id: "tab1", label: "Order Details" }].map(({ id, label }) => (
+              <Tabbutton
+                key={id}
+                activeTabKey={activeTabKey}
+                id={id}
+                handleClick={onTabChange}
+                style={{
+                  marginLeft: 15,
+                  fontWeight: 600,
+                  lineHeight: "24px",
+                  fontSize: "16px",
+                  color: "#27332D",
+                  fontFamily: "NeueHaasDisplayRoman",
+                  borderRadius: 0,
+                }}
+              >
+                {label}
+              </Tabbutton>
+            ))}
+            {/* { id: "tab2", label: "Track Order" } */}
+          </Flex>
         </Col>
         <Col span={8}></Col>
         <Col span={6}>
@@ -122,7 +93,7 @@ function OrderTab({ isVisible: initialIsVisible }) {
       </Row>
       <div style={{ padding: 16 }}>
         <section>
-          <ActiveComponent />
+          <ActiveComponent order={order} />
         </section>
       </div>
       {isModalVisible && (

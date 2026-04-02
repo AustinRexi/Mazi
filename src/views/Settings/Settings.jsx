@@ -29,7 +29,7 @@ const Settings = () => {
   const handleLogout = () => {
     logout(); // Clears token and profileImage from localStorage via AuthContext
     // localStorage.clear(); // Optional: Only use if you want to clear ALL localStorage
-    navigate("/login"); // Redirect to login page
+    navigate("/admin/login"); // Redirect to admin login page
   };
 
   // Custom upload handler for base64
