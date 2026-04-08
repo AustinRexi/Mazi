@@ -138,6 +138,19 @@ const MyTable = ({
               }),
               sorter: (a, b) => a.amountSpent.localeCompare(b.amountSpent),
             },
+            {
+              title: "USER POINT",
+              dataIndex: "userPoint",
+              key: "userPoint",
+              onCell: () => ({
+                style: {
+                  ...cellStyle,
+                  fontSize: isMobile ? 14 : 16,
+                  whiteSpace: "nowrap",
+                },
+              }),
+              sorter: (a, b) => a.userPoint.localeCompare(b.userPoint),
+            },
           ]
         : [
             {

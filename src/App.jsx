@@ -15,11 +15,21 @@ import AddProduct from "./views/Product/Addproduct";
 import Product from "./views/Product/Product";
 import Orders from "./views/Orders/Order";
 import Customers from "./views/Customers/Customers";
+import Categories from "./views/Categories/Categories";
+import Blogs from "./views/Blogs/Blogs";
+import BlogDetails from "./views/Blogs/BlogDetails";
+import FaqCategories from "./views/FaqCategories/FaqCategories";
+import FaqCategoryDetails from "./views/FaqCategories/FaqCategoryDetails";
+import Faqs from "./views/Faqs/Faqs";
+import FaqDetails from "./views/Faqs/FaqDetails";
+import DistributionSettings from "./views/DistributionSettings/DistributionSettings";
+import StoreDetails from "./views/Customers/StoreDetails";
 import Settings from "./views/Settings/Settings";
 import Support from "./views/Support/Support";
 import Wallet from "./views/Wallet/index";
 import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
 import Courier from "./views/Courier/Courier";
+import CourierDetails from "./views/Courier/CourierDetails";
 import Board from "./views/Dashboard/Board";
 import CongratulationsCard from "./Components/Product/CongratulationsCard";
 
@@ -54,10 +64,27 @@ const router = createHashRouter([
       { path: "Orders", element: <Orders /> },
       { path: "CurrencyExchange", element: <CurrencyExchange /> },
       { path: "Courier", element: <Courier /> },
+      { path: "Courier/:id", element: <CourierDetails /> },
       { path: "Wallet", element: <Wallet /> },
       { path: "Support", element: <Support /> },
       { path: "Settings", element: <Settings /> },
       { path: "Customers", element: <Customers /> },
+      { path: "Categories", element: <Categories /> },
+      { path: "Blogs", element: <Blogs /> },
+      { path: "Blogs/:id", element: <BlogDetails /> },
+      { path: "blogs", element: <Blogs /> },
+      { path: "blogs/:id", element: <BlogDetails /> },
+      { path: "FaqCategories", element: <FaqCategories /> },
+      { path: "FaqCategories/:id", element: <FaqCategoryDetails /> },
+      { path: "faq-categories", element: <FaqCategories /> },
+      { path: "faq-categories/:id", element: <FaqCategoryDetails /> },
+      { path: "Faqs", element: <Faqs /> },
+      { path: "Faqs/:id", element: <FaqDetails /> },
+      { path: "faqs", element: <Faqs /> },
+      { path: "faqs/:id", element: <FaqDetails /> },
+      { path: "DistributionSettings", element: <DistributionSettings /> },
+      { path: "distribution-settings", element: <DistributionSettings /> },
+      { path: "Customers/store/:id", element: <StoreDetails /> },
       { path: "Congratulations", element: <CongratulationsCard /> },
 
       // 🟢 Vendor Routes (same layout)

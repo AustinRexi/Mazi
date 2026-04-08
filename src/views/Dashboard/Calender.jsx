@@ -2,7 +2,16 @@ import dayjs from "dayjs";
 import { CalendarOutlined, DownOutlined } from "@ant-design/icons";
 import { Space, DatePicker } from "antd";
 
-const Calender = ({ data, placeholder, style, value, onChange }) => {
+const Calender = ({
+  data,
+  placeholder,
+  style,
+  value,
+  onChange,
+  isRange = false,
+  needConfirm = false,
+}) => {
+  const { RangePicker } = DatePicker;
   const defaultPresets = [
     {
       label: "This Month",
@@ -29,7 +38,7 @@ const Calender = ({ data, placeholder, style, value, onChange }) => {
       <Space direction="vertical" size={4}>
         <div
           style={{
-            width: "134px",
+            width: isRange ? "260px" : "134px",
             display: "flex",
             alignItems: "center",
             border: "1px solid #d9d9d9",
@@ -40,25 +49,48 @@ const Calender = ({ data, placeholder, style, value, onChange }) => {
           }}
         >
           <CalendarOutlined />
-          <DatePicker
-            style={{
-              border: "none",
-              outline: "none",
-              boxShadow: "none",
-              padding: 2,
-              fontFamily: "",
-              fontWeight: 500,
-              lineHeight: "24px",
-              fontSize: "16px",
-              color: "#121515",
-            }}
-            placeholder={placeholder || "This Month"}
-            suffixIcon={<DownOutlined />}
-            presets={presets}
-            value={value}
-            onChange={onChange}
-            allowClear
-          />
+          {isRange ? (
+            <RangePicker
+              style={{
+                border: "none",
+                outline: "none",
+                boxShadow: "none",
+                padding: 2,
+                fontFamily: "",
+                fontWeight: 500,
+                lineHeight: "24px",
+                fontSize: "16px",
+                color: "#121515",
+                width: "100%",
+              }}
+              placeholder={placeholder || ["Start date", "End date"]}
+              suffixIcon={<DownOutlined />}
+              value={value}
+              onChange={onChange}
+              needConfirm={needConfirm}
+              allowClear
+            />
+          ) : (
+            <DatePicker
+              style={{
+                border: "none",
+                outline: "none",
+                boxShadow: "none",
+                padding: 2,
+                fontFamily: "",
+                fontWeight: 500,
+                lineHeight: "24px",
+                fontSize: "16px",
+                color: "#121515",
+              }}
+              placeholder={placeholder || "This Month"}
+              suffixIcon={<DownOutlined />}
+              presets={presets}
+              value={value}
+              onChange={onChange}
+              allowClear
+            />
+          )}
         </div>
       </Space>
     </div>

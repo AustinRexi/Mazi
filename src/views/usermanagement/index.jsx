@@ -1,433 +1,441 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  Button,
-  Input,
-  Table,
-  Modal,
-  Form,
-  Select,
-  Popconfirm,
   Badge,
+  Button,
   Card,
-  notification,
+  Descriptions,
+  Input,
+  Modal,
+  Popconfirm,
+  Select,
+  Space,
+  Table,
+  Tag,
+  message,
 } from "antd";
 import {
-  SearchOutlined,
-  UserAddOutlined,
-  EditOutlined,
   DeleteOutlined,
-  MailOutlined,
-  UserOutlined,
-  LockOutlined,
+  EyeOutlined,
+  SearchOutlined,
+  StopOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
+import dayjs from "dayjs";
+import {
+  deleteAdminAccount,
+  fetchAdminAccountById,
+  fetchAdminAccounts,
+  fetchAdminRoles,
+  updateAdminAccountStatus,
+} from "../../services/adminManagementService";
 
-// Configure notification to show in top-right
-notification.config({
-  placement: "topRight",
-});
-
-const ROLES = ["Admin", "Manager", "Customer", "Support"];
-const STATUSES = ["Active", "Inactive"];
-
-const MOCK_USERS = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "Admin",
-    status: "Active",
-    createdAt: "2024-01-15",
-    lastLogin: "2024-03-10",
-  },
-  {
-    id: "2",
-    name: "Sarah Johnson",
-    email: "sarah.johnson@example.com",
-    role: "Manager",
-    status: "Active",
-    createdAt: "2024-02-20",
-    lastLogin: "2024-03-09",
-  },
-  {
-    id: "3",
-    name: "Mike Wilson",
-    email: "mike.wilson@example.com",
-    role: "Customer",
-    status: "Active",
-    createdAt: "2024-03-01",
-    lastLogin: "2024-03-08",
-  },
-  {
-    id: "4",
-    name: "Emma Davis",
-    email: "emma.davis@example.com",
-    role: "Support",
-    status: "Inactive",
-    createdAt: "2024-01-10",
-    lastLogin: "2024-02-28",
-  },
-  {
-    id: "5",
-    name: "Alex Chen",
-    email: "alex.chen@example.com",
-    role: "Customer",
-    status: "Active",
-    createdAt: "2024-03-05",
-    lastLogin: "2024-03-07",
-  },
+const STATUS_OPTIONS = [
+  { label: "All Statuses", value: "all" },
+  { label: "Approved", value: "approved" },
+  { label: "Pending", value: "pending" },
+  { label: "Rejected", value: "rejected" },
 ];
 
-const UserManagement = () => {
-  const [users, setUsers] = useState(MOCK_USERS);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState("all");
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
-  const [form] = Form.useForm();
+const formatName = (record) => {
+  const first =
+    record?.firstname || record?.firstName || record?.first_name || "";
+  const last = record?.lastname || record?.lastName || record?.last_name || "";
+  const full = `${first} ${last}`.trim();
+  return full || "N/A";
+};
 
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = selectedRole === "all" || user.role === selectedRole;
-    return matchesSearch && matchesRole;
-  });
+const statusTag = (value) => {
+  const status = String(value || "pending").toLowerCase();
+  if (status === "approved") {
+    return <Tag color="green">Approved</Tag>;
+  }
+  if (status === "rejected") {
+    return <Tag color="red">Rejected</Tag>;
+  }
+  return <Tag color="gold">Pending</Tag>;
+};
 
-  const handleAddUser = (values) => {
-    const newUser = {
-      ...values,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString().split("T")[0],
+const formatRole = (record) => {
+  if (record?.role?.name) {
+    return record.role.name;
+  }
+  if (record?.role_id) {
+    return `Role ID: ${record.role_id}`;
+  }
+  return "N/A";
+};
+
+function UserManagement() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadUsers = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await fetchAdminAccounts({
+          q: search.trim() || undefined,
+          role_id: roleFilter !== "all" ? Number(roleFilter) : undefined,
+          status: statusFilter !== "all" ? statusFilter : undefined,
+          per_page: pageSize,
+          page,
+        });
+
+        if (!mounted) {
+          return;
+        }
+
+        const rows = Array.isArray(response?.data) ? response.data : [];
+        setUsers(rows);
+        setTotal(Number(response?.total || rows.length || 0));
+      } catch (requestError) {
+        if (!mounted) {
+          return;
+        }
+        setError(
+          requestError?.response?.data?.message ||
+            requestError?.message ||
+            "Failed to load users."
+        );
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     };
-    setUsers([...users, newUser]);
-    setIsAddModalOpen(false);
-    notification.success({
-      message: "Success",
-      description: "User added successfully",
-    });
-    form.resetFields();
-  };
 
-  const handleEditUser = (values) => {
-    setUsers(
-      users.map((user) =>
-        user.id === editingUser.id ? { ...editingUser, ...values } : user
-      )
-    );
-    setEditingUser(null);
-    notification.success({
-      message: "Success",
-      description: "User updated successfully",
-    });
-    form.resetFields();
-  };
+    loadUsers();
+    return () => {
+      mounted = false;
+    };
+  }, [search, page, pageSize, reloadKey, statusFilter, roleFilter]);
 
-  const handleDeleteUser = (userId) => {
-    setUsers(users.filter((user) => user.id !== userId));
-    notification.success({
-      message: "Success",
-      description: "User deleted successfully",
-    });
-  };
+  useEffect(() => {
+    let mounted = true;
 
-  const getRoleBadgeStatus = (role) => {
-    switch (role) {
-      case "Admin":
-        return "error";
-      case "Manager":
-        return "default";
-      case "Support":
-        return "processing";
-      case "Customer":
-        return "default";
-      default:
-        return "default";
+    const loadRoles = async () => {
+      try {
+        const response = await fetchAdminRoles();
+        if (!mounted) {
+          return;
+        }
+        setRoles(response);
+      } catch (_) {
+        if (!mounted) {
+          return;
+        }
+        setRoles([]);
+      }
+    };
+
+    loadRoles();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const summary = useMemo(() => {
+    const approved = users.filter(
+      (item) => String(item?.status || "").toLowerCase() === "approved"
+    ).length;
+    const pending = users.filter(
+      (item) => String(item?.status || "").toLowerCase() === "pending"
+    ).length;
+    const rejected = users.filter(
+      (item) => String(item?.status || "").toLowerCase() === "rejected"
+    ).length;
+    return { approved, pending, rejected };
+  }, [users]);
+
+  const handleView = async (record) => {
+    if (!record?.id) {
+      message.error("User ID is missing.");
+      return;
+    }
+
+    setViewModalOpen(true);
+    setViewLoading(true);
+    setSelectedUser(null);
+
+    try {
+      const response = await fetchAdminAccountById(record.id);
+      setSelectedUser(response || record);
+    } catch (requestError) {
+      message.error(
+        requestError?.response?.data?.message ||
+          requestError?.message ||
+          "Failed to load user details."
+      );
+      setSelectedUser(record);
+    } finally {
+      setViewLoading(false);
     }
   };
 
-  const getStatusBadgeStatus = (status) => {
-    return status === "Active" ? "success" : "default";
+  const handleStatusUpdate = async (record, nextStatus) => {
+    try {
+      await updateAdminAccountStatus(record.id, nextStatus);
+      message.success(`User ${nextStatus} successfully.`);
+      setReloadKey((current) => current + 1);
+    } catch (requestError) {
+      message.error(
+        requestError?.response?.data?.message ||
+          requestError?.message ||
+          "Failed to update user status."
+      );
+    }
+  };
+
+  const handleDelete = async (record) => {
+    try {
+      await deleteAdminAccount(record.id);
+      message.success("User deleted successfully.");
+      setReloadKey((current) => current + 1);
+    } catch (requestError) {
+      message.error(
+        requestError?.response?.data?.message ||
+          requestError?.message ||
+          "Failed to delete user."
+      );
+    }
   };
 
   const columns = [
     {
-      title: "User",
-      key: "user",
-      render: (_, record) => (
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            style={{
-              width: "32px",
-              height: "32px",
-              background: "rgba(0, 90, 255, 0.1)",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <UserOutlined style={{ color: "#005AFF" }} />
-          </div>
-          <div>
-            <div style={{ fontWeight: 500 }}>{record.name}</div>
-            <div
-              style={{
-                fontSize: "12px",
-                color: "#666",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-              }}
-            >
-              <MailOutlined style={{ fontSize: "12px" }} />
-              {record.email}
-            </div>
-          </div>
-        </div>
-      ),
+      title: "Name",
+      key: "name",
+      render: (_, record) => formatName(record),
     },
     {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-      render: (role) => (
-        <Badge
-          status={getRoleBadgeStatus(role)}
-          text={
-            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <LockOutlined style={{ fontSize: "12px" }} />
-              {role}
-            </span>
-          }
-        />
-      ),
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      render: (value) => value || "N/A",
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+      render: (value) => value || "N/A",
+    },
+    {
+      title: "Type",
+      dataIndex: "usertype",
+      key: "usertype",
+      render: (value) => <Tag>{String(value || "N/A").toUpperCase()}</Tag>,
+    },
+    {
+      title: "Roles",
+      key: "roles",
+      render: (_, record) => formatRole(record),
+      sorter: (a, b) => {
+        const roleA = String(a?.role?.name || a?.role_id || "").toLowerCase();
+        const roleB = String(b?.role?.name || b?.role_id || "").toLowerCase();
+        return roleA.localeCompare(roleB);
+      },
+      sortDirections: ["ascend", "descend"],
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <Badge status={getStatusBadgeStatus(status)} text={status} />
-      ),
+      render: (value) => statusTag(value),
     },
     {
       title: "Created",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "Last Login",
-      dataIndex: "lastLogin",
-      key: "lastLogin",
-      render: (date) => (date ? new Date(date).toLocaleDateString() : "Never"),
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (value) =>
+        value ? dayjs(value).format("MMM DD, YYYY h:mm A") : "N/A",
     },
     {
       title: "Actions",
       key: "actions",
-      align: "right",
-      render: (_, record) => (
-        <div
-          style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
-        >
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={() => {
-              setEditingUser(record);
-              form.setFieldsValue(record);
-            }}
-          />
-          <Popconfirm
-            title={`Delete ${record.name}`}
-            description="Are you sure you want to delete this user? This action cannot be undone."
-            onConfirm={() => handleDeleteUser(record.id)}
-            okText="Delete"
-            okButtonProps={{ danger: true }}
-            cancelText="Cancel"
-          >
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </div>
-      ),
+      render: (_, record) => {
+        const currentStatus = String(record?.status || "").toLowerCase();
+        const canApprove = currentStatus !== "approved";
+        const canSuspend = currentStatus !== "rejected";
+
+        return (
+          <Space>
+            <Button icon={<EyeOutlined />} onClick={() => handleView(record)}>
+              View
+            </Button>
+
+            <Button
+              type="primary"
+              icon={<CheckCircleOutlined />}
+              disabled={!canApprove}
+              onClick={() => handleStatusUpdate(record, "approved")}
+            >
+              Approve
+            </Button>
+
+            <Button
+              danger
+              icon={<StopOutlined />}
+              disabled={!canSuspend}
+              onClick={() => handleStatusUpdate(record, "rejected")}
+            >
+              Suspend
+            </Button>
+
+            <Popconfirm
+              title={`Delete ${formatName(record)}?`}
+              description="This action cannot be undone."
+              onConfirm={() => handleDelete(record)}
+              okText="Delete"
+              okButtonProps={{ danger: true }}
+              cancelText="Cancel"
+            >
+              <Button danger icon={<DeleteOutlined />}>
+                Delete
+              </Button>
+            </Popconfirm>
+          </Space>
+        );
+      },
     },
   ];
 
+  const roleOptions = useMemo(
+    () => [
+      { label: "All Roles", value: "all" },
+      ...roles.map((role) => ({
+        label: role?.name || `Role ${role?.id}`,
+        value: String(role?.id),
+      })),
+    ],
+    [roles]
+  );
+
   return (
-    <div style={{ padding: "24px" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "24px",
-        }}
-      >
-        <div>
-          <h1>User Management</h1>
-          <p style={{ color: "#666" }}>
-            Manage users, assign roles, and control access
-          </p>
-        </div>
-        <Button
-          type="primary"
-          icon={<UserAddOutlined />}
-          onClick={() => setIsAddModalOpen(true)}
-        >
-          Add User
-        </Button>
-      </div>
-
-      <Card style={{ marginBottom: "24px" }}>
-        <div style={{ padding: "16px" }}>
-          <h3>Users Overview</h3>
-          <p style={{ color: "#666" }}>
-            {users.length} total users •{" "}
-            {users.filter((u) => u.status === "Active").length} active
-          </p>
-        </div>
-        <div style={{ padding: "16px" }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "16px",
-              marginBottom: "24px",
-            }}
-          >
-            <Input
-              placeholder="Search users by name or email..."
-              prefix={<SearchOutlined />}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ flex: 1 }}
-            />
-            <Select
-              value={selectedRole}
-              onChange={setSelectedRole}
-              style={{ width: "180px" }}
-            >
-              <Select.Option value="all">All Roles</Select.Option>
-              {ROLES.map((role) => (
-                <Select.Option key={role} value={role}>
-                  {role}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-
-          {/* Wrapper for horizontal scrolling */}
-          <div
-            style={{
-              overflowX: "auto",
-              maxWidth: "100%",
-            }}
-          >
-            <Table
-              columns={columns}
-              dataSource={filteredUsers}
-              rowKey="id"
-              pagination={false}
-              scroll={{ x: 800 }} // Minimum width for table content
-            />
-          </div>
-        </div>
+    <div style={{ padding: 8 }}>
+      <Card style={{ marginBottom: 12 }}>
+        <Space size={24} wrap>
+          <Badge status="success" text={`Approved: ${summary.approved}`} />
+          <Badge status="warning" text={`Pending: ${summary.pending}`} />
+          <Badge status="error" text={`Rejected: ${summary.rejected}`} />
+          <span>Total in view: {users.length}</span>
+        </Space>
       </Card>
 
-      <Modal
-        title={editingUser ? "Edit User" : "Add New User"}
-        open={isAddModalOpen || !!editingUser}
-        onCancel={() => {
-          setIsAddModalOpen(false);
-          setEditingUser(null);
-          form.resetFields();
-        }}
-        footer={null}
-      >
-        <Form
-          form={form}
-          onFinish={editingUser ? handleEditUser : handleAddUser}
-          layout="vertical"
-          initialValues={editingUser || { role: "Customer", status: "Active" }}
-        >
-          <Form.Item
-            name="name"
-            label="Full Name"
-            rules={[{ required: true, message: "Please enter full name" }]}
-          >
-            <Input placeholder="Enter full name" />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email Address"
-            rules={[
-              {
-                required: true,
-                type: "email",
-                message: "Please enter a valid email",
-              },
-            ]}
-          >
-            <Input placeholder="Enter email address" />
-          </Form.Item>
-          <Form.Item
-            name="role"
-            label="Role"
-            rules={[{ required: true, message: "Please select a role" }]}
-          >
-            <Select>
-              {ROLES.map((role) => (
-                <Select.Option key={role} value={role}>
-                  {role}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="status"
-            label="Status"
-            rules={[{ required: true, message: "Please select a status" }]}
-          >
-            <Select>
-              {STATUSES.map((status) => (
-                <Select.Option key={status} value={status}>
-                  {status}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <div
-            style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
-          >
-            <Button
-              onClick={() => {
-                setIsAddModalOpen(false);
-                setEditingUser(null);
-                form.resetFields();
+      <Card style={{ marginBottom: 12 }}>
+        <Space wrap style={{ width: "100%", justifyContent: "space-between" }}>
+          <Space wrap>
+            <Input
+              placeholder="Search by name, email, phone"
+              prefix={<SearchOutlined />}
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setPage(1);
               }}
-            >
-              Cancel
-            </Button>
-            <Button type="primary" htmlType="submit">
-              {editingUser ? "Save Changes" : "Add User"}
-            </Button>
-          </div>
-        </Form>
-      </Modal>
+              style={{ width: 280 }}
+            />
 
-      {/* Add CSS for responsive table scrolling */}
-      <style>{`
-        @media (max-width: 768px) {
-          .ant-table {
-            min-width: 800px; /* Ensure table doesn't shrink below this width */
-          }
-          .ant-table-content {
-            overflow-x: auto; /* Enable horizontal scrolling */
-          }
-        }
-      `}</style>
+            <Select
+              value={roleFilter}
+              onChange={(value) => {
+                setRoleFilter(value);
+                setPage(1);
+              }}
+              style={{ width: 170 }}
+              options={roleOptions}
+            />
+
+            <Select
+              value={statusFilter}
+              onChange={setStatusFilter}
+              style={{ width: 160 }}
+              options={STATUS_OPTIONS}
+            />
+          </Space>
+        </Space>
+      </Card>
+
+      {error ? (
+        <Card style={{ marginBottom: 12 }}>
+          <span style={{ color: "#d4380d" }}>{error}</span>
+        </Card>
+      ) : null}
+
+      <Table
+        rowKey="id"
+        loading={loading}
+        dataSource={users}
+        columns={columns}
+        scroll={{ x: 1200 }}
+        pagination={{
+          current: page,
+          pageSize,
+          total,
+          showSizeChanger: true,
+          pageSizeOptions: ["10", "20", "50", "100"],
+          onChange: (nextPage, nextSize) => {
+            if (nextSize !== pageSize) {
+              setPageSize(nextSize);
+              setPage(1);
+              return;
+            }
+            setPage(nextPage);
+          },
+        }}
+      />
+
+      <Modal
+        title="User Details"
+        open={viewModalOpen}
+        onCancel={() => setViewModalOpen(false)}
+        footer={[
+          <Button key="close" onClick={() => setViewModalOpen(false)}>
+            Close
+          </Button>,
+        ]}
+        confirmLoading={viewLoading}
+      >
+        <Descriptions bordered column={1} size="small">
+          <Descriptions.Item label="ID">{selectedUser?.id || "N/A"}</Descriptions.Item>
+          <Descriptions.Item label="Name">
+            {selectedUser ? formatName(selectedUser) : "N/A"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Email">{selectedUser?.email || "N/A"}</Descriptions.Item>
+          <Descriptions.Item label="Phone">{selectedUser?.phone || "N/A"}</Descriptions.Item>
+          <Descriptions.Item label="Admin Type">
+            {selectedUser?.usertype || "N/A"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Status">
+            {selectedUser ? statusTag(selectedUser?.status) : "N/A"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Roles">
+            {formatRole(selectedUser)}
+          </Descriptions.Item>
+          <Descriptions.Item label="Created At">
+            {selectedUser?.created_at
+              ? dayjs(selectedUser.created_at).format("MMM DD, YYYY h:mm A")
+              : "N/A"}
+          </Descriptions.Item>
+        </Descriptions>
+      </Modal>
     </div>
   );
-};
+}
 
 export default UserManagement;

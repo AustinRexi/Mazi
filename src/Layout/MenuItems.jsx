@@ -235,6 +235,36 @@ const adminMenu = [
     link: "/Customers",
   },
   {
+    name: "Categories",
+    icon: productIcon,
+    activeIcon: productfilled,
+    link: "/Categories",
+  },
+  {
+    name: "Blogs",
+    icon: supportIcon,
+    activeIcon: supportfilled,
+    link: "/Blogs",
+  },
+  {
+    name: "FAQ Categories",
+    icon: productIcon,
+    activeIcon: productfilled,
+    link: "/FaqCategories",
+  },
+  {
+    name: "FAQs",
+    icon: supportIcon,
+    activeIcon: supportfilled,
+    link: "/Faqs",
+  },
+  {
+    name: "Distribution",
+    icon: currencyIcon,
+    activeIcon: currencyfilled,
+    link: "/DistributionSettings",
+  },
+  {
     name: "Currency Exchange",
     icon: currencyIcon,
     activeIcon: currencyfilled,

@@ -9,7 +9,7 @@ import ModalComponent from "../../Components/shared/ModalComponent";
 
 const { Text } = Typography;
 
-const UserCard = ({ datas }) => {
+const UserCard = ({ datas, onView, onApprove, onSuspend, onDelete }) => {
   const [isCallingModalVisible, setIsCallingModalVisible] = useState(false);
   const [isChatModalVisible, setIsChatModalVisible] = useState(false);
   const [isOptionsVisible, setIsOptionsVisible] = useState(false);
@@ -22,11 +22,25 @@ const UserCard = ({ datas }) => {
 
   const menu = (
     <Menu
+      onClick={({ key }) => {
+        if (key === "view" && typeof onView === "function") {
+          onView(datas);
+        }
+        if (key === "approve" && typeof onApprove === "function") {
+          onApprove(datas);
+        }
+        if (key === "suspend" && typeof onSuspend === "function") {
+          onSuspend(datas);
+        }
+        if (key === "delete" && typeof onDelete === "function") {
+          onDelete(datas);
+        }
+      }}
       items={[
-        { key: "1", label: "View" },
-        { key: "2", label: "Approve" },
-        { key: "3", label: "Suspend" },
-        { key: "4", label: "Delete" },
+        { key: "view", label: "View" },
+        { key: "approve", label: "Approve" },
+        { key: "suspend", label: "Suspend" },
+        { key: "delete", label: "Delete" },
       ]}
     />
   );
@@ -46,7 +60,17 @@ const UserCard = ({ datas }) => {
         onMouseLeave={() => setIsOptionsVisible(false)}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <img src={datas.status} alt="status" />
+          <Text
+            type="secondary"
+            style={{
+              fontSize: "12px",
+              fontWeight: 600,
+              lineHeight: "16px",
+              color: "#838D8D",
+            }}
+          >
+            {datas.statusText || "Pending"}
+          </Text>
           <Text
             type="secondary"
             style={{
@@ -135,6 +159,14 @@ const UserCard = ({ datas }) => {
               style={{ marginRight: "8px" }}
             />
             {datas.phone.mobile}
+          </Text>
+          <br />
+          <Text style={{ display: "flex", alignItems: "center" }}>
+            Wallet: {datas.walletAmount || "N/A"}
+          </Text>
+          <br />
+          <Text style={{ display: "flex", alignItems: "center" }}>
+            Point: {datas.userPoint || "N/A"}
           </Text>
 
           <div

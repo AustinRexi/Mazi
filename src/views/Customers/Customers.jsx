@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import MyTable from "./MyTable";
 import Search from "../../Components/Product/Search";
 import ActionButton from "./ActionButton";
@@ -62,6 +63,18 @@ const formatDateJoined = (value) => {
 const formatNaira = (value) => {
   const amount = Number(value || 0);
   return `N${amount.toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+};
+
+const formatUsdm = (value) => {
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) {
+    return "N/A";
+  }
+
+  return `USDM ${amount.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
@@ -156,6 +169,7 @@ const applyCustomerFilters = (items, filters) => {
 };
 
 function Customers() {
+  const navigate = useNavigate();
   const [activeTabKey, setActiveTabKey] = useState("user");
   const [users, setUsers] = useState([]);
   const [stores, setStores] = useState([]);
@@ -214,6 +228,7 @@ function Customers() {
                 email: entry.email || "-",
                 phone: entry.phone || "-",
                 amountSpent: formatNaira(entry.amount_spent),
+                userPoint: formatUsdm(entry.user_point),
                 datejoined: formatDateJoined(entry.created_at),
                 status:
                   String(entry.status || "")
@@ -585,6 +600,13 @@ function Customers() {
             : false
         }
         pagination={false}
+        onStoreView={(record) => {
+          if (!record?.id) {
+            message.error("Store ID is missing.");
+            return;
+          }
+          navigate(`/Customers/store/${record.id}`);
+        }}
         onStoreApprove={handleStoreApprove}
         onStoreSuspend={handleStoreSuspend}
         onStoreDelete={handleStoreDelete}

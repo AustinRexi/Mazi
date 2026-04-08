@@ -39,3 +39,35 @@ export const updateAdminUserStatus = async (userId, status) => {
 
   return response.data;
 };
+
+export const fetchAdminUserById = async (userId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No admin token found.");
+  }
+
+  const response = await axios.get(`${API_BASE_URL}/admin/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  return response.data?.data || null;
+};
+
+export const deleteAdminUser = async (userId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No admin token found.");
+  }
+
+  const response = await axios.delete(`${API_BASE_URL}/admin/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  return response.data;
+};

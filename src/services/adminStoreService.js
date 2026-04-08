@@ -41,3 +41,19 @@ export const deleteAdminStore = async (storeId) => {
 
   return response.data;
 };
+
+export const fetchAdminStoreById = async (storeId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No admin token found.");
+  }
+
+  const response = await axios.get(`${API_BASE_URL}/admin/restaurants/${storeId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  return response.data?.data || null;
+};
