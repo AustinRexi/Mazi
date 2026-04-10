@@ -32,6 +32,18 @@ export const fetchAdminAccountById = async (id) => {
   return response.data?.data || null;
 };
 
+export const createAdminAccount = async (payload) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/admin/admin-users`,
+    payload,
+    {
+      headers: authHeaders(),
+    }
+  );
+
+  return response.data?.data || null;
+};
+
 export const updateAdminAccountStatus = async (id, status) => {
   const response = await axios.patch(
     `${API_BASE_URL}/admin/admin-users/${id}/status`,

@@ -27,6 +27,7 @@ import StoreDetails from "./views/Customers/StoreDetails";
 import Settings from "./views/Settings/Settings";
 import Support from "./views/Support/Support";
 import Wallet from "./views/Wallet/index";
+import Expenses from "./views/Expenses";
 import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
 import Courier from "./views/Courier/Courier";
 import CourierDetails from "./views/Courier/CourierDetails";
@@ -66,6 +67,7 @@ const router = createHashRouter([
       { path: "Courier", element: <Courier /> },
       { path: "Courier/:id", element: <CourierDetails /> },
       { path: "Wallet", element: <Wallet /> },
+      { path: "Expenses", element: <Expenses /> },
       { path: "Support", element: <Support /> },
       { path: "Settings", element: <Settings /> },
       { path: "Customers", element: <Customers /> },

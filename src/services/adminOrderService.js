@@ -17,7 +17,38 @@ export const fetchAdminOrderCards = async (params = {}) => {
     },
   });
 
-  return response.data?.data || { cards: [], summary: {} };
+  return response.data?.data || {
+    cards: [],
+    sales_report: {
+      range: "12m",
+      summary: {
+        revenue: 0,
+        orders: 0,
+      },
+      chart: {
+        labels: [],
+        revenue: [],
+        orders: [],
+      },
+    },
+    summary: {},
+    wallet: {},
+    gross_profit: 0,
+    service_performance: {
+      food_delivery: {
+        revenue: 0,
+        profit: 0,
+        transactions: 0,
+      },
+      courier_services: {
+        revenue: 0,
+        profit: 0,
+        transactions: 0,
+      },
+    },
+    total_products: 0,
+    product_breakdown: {},
+  };
 };
 
 export const fetchAdminOrderById = async (id) => {

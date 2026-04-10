@@ -5,44 +5,44 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  Legend,
+  Tooltip,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip
+);
 
-const Chart = () => {
+const formatYAxisValue = (value) => Number(value || 0).toLocaleString("en-US");
+
+const Chart = ({ chartData }) => {
   const data = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sept",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels: chartData?.labels || [],
     datasets: [
       {
-        data: [625, 600, 175, 290, 300, 630, 100, 280, 750, 900, 1050, 930],
-        fill: true,
-        borderColor: "#F58B3F",
-        tension: 0.001,
+        label: "Revenue",
+        data: chartData?.revenue || [],
+        fill: false,
+        borderColor: "#111111",
+        backgroundColor: "#111111",
+        tension: 0.25,
+        borderWidth: 2,
+        pointRadius: 0,
       },
       {
-        data: [880, 920, 910, 800, 340, 500, 450, 900, 450, 320, 880, 1000],
-        fill: true,
-        borderColor: "#055961",
-        tension: 0.001,
-      },
-      {
-        data: [1050, 910, 930, 400, 900, 750, 450, 890, 530, 620, 880, 330],
-        fill: true,
+        label: "Orders",
+        data: chartData?.orders || [],
+        fill: false,
         borderColor: "#004DC0",
-        tension: 0.001,
+        backgroundColor: "#004DC0",
+        tension: 0.25,
+        borderWidth: 2,
+        pointRadius: 0,
       },
     ],
   };
@@ -51,21 +51,39 @@ const Chart = () => {
     responsive: true,
     maintainAspectRatio: true,
     plugins: {
-      title: {
-        display: true,
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const isRevenue = context.dataset.label === "Revenue";
+            const value = context.parsed.y;
+            return isRevenue
+              ? `Revenue: N${Number(value || 0).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}`
+              : `Orders: ${Number(value || 0).toLocaleString("en-US")}`;
+          },
+        },
       },
     },
     scales: {
       x: {
         display: true,
-        title: {
-          display: true,
+        grid: {
+          display: false,
         },
       },
       y: {
         display: true,
-        title: {
-          display: false,
+        beginAtZero: true,
+        ticks: {
+          callback: formatYAxisValue,
+        },
+        grid: {
+          color: "#EDF2F2",
         },
       },
     },

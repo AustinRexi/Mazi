@@ -23,6 +23,22 @@ export const fetchAdminStores = async (params = {}) => {
   return response.data?.data || { data: [], total: 0 };
 };
 
+export const fetchAdminCountries = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No admin token found.");
+  }
+
+  const response = await axios.get(`${API_BASE_URL}/admin/restaurants/countries`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  return Array.isArray(response.data?.data) ? response.data.data : [];
+};
+
 export const deleteAdminStore = async (storeId) => {
   const token = localStorage.getItem("token");
   if (!token) {

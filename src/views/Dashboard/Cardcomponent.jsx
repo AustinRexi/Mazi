@@ -5,17 +5,26 @@ import downArrowIcon from "../../utils/icons/downarrow.svg";
 import profitIcon from "../../utils/icons/profit.svg";
 import peopleIcon from "../../utils/icons/people.svg";
 import heartIcon from "../../utils/icons/heart.svg";
-import little from "../../utils/icons/little.svg";
-
-import Ratings from "./Ratings";
 const { Title } = Typography;
 
-function Cardcomponent() {
+const formatNaira = (amount) =>
+  `N${Number(amount || 0).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+
+function Cardcomponent({
+  totalUsers = 0,
+  totalWalletAmount = 0,
+  grossProfit = 0,
+  totalProducts = 0,
+  productBreakdown = {},
+}) {
   const statistics = [
     {
       Detail: "Revenue",
       DetailIcon: chartIcon,
-      net: "N150.456M",
+      net: formatNaira(totalWalletAmount),
       price: "N132.77m",
       percentage: "15.4%",
       icon: upArrowIcon,
@@ -27,9 +36,9 @@ function Cardcomponent() {
       usericon: null,
     },
     {
-      Detail: "New Customers",
+      Detail: "Total Users",
       DetailIcon: peopleIcon,
-      net: "5,456",
+      net: Number(totalUsers).toLocaleString("en-US"),
       rating: null,
       price: "N162.77m",
       percentage: "25.4%",
@@ -43,7 +52,7 @@ function Cardcomponent() {
     {
       Detail: "Gross Profit",
       DetailIcon: profitIcon,
-      net: "N150.456M",
+      net: formatNaira(grossProfit),
       rating: null,
       price: "N132.77m",
       percentage: "15.4%",
@@ -55,19 +64,24 @@ function Cardcomponent() {
       usericon: null,
     },
     {
-      Detail: "Product Rating",
+      Detail: "Total Products",
       DetailIcon: heartIcon,
-      net: "4.8",
-      rating: <Ratings rating="4.8" />,
+      net: Number(totalProducts).toLocaleString("en-US"),
+      rating: null,
       price: null,
       percentage: null,
       icon: null,
       color: null,
-      previous: null,
-      difference: null,
-      trend: null,
-      usericon: little,
-      users: "15,056",
+      previous: `Food: ${Number(productBreakdown.foods || 0).toLocaleString(
+        "en-US"
+      )}`,
+      difference: `Groceries: ${Number(
+        productBreakdown.groceries || 0
+      ).toLocaleString("en-US")}`,
+      trend: `Drinks: ${Number(productBreakdown.drinks || 0).toLocaleString(
+        "en-US"
+      )}`,
+      usericon: null,
     },
   ];
   return (

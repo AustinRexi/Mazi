@@ -5,17 +5,10 @@ import {
   FilterOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
+import { formatAdminMoney } from "../../utils/adminCurrency";
 
 const { Option } = Select;
 const { Text } = Typography;
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(amount);
-};
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -54,6 +47,7 @@ function RecentTransactions({
   recentTransactions,
   selectedService,
   setSelectedService,
+  currencyCode,
 }) {
   return (
     <Card title="Recent Transactions">
@@ -136,7 +130,7 @@ function RecentTransactions({
                       color: transaction.amount > 0 ? "#52c41a" : "#f5222d",
                     }}
                   >
-                    {formatCurrency(Math.abs(transaction.amount))}
+                    {formatAdminMoney(Math.abs(transaction.amount), currencyCode)}
                   </Text>
                   <Text
                     style={{ fontSize: 12, color: "#8c8c8c", display: "block" }}

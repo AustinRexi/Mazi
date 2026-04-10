@@ -5,24 +5,17 @@ import {
   FallOutlined,
   DollarOutlined,
 } from "@ant-design/icons";
+import { formatAdminMoney } from "../../utils/adminCurrency";
 
 const { Text } = Typography;
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(amount);
-};
 
 // Define card configurations
 const cardData = [
   {
-    title: "Total Balance",
+    title: "Total Revenue",
     icon: <WalletOutlined style={{ color: "#8c8c8c", fontSize: "24px" }} />,
-    value: "totalBalance",
-    description: "Available funds",
+    value: "totalRevenue",
+    description: "All wallet entries",
     textStyle: { fontSize: 24 },
   },
   {
@@ -33,10 +26,10 @@ const cardData = [
     textStyle: { fontSize: 24, color: "#52c41a" },
   },
   {
-    title: "Total Loss",
+    title: "Total Expenses",
     icon: <FallOutlined style={{ color: "#f5222d", fontSize: "24px" }} />,
-    value: "totalLoss",
-    description: "-3.2% from last month",
+    value: "totalExpenses",
+    description: "All recorded expenses",
     textStyle: { fontSize: 24, color: "#f5222d" },
   },
   {
@@ -49,16 +42,17 @@ const cardData = [
 ];
 
 function FinancialOverview({
-  totalBalance,
+  totalRevenue,
   totalProfit,
-  totalLoss,
+  totalExpenses,
   netProfit,
+  currencyCode,
 }) {
   // Map props to their values for dynamic access
   const values = {
-    totalBalance,
+    totalRevenue,
     totalProfit,
-    totalLoss,
+    totalExpenses,
     netProfit,
   };
 
@@ -68,7 +62,7 @@ function FinancialOverview({
         <Col xs={24} md={6} key={index}>
           <Card title={card.title} extra={card.icon}>
             <Text strong style={card.textStyle}>
-              {formatCurrency(values[card.value])}
+              {formatAdminMoney(values[card.value], currencyCode)}
             </Text>
             <Text style={{ fontSize: 12, color: "#8c8c8c", display: "block" }}>
               {card.description}

@@ -1,12 +1,112 @@
+import { useEffect, useState } from "react";
 import { Typography, Row, Col } from "antd";
 import Calender from "./Calender";
 import ChartDetail from "./ChartDetail";
 import Cardcomponent from "./Cardcomponent";
 import waveIcon from "../../utils/icons/emoji-wave.svg";
+import { fetchAdminUsers } from "../../services/adminUserService";
+import { fetchAdminOrderCards } from "../../services/adminOrderService";
+import {
+  ADMIN_COUNTRY_SCOPE_EVENT,
+  getAdminCountryScope,
+} from "../../utils/adminCountryScope";
 
 const { Title } = Typography;
 
 const Board = () => {
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalWalletAmount, setTotalWalletAmount] = useState(0);
+  const [grossProfit, setGrossProfit] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [selectedCountry, setSelectedCountry] = useState(() =>
+    getAdminCountryScope()
+  );
+  const [productBreakdown, setProductBreakdown] = useState({
+    foods: 0,
+    groceries: 0,
+    drinks: 0,
+  });
+
+  useEffect(() => {
+    const handleCountryChange = (event) => {
+      setSelectedCountry(event.detail?.country || getAdminCountryScope());
+    };
+
+    window.addEventListener(ADMIN_COUNTRY_SCOPE_EVENT, handleCountryChange);
+    return () =>
+      window.removeEventListener(ADMIN_COUNTRY_SCOPE_EVENT, handleCountryChange);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDashboardSummary = async () => {
+      const loadUsers = async () => {
+        try {
+          return await fetchAdminUsers({
+            usertype: "",
+            per_page: 1,
+            page: 1,
+            country: selectedCountry,
+          });
+        } catch (_) {
+          return fetchAdminUsers({
+            usertype: "",
+            per_page: 1,
+            page: 1,
+          });
+        }
+      };
+
+      const [usersResult, ordersResult] = await Promise.allSettled([
+        loadUsers(),
+        fetchAdminOrderCards({
+          per_page: 1,
+          country: selectedCountry,
+        }),
+      ]);
+
+      if (!isMounted) {
+        return;
+      }
+
+      const usersResponse =
+        usersResult.status === "fulfilled" ? usersResult.value : null;
+      const ordersResponse =
+        ordersResult.status === "fulfilled" ? ordersResult.value : null;
+
+      setTotalUsers(Number(usersResponse?.total || 0));
+      setTotalWalletAmount(Number(ordersResponse?.wallet?.total_amount || 0));
+      setGrossProfit(Number(ordersResponse?.gross_profit || 0));
+      setTotalProducts(Number(ordersResponse?.total_products || 0));
+      setProductBreakdown({
+        foods: Number(ordersResponse?.product_breakdown?.foods || 0),
+        groceries: Number(ordersResponse?.product_breakdown?.groceries || 0),
+        drinks: Number(ordersResponse?.product_breakdown?.drinks || 0),
+      });
+    };
+
+    loadDashboardSummary().catch(() => {
+      if (!isMounted) {
+        return;
+      }
+
+      setTotalUsers(0);
+      setTotalWalletAmount(0);
+      setGrossProfit(0);
+      setTotalProducts(0);
+      setProductBreakdown({
+        foods: 0,
+        groceries: 0,
+        drinks: 0,
+      });
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedCountry]);
+
   return (
     <section
       style={{
@@ -47,7 +147,13 @@ const Board = () => {
         </Col>
       </Row>
       <div style={{ marginRight: 50 }}>
-        <Cardcomponent />
+        <Cardcomponent
+          totalUsers={totalUsers}
+          totalWalletAmount={totalWalletAmount}
+          grossProfit={grossProfit}
+          totalProducts={totalProducts}
+          productBreakdown={productBreakdown}
+        />
       </div>
 
       <div style={{ marginTop: "20px" }}>

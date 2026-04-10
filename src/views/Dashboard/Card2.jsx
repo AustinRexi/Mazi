@@ -13,7 +13,13 @@ function Card2(props) {
         height: "296px",
       }}
     >
-      <Calender style={{ width: "140px" }} />
+      <Calender
+        isRange
+        needConfirm
+        value={props.dateRange}
+        onChange={props.onDateRangeChange}
+        style={{ width: "140px" }}
+      />
       <div style={{ marginRight: "20px" }}>
         {props.data.map((list) => (
           <div

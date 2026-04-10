@@ -1,28 +1,21 @@
 import { Card, Tag, Typography, Row, Col } from "antd";
+import { formatAdminMoney } from "../../utils/adminCurrency";
 
 const { Text } = Typography;
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(amount);
-};
 
 // Define metric configurations
 const metrics = [
   {
     label: "Revenue",
     key: "revenue",
-    format: (value) => formatCurrency(value),
+    format: (value, currencyCode) => formatAdminMoney(value, currencyCode),
     textStyle: { fontSize: 14, color: "#8c8c8c" },
     valueStyle: { fontWeight: "500" },
   },
   {
     label: "Profit",
     key: "profit",
-    format: (value) => formatCurrency(value),
+    format: (value, currencyCode) => formatAdminMoney(value, currencyCode),
     textStyle: { fontSize: 14, color: "#8c8c8c" },
     valueStyle: { fontWeight: "500", color: "#52c41a" },
   },
@@ -35,7 +28,7 @@ const metrics = [
   },
 ];
 
-function ServicePerformance({ serviceData }) {
+function ServicePerformance({ serviceData, currencyCode }) {
   return (
     <Card title="Service Performance">
       <Text
@@ -108,7 +101,7 @@ function ServicePerformance({ serviceData }) {
                     >
                       <Text style={metric.textStyle}>{metric.label}</Text>
                       <Text style={metric.valueStyle}>
-                        {metric.format(service[metric.key])}
+                        {metric.format(service[metric.key], currencyCode)}
                       </Text>
                     </div>
                   ))}

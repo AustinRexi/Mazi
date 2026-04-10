@@ -283,6 +283,12 @@ const adminMenu = [
     link: "/Wallet",
   },
   {
+    name: "Expenses",
+    icon: chartIcon,
+    activeIcon: chartIcon,
+    link: "/Expenses",
+  },
+  {
     name: "Support",
     icon: supportIcon,
     activeIcon: supportfilled,

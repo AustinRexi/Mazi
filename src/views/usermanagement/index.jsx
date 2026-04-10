@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   Descriptions,
+  Form,
   Input,
   Modal,
   Popconfirm,
@@ -14,6 +15,7 @@ import {
   message,
 } from "antd";
 import {
+  PlusOutlined,
   DeleteOutlined,
   EyeOutlined,
   SearchOutlined,
@@ -22,6 +24,7 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import {
+  createAdminAccount,
   deleteAdminAccount,
   fetchAdminAccountById,
   fetchAdminAccounts,
@@ -81,6 +84,9 @@ function UserManagement() {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewLoading, setViewLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createForm] = Form.useForm();
 
   useEffect(() => {
     let mounted = true;
@@ -214,6 +220,34 @@ function UserManagement() {
           requestError?.message ||
           "Failed to delete user."
       );
+    }
+  };
+
+  const handleCreateAdmin = async (values) => {
+    setCreateLoading(true);
+
+    try {
+      await createAdminAccount({
+        firstName: values.firstName.trim(),
+        lastName: values.lastName.trim(),
+        email: values.email.trim(),
+        phone: values.phone.trim(),
+        password: values.password,
+        role_id: Number(values.role_id),
+        status: values.status,
+      });
+      message.success("Admin user created successfully.");
+      setCreateModalOpen(false);
+      createForm.resetFields();
+      setReloadKey((current) => current + 1);
+    } catch (requestError) {
+      message.error(
+        requestError?.response?.data?.message ||
+          requestError?.message ||
+          "Failed to create admin user."
+      );
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -368,6 +402,13 @@ function UserManagement() {
               options={STATUS_OPTIONS}
             />
           </Space>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setCreateModalOpen(true)}
+          >
+            Add User
+          </Button>
         </Space>
       </Card>
 
@@ -399,6 +440,86 @@ function UserManagement() {
           },
         }}
       />
+
+      <Modal
+        title="Add Admin User"
+        open={createModalOpen}
+        onCancel={() => {
+          setCreateModalOpen(false);
+          createForm.resetFields();
+        }}
+        onOk={() => createForm.submit()}
+        okText="Create"
+        confirmLoading={createLoading}
+      >
+        <Form
+          form={createForm}
+          layout="vertical"
+          onFinish={handleCreateAdmin}
+          initialValues={{ status: "approved" }}
+        >
+          <Form.Item
+            label="First Name"
+            name="firstName"
+            rules={[{ required: true, message: "Enter first name." }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Last Name"
+            name="lastName"
+            rules={[{ required: true, message: "Enter last name." }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "Enter email address." },
+              { type: "email", message: "Enter a valid email address." },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Phone"
+            name="phone"
+            rules={[{ required: true, message: "Enter phone number." }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              { required: true, message: "Enter password." },
+              { min: 6, message: "Password must be at least 6 characters." },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            label="Role"
+            name="role_id"
+            rules={[{ required: true, message: "Select a role." }]}
+          >
+            <Select
+              options={roles.map((role) => ({
+                label: role?.name || `Role ${role?.id}`,
+                value: String(role?.id),
+              }))}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Status"
+            name="status"
+            rules={[{ required: true, message: "Select a status." }]}
+          >
+            <Select options={STATUS_OPTIONS.filter((item) => item.value !== "all")} />
+          </Form.Item>
+        </Form>
+      </Modal>
 
       <Modal
         title="User Details"

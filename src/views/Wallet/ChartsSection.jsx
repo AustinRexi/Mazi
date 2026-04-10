@@ -1,16 +1,9 @@
 import { Card, Row, Col } from "antd";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { formatAdminMoney } from "../../utils/adminCurrency";
 
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(amount);
-};
-
-function ChartsSection({ chartData, pieData }) {
+function ChartsSection({ chartData, pieData, currencyCode }) {
   // Line Chart Options
   const lineChartOptions = {
     title: {
@@ -23,7 +16,7 @@ function ChartsSection({ chartData, pieData }) {
       },
     },
     xAxis: {
-      categories: chartData.map((item) => item.name),
+      categories: chartData?.labels || [],
       title: {
         text: null,
       },
@@ -35,7 +28,7 @@ function ChartsSection({ chartData, pieData }) {
     },
     tooltip: {
       formatter: function () {
-        return `${this.series.name}: ${formatCurrency(this.y)}`;
+        return `${this.series.name}: ${formatAdminMoney(this.y, currencyCode)}`;
       },
     },
     legend: {
@@ -44,19 +37,19 @@ function ChartsSection({ chartData, pieData }) {
     series: [
       {
         name: "Revenue",
-        data: chartData.map((item) => item.revenue),
+        data: chartData?.revenue || [],
         color: "#16a34a",
         lineWidth: 2,
       },
       {
         name: "Profit",
-        data: chartData.map((item) => item.profit),
+        data: chartData?.profit || [],
         color: "#3b82f6",
         lineWidth: 2,
       },
       {
-        name: "Loss",
-        data: chartData.map((item) => item.loss),
+        name: "Expenses",
+        data: chartData?.expenses || [],
         color: "#ef4444",
         lineWidth: 2,
       },
@@ -87,7 +80,7 @@ function ChartsSection({ chartData, pieData }) {
     },
     tooltip: {
       formatter: function () {
-        return `${this.point.name}: ${formatCurrency(this.y)}`;
+        return `${this.point.name}: ${formatAdminMoney(this.y, currencyCode)}`;
       },
     },
     legend: {

@@ -16,6 +16,12 @@ import {
   getVendorRestaurantScope,
   setVendorRestaurantScope,
 } from "../vendors/utils/restaurantScope";
+import { fetchAdminCountries } from "../services/adminStoreService";
+import {
+  DEFAULT_ADMIN_COUNTRY,
+  getAdminCountryScope,
+  setAdminCountryScope,
+} from "../utils/adminCountryScope";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
@@ -35,24 +41,12 @@ const Navbar = () => {
     useState(false);
   const [userManagementModalVisible, setUserManagementModalVisible] =
     useState(false); // New state for UserManagement modal
-
-  const optionsWithImages = [
-    {
-      value: "apple",
-      label: "Apple",
-      image: "https://via.placeholder.com/30x30",
-    },
-    {
-      value: "banana",
-      label: "Banana",
-      image: "https://via.placeholder.com/30x30",
-    },
-    {
-      value: "Nigeria",
-      label: "Nigeria",
-      image: flag,
-    },
-  ];
+  const [adminCountryOptions, setAdminCountryOptions] = useState([
+    DEFAULT_ADMIN_COUNTRY,
+  ]);
+  const [selectedAdminCountry, setSelectedAdminCountry] = useState(() =>
+    getAdminCountryScope()
+  );
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 1024);
@@ -64,6 +58,45 @@ const Navbar = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (user?.role !== "admin") {
+      return;
+    }
+
+    let mounted = true;
+
+    const loadCountries = async () => {
+      try {
+        const countries = await fetchAdminCountries();
+        if (!mounted) {
+          return;
+        }
+
+        const nextOptions = Array.from(
+          new Set([DEFAULT_ADMIN_COUNTRY, ...countries.filter(Boolean)])
+        );
+        setAdminCountryOptions(nextOptions);
+
+        if (!nextOptions.includes(selectedAdminCountry)) {
+          setSelectedAdminCountry(DEFAULT_ADMIN_COUNTRY);
+          setAdminCountryScope(DEFAULT_ADMIN_COUNTRY);
+        }
+      } catch (_) {
+        if (!mounted) {
+          return;
+        }
+
+        setAdminCountryOptions([DEFAULT_ADMIN_COUNTRY]);
+      }
+    };
+
+    loadCountries();
+
+    return () => {
+      mounted = false;
+    };
+  }, [selectedAdminCountry, user?.role]);
 
   useEffect(() => {
     if (user?.role !== "vendor") {
@@ -315,42 +348,44 @@ const Navbar = () => {
               }}
             >
               <div style={{ padding: 8, marginLeft: 2 }}>
-                <Select
-                  defaultValue="Nigeria"
-                  style={{
-                    width: 130,
-                  }}
-                >
-                  {optionsWithImages.map((option) => (
-                    <Option
-                      key={option.value}
-                      value={option.value}
-                      label={option.label}
-                    >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <img
-                          src={option.image}
-                          alt={option.label}
-                          style={{
-                            marginRight: "8px",
-                            width: "30px",
-                            height: "20px",
-                          }}
-                        />
-                        <span
-                          style={{
-                            fontFamily: "NeueHaasDisplayRoman",
-                            fontWeight: 500,
-                            fontSize: "16px",
-                            lineHeight: "24px",
-                          }}
-                        >
-                          {option.label}
-                        </span>
-                      </div>
-                    </Option>
-                  ))}
-                </Select>
+                {user?.role === "admin" ? (
+                  <Select
+                    value={selectedAdminCountry}
+                    onChange={(value) => {
+                      setSelectedAdminCountry(value);
+                      setAdminCountryScope(value);
+                    }}
+                    style={{
+                      width: 160,
+                    }}
+                  >
+                    {adminCountryOptions.map((country) => (
+                      <Option key={country} value={country} label={country}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <img
+                            src={flag}
+                            alt={country}
+                            style={{
+                              marginRight: "8px",
+                              width: "30px",
+                              height: "20px",
+                            }}
+                          />
+                          <span
+                            style={{
+                              fontFamily: "NeueHaasDisplayRoman",
+                              fontWeight: 500,
+                              fontSize: "16px",
+                              lineHeight: "24px",
+                            }}
+                          >
+                            {country}
+                          </span>
+                        </div>
+                      </Option>
+                    ))}
+                  </Select>
+                ) : null}
               </div>
 
               <div
