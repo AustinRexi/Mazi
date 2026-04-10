@@ -28,6 +28,7 @@ function DistributionSettings() {
           buyer_percentage: Number(data?.buyer_percentage || 0),
           courier_percentage: Number(data?.courier_percentage || 0),
           company_percentage: Number(data?.company_percentage || 0),
+          vendor_product_percentage: Number(data?.vendor_product_percentage || 0),
           referral_percentage: Number(data?.referral_percentage || 0),
           withdrawal_threshold: Number(data?.withdrawal_threshold || 0),
         });
@@ -103,6 +104,19 @@ function DistributionSettings() {
             label="Company Percentage"
             name="company_percentage"
             rules={[{ required: true, message: "Company percentage is required." }]}
+          >
+            <InputNumber min={0} step={0.01} precision={2} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Vendor Product Percentage"
+            name="vendor_product_percentage"
+            rules={[
+              {
+                required: true,
+                message: "Vendor product percentage is required.",
+              },
+            ]}
           >
             <InputNumber min={0} step={0.01} precision={2} style={{ width: "100%" }} />
           </Form.Item>
