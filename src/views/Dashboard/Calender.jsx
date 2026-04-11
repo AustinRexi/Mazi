@@ -32,6 +32,24 @@ const Calender = ({
   ];
 
   const presets = data || defaultPresets;
+  const rangePresets = [
+    {
+      label: "Last 7 Days",
+      value: [dayjs().subtract(6, "day").startOf("day"), dayjs().endOf("day")],
+    },
+    {
+      label: "Last 30 Days",
+      value: [dayjs().subtract(29, "day").startOf("day"), dayjs().endOf("day")],
+    },
+    {
+      label: "Last 90 Days",
+      value: [dayjs().subtract(89, "day").startOf("day"), dayjs().endOf("day")],
+    },
+    {
+      label: "This Year",
+      value: [dayjs().startOf("year"), dayjs().endOf("day")],
+    },
+  ];
 
   return (
     <div style={{ padding: 10, ...style }}>
@@ -68,6 +86,7 @@ const Calender = ({
               value={value}
               onChange={onChange}
               needConfirm={needConfirm}
+              presets={rangePresets}
               allowClear
             />
           ) : (

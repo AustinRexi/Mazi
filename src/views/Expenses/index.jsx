@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -38,6 +38,7 @@ import {
 } from "../../utils/adminCountryScope";
 import {
   formatAdminMoney,
+  getCurrencyCodeForCountry,
   useAdminCountryCurrency,
 } from "../../utils/adminCurrency";
 
@@ -47,8 +48,33 @@ const EXPENSE_CURRENCY_OPTIONS = [
   { label: "R ZAR", value: "ZAR" },
 ];
 
+const convertUsdAmount = async (amount, toCurrencyCode) => {
+  const normalizedTarget = String(toCurrencyCode || "USD").toUpperCase();
+  const numericAmount = Number(amount || 0);
+
+  if (normalizedTarget === "USD") {
+    return numericAmount;
+  }
+
+  try {
+    const converted = await convertAdminCurrency({
+      amount: numericAmount,
+      from: "USD",
+      to: normalizedTarget,
+    });
+    return Number(converted?.amount || 0);
+  } catch (_) {
+    const converted = await convertAdminCurrency({
+      amount: numericAmount,
+      from: "USD",
+      to: normalizedTarget,
+    });
+    return Number(converted?.amount || 0);
+  }
+};
+
 const ExpensePage = () => {
-  const { country: scopedCountry, currencyCode } = useAdminCountryCurrency();
+  const { country: scopedCountry } = useAdminCountryCurrency();
   const [expenses, setExpenses] = useState([]);
   const [countryOptions, setCountryOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -56,6 +82,7 @@ const ExpensePage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
+  const [totalSpent, setTotalSpent] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
 
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -65,6 +92,7 @@ const ExpensePage = () => {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [editingExpense, setEditingExpense] = useState(null);
   const [convertedAmounts, setConvertedAmounts] = useState({});
+  const [totalSpentCurrency, setTotalSpentCurrency] = useState("NGN");
   const [selectedCountry, setSelectedCountry] = useState(() =>
     getAdminCountryScope()
   );
@@ -158,6 +186,11 @@ const ExpensePage = () => {
   }, [page, pageSize, reloadKey, search, selectedCountry]);
 
   useEffect(() => {
+    const tableCurrencyCode = getCurrencyCodeForCountry(selectedCountry);
+    setTotalSpentCurrency(tableCurrencyCode);
+  }, [selectedCountry]);
+
+  useEffect(() => {
     let mounted = true;
 
     const loadConvertedAmounts = async () => {
@@ -169,16 +202,14 @@ const ExpensePage = () => {
       try {
         const entries = await Promise.all(
           expenses.map(async (expense) => {
-            try {
-              const converted = await convertAdminCurrency({
-                amount: Number(expense?.amount || 0),
-                from: expense?.currency || "USD",
-                to: currencyCode,
-              });
+            const targetCurrency = getCurrencyCodeForCountry(expense?.country);
+            const amount = Number(expense?.amount || 0);
 
-              return [expense.id, Number(converted?.amount || 0)];
+            try {
+              const convertedAmount = await convertUsdAmount(amount, targetCurrency);
+              return [expense.id, convertedAmount];
             } catch (_) {
-              return [expense.id, Number(expense?.amount || 0)];
+              return [expense.id, amount];
             }
           })
         );
@@ -202,19 +233,22 @@ const ExpensePage = () => {
     return () => {
       mounted = false;
     };
-  }, [currencyCode, expenses]);
+  }, [expenses]);
 
-  const totalSpent = useMemo(
-    () =>
-      expenses.reduce(
-        (sum, expense) => {
-          const amount = convertedAmounts[expense.id] ?? expense?.amount ?? 0;
-          return sum + Number(amount);
-        },
-        0
-      ),
-    [convertedAmounts, expenses]
-  );
+  useEffect(() => {
+    const tableCurrencyCode = getCurrencyCodeForCountry(selectedCountry);
+    const totalForView = expenses.reduce((sum, expense) => {
+      const converted = convertedAmounts[expense?.id];
+      if (Number.isFinite(converted)) {
+        return sum + Number(converted);
+      }
+
+      return sum + Number(expense?.amount || 0);
+    }, 0);
+
+    setTotalSpentCurrency(tableCurrencyCode);
+    setTotalSpent(totalForView);
+  }, [convertedAmounts, expenses, selectedCountry]);
 
   const openCreateModal = () => {
     setEditingExpense(null);
@@ -328,11 +362,13 @@ const ExpensePage = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (value, record) =>
-        `${formatAdminMoney(
+      render: (value, record) => {
+        const tableRowCurrency = getCurrencyCodeForCountry(record?.country);
+        return `${formatAdminMoney(
           convertedAmounts[record.id] ?? value,
-          currencyCode
-        )} (${formatAdminMoney(value, record?.currency || "USD")})`,
+          tableRowCurrency
+        )} (${formatAdminMoney(value, "USD")})`;
+      },
     },
     {
       title: "Date",
@@ -400,7 +436,7 @@ const ExpensePage = () => {
             />
             <Tag color="blue">Total in view: {expenses.length}</Tag>
             <Tag color="green">
-              Spent in view: {formatAdminMoney(totalSpent, currencyCode)}
+              Spent in view: {formatAdminMoney(totalSpent, totalSpentCurrency)}
             </Tag>
           </Space>
           <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
@@ -524,12 +560,9 @@ const ExpensePage = () => {
           <Descriptions.Item label="Amount">
             {formatAdminMoney(
               convertedAmounts[selectedExpense?.id] ?? selectedExpense?.amount,
-              currencyCode
+              getCurrencyCodeForCountry(selectedExpense?.country)
             )}{" "}
-            ({formatAdminMoney(
-              selectedExpense?.amount,
-              selectedExpense?.currency || "USD"
-            )})
+            ({formatAdminMoney(selectedExpense?.amount, "USD")})
           </Descriptions.Item>
           <Descriptions.Item label="Currency">
             {selectedExpense?.currency || "USD"}

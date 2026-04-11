@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import dayjs from "dayjs";
 import { Card, Row, Col } from "antd";
 import listIcon1 from "../../utils/icons/listIcon1.svg";
 import listIcon2 from "../../utils/icons/listIcon2.svg";
@@ -18,11 +17,7 @@ const formatNaira = (amount) =>
     maximumFractionDigits: 2,
   })}`;
 
-const ChartDetail = () => {
-  const [dateRange, setDateRange] = useState([
-    dayjs().subtract(11, "month").startOf("month"),
-    dayjs().endOf("month"),
-  ]);
+const ChartDetail = ({ dateRange, onDateRangeChange }) => {
   const [selectedCountry, setSelectedCountry] = useState(() =>
     getAdminCountryScope()
   );
@@ -216,24 +211,14 @@ const ChartDetail = () => {
               <Card2
                 data={items}
                 dateRange={dateRange}
-                onDateRangeChange={(value) => {
-                  if (!value || value.length !== 2) {
-                    setDateRange([
-                      dayjs().subtract(11, "month").startOf("month"),
-                      dayjs().endOf("month"),
-                    ]);
-                    return;
-                  }
-
-                  setDateRange(value);
-                }}
+                onDateRangeChange={onDateRangeChange}
               />
             </div>
           </Card>
         </Col>
         <Col xs={9} md={14} lg={0}></Col>
         <Col span={2}>
-          <Topstores />
+          <Topstores dateRange={dateRange} />
         </Col>
       </Row>
     </div>

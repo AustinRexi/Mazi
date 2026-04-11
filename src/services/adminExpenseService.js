@@ -24,6 +24,39 @@ export const fetchAdminExpenses = async (params = {}) => {
   return response.data?.data || { data: [], total: 0 };
 };
 
+export const fetchAllAdminExpenses = async (params = {}) => {
+  const perPage = 1000;
+  const firstPage = await fetchAdminExpenses({
+    ...params,
+    page: 1,
+    per_page: perPage,
+  });
+
+  const firstRows = Array.isArray(firstPage?.data) ? firstPage.data : [];
+  const lastPage = Number(firstPage?.last_page || 1);
+
+  if (lastPage <= 1) {
+    return firstRows;
+  }
+
+  const remainingPages = await Promise.all(
+    Array.from({ length: lastPage - 1 }, (_, index) =>
+      fetchAdminExpenses({
+        ...params,
+        page: index + 2,
+        per_page: perPage,
+      })
+    )
+  );
+
+  return [
+    ...firstRows,
+    ...remainingPages.flatMap((pageResult) =>
+      Array.isArray(pageResult?.data) ? pageResult.data : []
+    ),
+  ];
+};
+
 export const fetchAdminExpenseById = async (id) => {
   const response = await axios.get(`${API_BASE_URL}/admin/expenses/${id}`, {
     headers: authHeaders(),

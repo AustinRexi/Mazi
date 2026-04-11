@@ -139,6 +139,7 @@ const VendorSettings = () => {
   const [securitySettings, setSecuritySettings] = useState({
     twoFactorEnabled: false,
     twoFactorChannel: "email",
+    hasTransactionPin: false,
   });
   const [securityForm] = Form.useForm();
 
@@ -427,6 +428,7 @@ const VendorSettings = () => {
       const nextState = {
         twoFactorEnabled: Boolean(settings.two_factor_enabled),
         twoFactorChannel: settings.two_factor_channel || "email",
+        hasTransactionPin: Boolean(settings.has_transaction_pin),
       };
       setSecuritySettings(nextState);
       securityForm.setFieldsValue({
@@ -435,6 +437,8 @@ const VendorSettings = () => {
         currentPassword: "",
         newPassword: "",
         newPasswordConfirmation: "",
+        transactionPin: "",
+        transactionPinConfirmation: "",
       });
     } catch (error) {
       message.error(
@@ -482,6 +486,8 @@ const VendorSettings = () => {
           two_factor_channel: values.twoFactorEnabled
             ? values.twoFactorChannel || "email"
             : null,
+          transaction_pin: values.transactionPin || null,
+          transaction_pin_confirmation: values.transactionPinConfirmation || null,
         },
         {
           headers: {
@@ -494,6 +500,9 @@ const VendorSettings = () => {
       setSecuritySettings({
         twoFactorEnabled: Boolean(values.twoFactorEnabled),
         twoFactorChannel: values.twoFactorChannel || "email",
+        hasTransactionPin: values.transactionPin
+          ? true
+          : securitySettings.hasTransactionPin,
       });
       message.success("Security settings updated successfully.");
       setIsSecurityModalOpen(false);
@@ -551,6 +560,8 @@ const VendorSettings = () => {
           initialValues={{
             twoFactorEnabled: securitySettings.twoFactorEnabled,
             twoFactorChannel: securitySettings.twoFactorChannel,
+            transactionPin: "",
+            transactionPinConfirmation: "",
           }}
         >
           <Form.Item name="twoFactorEnabled" label="Enable 2FA" valuePropName="checked">
@@ -652,6 +663,64 @@ const VendorSettings = () => {
             ]}
           >
             <Input.Password placeholder="Confirm new password" />
+          </Form.Item>
+
+          <Text strong>Transaction PIN</Text>
+          <div style={{ marginBottom: 8 }}>
+            <Text type="secondary">
+              {securitySettings.hasTransactionPin
+                ? "Transaction PIN is already set. Enter a new PIN to change it."
+                : "Set a 6-digit transaction PIN for withdrawals."}
+            </Text>
+          </div>
+
+          <Form.Item
+            name="transactionPin"
+            label="New Transaction PIN"
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const confirmation = getFieldValue("transactionPinConfirmation");
+                  if (!value && !confirmation) {
+                    return Promise.resolve();
+                  }
+                  if (!value) {
+                    return Promise.reject(new Error("Transaction PIN is required."));
+                  }
+                  if (!/^[0-9]{6}$/.test(String(value))) {
+                    return Promise.reject(new Error("Transaction PIN must be 6 digits."));
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
+          >
+            <Input.Password inputMode="numeric" maxLength={6} placeholder="******" />
+          </Form.Item>
+
+          <Form.Item
+            name="transactionPinConfirmation"
+            label="Confirm Transaction PIN"
+            dependencies={["transactionPin"]}
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const pin = getFieldValue("transactionPin");
+                  if (!pin && !value) {
+                    return Promise.resolve();
+                  }
+                  if (!value) {
+                    return Promise.reject(new Error("Please confirm transaction PIN."));
+                  }
+                  if (value !== pin) {
+                    return Promise.reject(new Error("Transaction PIN does not match."));
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
+          >
+            <Input.Password inputMode="numeric" maxLength={6} placeholder="******" />
           </Form.Item>
         </Form>
       </Modal>

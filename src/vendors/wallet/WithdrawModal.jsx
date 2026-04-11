@@ -189,8 +189,11 @@ const WithdrawModal = ({
 
         <Form.Item
           name="transaction_pin"
-          label="Transaction PIN (Optional)"
-          rules={[{ len: 6, message: "PIN must be 6 digits" }]}
+          label="Transaction PIN"
+          rules={[
+            { required: true, message: "Enter your transaction PIN" },
+            { len: 6, message: "PIN must be 6 digits" },
+          ]}
         >
           <Input.Password inputMode="numeric" maxLength={6} placeholder="******" />
         </Form.Item>

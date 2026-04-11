@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
-import { Layout, Space, Row, Col, Spin } from "antd"; // Import Ant Design components
+import {
+  Layout,
+  Space,
+  Row,
+  Col,
+  Spin,
+  message,
+} from "antd"; // Import Ant Design components
 import { TruckOutlined, CoffeeOutlined, SwapOutlined } from "@ant-design/icons";
+import axios from "axios";
+import WithdrawModal from "../../vendors/wallet/WithdrawModal";
 
 import Header from "./Header";
 import FinancialOverview from "./FinancialOverview";
@@ -9,7 +18,9 @@ import ChartsSection from "./ChartsSection";
 import RecentTransactions from "./RecentTransactions";
 import QuickActions from "./QuickActions";
 import { fetchAdminOrderCards } from "../../services/adminOrderService";
-import { fetchAdminExpenses } from "../../services/adminExpenseService";
+import {
+  fetchAllAdminExpenses,
+} from "../../services/adminExpenseService";
 import { convertAdminCurrency } from "../../services/adminCurrencyService";
 import {
   ADMIN_COUNTRY_SCOPE_EVENT,
@@ -183,6 +194,8 @@ const Wallet = () => {
   });
   const [walletPieData, setWalletPieData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(() =>
     getAdminCountryScope()
   );
@@ -205,11 +218,13 @@ const Wallet = () => {
     const sourceCurrencyCode = getCurrencyCodeForCountry(selectedCountry);
 
     const loadExpenses = async () => {
-      return fetchAdminExpenses({
-        page: 1,
-        per_page: 1000,
+      const rows = await fetchAllAdminExpenses({
         country: selectedCountry,
       });
+
+      return {
+        data: rows,
+      };
     };
 
     const loadFinancialSummary = async () => {
@@ -523,6 +538,51 @@ const Wallet = () => {
     },
   ];
 
+  const handleQuickAction = (actionLabel) => {
+    if (actionLabel === "Withdraw") {
+      setIsWithdrawModalOpen(true);
+    }
+  };
+
+  const handleAdminWithdraw = async (values, form) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      message.error("You need to log in as a vendor to withdraw.");
+      return;
+    }
+
+    try {
+      setWithdrawing(true);
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api"}/vendor/wallet/withdraw`,
+        {
+          amount: Number(values.amount),
+          bank_code: values.bank_code,
+          account_number: values.account_number,
+          account_name: values.account_name,
+          description: values.description,
+          transaction_pin: values.transaction_pin,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      message.success("Withdrawal initiated successfully.");
+      setIsWithdrawModalOpen(false);
+      form.resetFields();
+    } catch (error) {
+      message.error(
+        error?.response?.data?.message || "Failed to process withdrawal."
+      );
+    } finally {
+      setWithdrawing(false);
+    }
+  };
+
   return (
     <Layout style={{ minHeight: "100vh", background: "#f5f5f5" }}>
       <Content>
@@ -556,12 +616,20 @@ const Wallet = () => {
                   setSelectedService={setSelectedService}
                   currencyCode={currencyCode}
                 />
-                <QuickActions />
+                <QuickActions onAction={handleQuickAction} />
               </Space>
             </Col>
           </Row>
         </Spin>
       </Content>
+
+      <WithdrawModal
+        isModalOpen={isWithdrawModalOpen}
+        setIsModalOpen={setIsWithdrawModalOpen}
+        availableBalance={Number(financialSummary.totalRevenue || 0)}
+        onWithdraw={handleAdminWithdraw}
+        withdrawing={withdrawing}
+      />
     </Layout>
   );
 };

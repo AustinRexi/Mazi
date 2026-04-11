@@ -32,7 +32,7 @@ const actionButtons = [
   },
 ];
 
-function QuickActions() {
+function QuickActions({ onAction }) {
   return (
     <Card title="Quick Actions">
       <Text
@@ -53,6 +53,7 @@ function QuickActions() {
                 alignItems: "center",
                 gap: 8,
               }}
+              onClick={() => onAction?.(button.label)}
             >
               {button.icon}
               {button.label}

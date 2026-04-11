@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import { Typography, Row, Col } from "antd";
 import Calender from "./Calender";
 import ChartDetail from "./ChartDetail";
@@ -26,6 +27,10 @@ const Board = () => {
     groceries: 0,
     drinks: 0,
   });
+  const [dateRange, setDateRange] = useState([
+    dayjs().subtract(11, "month").startOf("month"),
+    dayjs().endOf("month"),
+  ]);
 
   useEffect(() => {
     const handleCountryChange = (event) => {
@@ -41,28 +46,34 @@ const Board = () => {
     let isMounted = true;
 
     const loadDashboardSummary = async () => {
-      const loadUsers = async () => {
-        try {
-          return await fetchAdminUsers({
-            usertype: "",
-            per_page: 1,
-            page: 1,
-            country: selectedCountry,
-          });
-        } catch (_) {
-          return fetchAdminUsers({
-            usertype: "",
-            per_page: 1,
-            page: 1,
-          });
-        }
-      };
+        const loadUsers = async () => {
+          try {
+            return await fetchAdminUsers({
+              usertype: "",
+              per_page: 1,
+              page: 1,
+              country: selectedCountry,
+              date_from: dateRange?.[0]?.format("YYYY-MM-DD"),
+              date_to: dateRange?.[1]?.format("YYYY-MM-DD"),
+            });
+          } catch (_) {
+            return fetchAdminUsers({
+              usertype: "",
+              per_page: 1,
+              page: 1,
+              date_from: dateRange?.[0]?.format("YYYY-MM-DD"),
+              date_to: dateRange?.[1]?.format("YYYY-MM-DD"),
+            });
+          }
+        };
 
       const [usersResult, ordersResult] = await Promise.allSettled([
         loadUsers(),
         fetchAdminOrderCards({
           per_page: 1,
           country: selectedCountry,
+          date_from: dateRange?.[0]?.format("YYYY-MM-DD"),
+          date_to: dateRange?.[1]?.format("YYYY-MM-DD"),
         }),
       ]);
 
@@ -105,7 +116,7 @@ const Board = () => {
     return () => {
       isMounted = false;
     };
-  }, [selectedCountry]);
+  }, [dateRange, selectedCountry]);
 
   return (
     <section
@@ -143,7 +154,22 @@ const Board = () => {
           </div>
         </Col>
         <Col xs={10} md={5}>
-          <Calender />
+          <Calender
+            isRange
+            needConfirm
+            value={dateRange}
+            onChange={(value) => {
+              if (!value || value.length !== 2) {
+                setDateRange([
+                  dayjs().subtract(11, "month").startOf("month"),
+                  dayjs().endOf("month"),
+                ]);
+                return;
+              }
+
+              setDateRange(value);
+            }}
+          />
         </Col>
       </Row>
       <div style={{ marginRight: 50 }}>
@@ -158,7 +184,19 @@ const Board = () => {
 
       <div style={{ marginTop: "20px" }}>
         {" "}
-        <ChartDetail />
+        <ChartDetail
+          dateRange={dateRange}
+          onDateRangeChange={(value) => {
+            if (!value || value.length !== 2) {
+              setDateRange([
+                dayjs().subtract(11, "month").startOf("month"),
+                dayjs().endOf("month"),
+              ]);
+              return;
+            }
+            setDateRange(value);
+          }}
+        />
       </div>
     </section>
   );

@@ -23,7 +23,7 @@ const resolveStoreImage = (banner) => {
   return `${API_ORIGIN}/storage/${normalized}`;
 };
 
-const Topstores = () => {
+const Topstores = ({ dateRange = null }) => {
   const [stores, setStores] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(() =>
     getAdminCountryScope()
@@ -48,6 +48,8 @@ const Topstores = () => {
           per_page: 5,
           sort_by: "orders_desc",
           country: selectedCountry,
+          date_from: dateRange?.[0]?.format("YYYY-MM-DD"),
+          date_to: dateRange?.[1]?.format("YYYY-MM-DD"),
         });
 
         if (!isMounted) {
@@ -80,7 +82,7 @@ const Topstores = () => {
     return () => {
       isMounted = false;
     };
-  }, [selectedCountry]);
+  }, [dateRange, selectedCountry]);
 
   return (
     <Card
