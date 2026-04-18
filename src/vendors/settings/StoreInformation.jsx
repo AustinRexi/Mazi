@@ -20,12 +20,14 @@ import {
   PhoneOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 const { TextArea } = Input;
 const { Title, Paragraph } = Typography;
+const GOOGLE_MAPS_SCRIPT_ID = "google-maps-places-script";
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 const WEEKDAY_OPTIONS = [
   { label: "Mon", value: "Mon" },
   { label: "Tue", value: "Tue" },
@@ -55,6 +57,86 @@ const StoreInformation = ({
   const navigate = useNavigate();
   const logoInputRef = useRef(null);
   const bannerInputRef = useRef(null);
+  const addressInputRef = useRef(null);
+  const autocompleteRef = useRef(null);
+
+  useEffect(() => {
+    if (!GOOGLE_MAPS_API_KEY || !addressInputRef.current) {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const initializeAutocomplete = () => {
+      if (cancelled || !addressInputRef.current || autocompleteRef.current) {
+        return;
+      }
+
+      if (!window.google?.maps?.places?.Autocomplete) {
+        return;
+      }
+
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        addressInputRef.current.input,
+        {
+          fields: ["formatted_address", "geometry"],
+          types: ["address"],
+        }
+      );
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        const formattedAddress = place?.formatted_address || "";
+        const lat = place?.geometry?.location?.lat?.();
+        const lng = place?.geometry?.location?.lng?.();
+
+        setStoreSettings((current) => ({
+          ...current,
+          storeAddress: formattedAddress || current.storeAddress,
+          storeLat:
+            typeof lat === "number" && Number.isFinite(lat)
+              ? String(lat)
+              : current.storeLat,
+          storeLng:
+            typeof lng === "number" && Number.isFinite(lng)
+              ? String(lng)
+              : current.storeLng,
+        }));
+      });
+
+      autocompleteRef.current = autocomplete;
+    };
+
+    if (window.google?.maps?.places?.Autocomplete) {
+      initializeAutocomplete();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    let script = document.getElementById(GOOGLE_MAPS_SCRIPT_ID);
+
+    const handleLoad = () => {
+      initializeAutocomplete();
+    };
+
+    if (!script) {
+      script = document.createElement("script");
+      script.id = GOOGLE_MAPS_SCRIPT_ID;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.addEventListener("load", handleLoad);
+      document.body.appendChild(script);
+    } else {
+      script.addEventListener("load", handleLoad);
+    }
+
+    return () => {
+      cancelled = true;
+      script?.removeEventListener("load", handleLoad);
+    };
+  }, [setStoreSettings]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -299,6 +381,7 @@ const StoreInformation = ({
 
               <Form.Item label="Business Address">
                 <Input
+                  ref={addressInputRef}
                   prefix={<EnvironmentOutlined />}
                   value={storeSettings.storeAddress}
                   onChange={(e) =>
