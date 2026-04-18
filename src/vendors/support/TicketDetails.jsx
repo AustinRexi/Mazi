@@ -14,6 +14,7 @@ const TicketDetails = ({
   onMarkResolved,
   replyMessage,
   setReplyMessage,
+  isSubmitting = false,
 }) => {
   if (!ticket)
     return (
@@ -33,6 +34,7 @@ const TicketDetails = ({
             type="primary"
             icon={<CheckCircleOutlined />}
             onClick={() => onMarkResolved(ticket.id)}
+            loading={isSubmitting}
           >
             Mark Resolved
           </Button>
@@ -93,8 +95,9 @@ const TicketDetails = ({
             <Button
               type="primary"
               icon={<SendOutlined />}
-              onClick={() => onSendReply(replyMessage)}
+              onClick={onSendReply}
               disabled={!replyMessage.trim()}
+              loading={isSubmitting}
             >
               Send Reply
             </Button>

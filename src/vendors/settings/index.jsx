@@ -220,6 +220,130 @@ const VendorSettings = () => {
     persistStoreDraft(storeDraftKey, nextSettings);
   }, [selectedRestaurantId, restaurants, storeDraftKey]);
 
+  const refreshRestaurants = async (preferredRestaurantId = null) => {
+    const refreshed = await axios.get(
+      `${API_BASE_URL}/vendor/restaurants?limit=100`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    const refreshedRows = refreshed.data?.data || [];
+    setRestaurants(refreshedRows);
+
+    const refreshedRestaurant =
+      refreshedRows.find(
+        (row) => Number(row.id) === Number(preferredRestaurantId)
+      ) || refreshedRows[0];
+
+    if (!refreshedRestaurant) {
+      setSelectedRestaurantId(null);
+      return null;
+    }
+
+    setSelectedRestaurantId(refreshedRestaurant.id);
+
+    const nextSettings = mapRestaurantToStoreSettings(
+      refreshedRestaurant,
+      storeSettings
+    );
+    setStoreSettings((current) => ({
+      ...current,
+      ...nextSettings,
+    }));
+    setNotifications((current) =>
+      mergeNotificationSettings(
+        refreshedRestaurant.restaurant_notification_settings,
+        current
+      )
+    );
+    setBusinessSettings((current) =>
+      mergeBusinessSettings(
+        refreshedRestaurant.restaurant_business_settings,
+        current
+      )
+    );
+    persistStoreDraft(storeDraftKey, nextSettings);
+
+    return refreshedRestaurant;
+  };
+
+  const createRestaurantFromCurrentSettings = async () => {
+    const storeName = String(storeSettings.storeName || "").trim();
+    const storeAddress = String(storeSettings.storeAddress || "").trim();
+
+    if (!storeName || !storeAddress) {
+      throw new Error(
+        "Store name and business address are required to create your store."
+      );
+    }
+
+    const formData = new FormData();
+    formData.append("restaurant_name", storeName);
+    formData.append("restaurant_address", storeAddress);
+    formData.append("restaurant_email", storeSettings.storeEmail || "");
+    formData.append("restaurant_phone", storeSettings.storePhone || "");
+    formData.append("restaurant_country", storeSettings.storeCountry || "");
+
+    const currency = String(storeSettings.storeCurrency || "")
+      .toUpperCase()
+      .trim();
+    if (currency) {
+      formData.append("restaurant_currency", currency);
+    }
+
+    if (storeSettings.storeBannerFile) {
+      formData.append("restaurant_banner", storeSettings.storeBannerFile);
+    }
+
+    const createResponse = await axios.post(
+      `${API_BASE_URL}/vendor/restaurants`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    const createdRestaurantId = createResponse.data?.data?.id || null;
+    const restaurant = await refreshRestaurants(createdRestaurantId);
+    if (!restaurant?.id) {
+      throw new Error("Store was created but could not be loaded.");
+    }
+
+    return restaurant;
+  };
+
+  const ensureRestaurantExists = async ({ reason = "save settings" } = {}) => {
+    if (selectedRestaurantId) {
+      return selectedRestaurantId;
+    }
+
+    const existing = restaurants[0];
+    if (existing?.id) {
+      setSelectedRestaurantId(existing.id);
+      return existing.id;
+    }
+
+    try {
+      const created = await createRestaurantFromCurrentSettings();
+      message.success("Store created successfully.");
+      return created.id;
+    } catch (error) {
+      throw new Error(
+        error?.response?.data?.message ||
+          error?.message ||
+          `Please save store information first before you ${reason}.`
+      );
+    }
+  };
+
   const handleSaveStore = async () => {
     if (!token) {
       message.error("You need to log in as a vendor.");
@@ -229,9 +353,18 @@ const VendorSettings = () => {
     try {
       setSavingStore(true);
 
+      let response = null;
+      let restaurantIdForUpdate =
+        selectedRestaurantId || restaurants[0]?.id || null;
+
+      if (!restaurantIdForUpdate) {
+        const created = await createRestaurantFromCurrentSettings();
+        restaurantIdForUpdate = created.id;
+      }
+
       const formData = new FormData();
-      if (selectedRestaurantId) {
-        formData.append("restaurant_id", String(selectedRestaurantId));
+      if (restaurantIdForUpdate) {
+        formData.append("restaurant_id", String(restaurantIdForUpdate));
       }
       formData.append("restaurant_name", storeSettings.storeName);
       formData.append("restaurant_email", storeSettings.storeEmail);
@@ -261,7 +394,7 @@ const VendorSettings = () => {
         );
       }
 
-      const response = await axios.post(
+      response = await axios.post(
         `${API_BASE_URL}/vendor/restaurants/update-info`,
         formData,
         {
@@ -295,36 +428,14 @@ const VendorSettings = () => {
         persistStoreDraft(storeDraftKey, nextSettings);
       }
 
-      const refreshed = await axios.get(
-        `${API_BASE_URL}/vendor/restaurants?limit=100`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      const refreshedRows = refreshed.data?.data || [];
-      setRestaurants(refreshedRows);
-      const refreshedRestaurant =
-        refreshedRows.find((row) => row.id === selectedRestaurantId) ||
-        refreshedRows[0];
-      if (refreshedRestaurant) {
-        if (selectedRestaurantId !== refreshedRestaurant.id) {
-          setSelectedRestaurantId(refreshedRestaurant.id);
-        }
-        const nextSettings = mapRestaurantToStoreSettings(refreshedRestaurant, storeSettings);
-        setStoreSettings((current) => ({
-          ...current,
-          ...nextSettings,
-        }));
-        persistStoreDraft(storeDraftKey, nextSettings);
-      }
+      await refreshRestaurants(updatedRestaurant?.id || restaurantIdForUpdate);
 
-      message.success("Store settings updated successfully");
+      message.success("Store information saved successfully");
     } catch (error) {
       message.error(
-        error.response?.data?.message || "Failed to update store information"
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to save store information"
       );
     } finally {
       setSavingStore(false);
@@ -339,11 +450,15 @@ const VendorSettings = () => {
 
     setSavingNotifications(true);
     try {
+      const restaurantId = await ensureRestaurantExists({
+        reason: "save notification settings",
+      });
+
       await axios.post(
         `${API_BASE_URL}/vendor/restaurants/update-notification-settings`,
         {
           ...notifications,
-          ...(selectedRestaurantId ? { restaurant_id: selectedRestaurantId } : {}),
+          restaurant_id: restaurantId,
         },
         {
           headers: {
@@ -357,6 +472,12 @@ const VendorSettings = () => {
         JSON.stringify(notifications)
       );
       message.success("Notification preferences updated");
+    } catch (error) {
+      message.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to save notification settings"
+      );
     } finally {
       setSavingNotifications(false);
     }
@@ -370,11 +491,15 @@ const VendorSettings = () => {
 
     setSavingBusiness(true);
     try {
+      const restaurantId = await ensureRestaurantExists({
+        reason: "save business settings",
+      });
+
       await axios.post(
         `${API_BASE_URL}/vendor/restaurants/update-business-settings`,
         {
           ...businessSettings,
-          ...(selectedRestaurantId ? { restaurant_id: selectedRestaurantId } : {}),
+          restaurant_id: restaurantId,
         },
         {
           headers: {
@@ -388,6 +513,12 @@ const VendorSettings = () => {
         JSON.stringify(businessSettings)
       );
       message.success("Business settings updated successfully");
+    } catch (error) {
+      message.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to save business settings"
+      );
     } finally {
       setSavingBusiness(false);
     }

@@ -335,7 +335,7 @@ class _PromoBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: Color(0xFFF28B29),
@@ -353,8 +353,8 @@ class _PromoBanner extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
-                const SizedBox(
+                SizedBox(height: 12),
+                SizedBox(
                   width: 180,
                   child: Text(
                     'Fulfill conditions and receive a bonus',
