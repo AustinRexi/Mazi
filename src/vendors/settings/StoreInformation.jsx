@@ -5,6 +5,8 @@ import {
   Button,
   Row,
   Col,
+  Select,
+  TimePicker,
   Typography,
   message,
   Spin,
@@ -20,9 +22,29 @@ import {
 } from "@ant-design/icons";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 const { TextArea } = Input;
 const { Title, Paragraph } = Typography;
+const WEEKDAY_OPTIONS = [
+  { label: "Mon", value: "Mon" },
+  { label: "Tue", value: "Tue" },
+  { label: "Wed", value: "Wed" },
+  { label: "Thu", value: "Thu" },
+  { label: "Fri", value: "Fri" },
+  { label: "Sat", value: "Sat" },
+  { label: "Sun", value: "Sun" },
+];
+
+const parseTimeValue = (value) => {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = dayjs(value, "hh:mm A", true);
+  return parsed.isValid() ? parsed : null;
+};
+
 const StoreInformation = ({
   storeSettings,
   setStoreSettings,
@@ -346,6 +368,63 @@ const StoreInformation = ({
                       }
                       maxLength={3}
                       placeholder="e.g. NGN"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Form.Item label="Operating Days">
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      value={storeSettings.storeOperatingDays}
+                      onChange={(value) =>
+                        setStoreSettings((current) => ({
+                          ...current,
+                          storeOperatingDays: value,
+                        }))
+                      }
+                      options={WEEKDAY_OPTIONS}
+                      placeholder="Select the days your store is open"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Opening Time">
+                    <TimePicker
+                      use12Hours
+                      format="hh:mm A"
+                      value={parseTimeValue(storeSettings.storeOpeningTime)}
+                      onChange={(value) =>
+                        setStoreSettings((current) => ({
+                          ...current,
+                          storeOpeningTime: value ? value.format("hh:mm A") : "",
+                        }))
+                      }
+                      style={{ width: "100%" }}
+                      placeholder="Select opening time"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Closing Time">
+                    <TimePicker
+                      use12Hours
+                      format="hh:mm A"
+                      value={parseTimeValue(storeSettings.storeClosingTime)}
+                      onChange={(value) =>
+                        setStoreSettings((current) => ({
+                          ...current,
+                          storeClosingTime: value ? value.format("hh:mm A") : "",
+                        }))
+                      }
+                      style={{ width: "100%" }}
+                      placeholder="Select closing time"
                     />
                   </Form.Item>
                 </Col>

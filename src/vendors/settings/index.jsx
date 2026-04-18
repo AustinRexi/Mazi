@@ -13,6 +13,7 @@ const STORE_SETTINGS_DRAFT_KEY = "vendor_store_settings_draft";
 const NOTIFICATION_SETTINGS_KEY = "vendor_notification_settings_draft";
 const BUSINESS_SETTINGS_KEY = "vendor_business_settings_draft";
 const { Text } = Typography;
+const WEEKDAY_OPTIONS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const buildImageUrl = (path) => {
   if (!path) {
@@ -47,6 +48,11 @@ const persistStoreDraft = (key, settings) => {
     storeAddress: settings.storeAddress || "",
     storeLat: settings.storeLat || "",
     storeLng: settings.storeLng || "",
+    storeOperatingDays: Array.isArray(settings.storeOperatingDays)
+      ? settings.storeOperatingDays
+      : [],
+    storeOpeningTime: settings.storeOpeningTime || "",
+    storeClosingTime: settings.storeClosingTime || "",
     storeWebsite: settings.storeWebsite || "",
     storeLogo: settings.storeLogo || "",
     storeBanner: settings.storeBanner || "",
@@ -67,7 +73,68 @@ const mergeBusinessSettings = (restaurantSettings, fallback) => ({
   ...(restaurantSettings || {}),
 });
 
+const parseRestaurantSchedule = (value) => {
+  const schedule = String(value || "").trim();
+  if (!schedule) {
+    return {
+      days: [],
+      openingTime: "",
+      closingTime: "",
+    };
+  }
+
+  const [daysPart, timePartRaw] = schedule.includes("|")
+    ? schedule.split("|")
+    : ["", schedule];
+  const timePart = String(timePartRaw || "").trim();
+  const match = timePart.match(
+    /(\d{1,2}:\d{2}\s?[AP]M)\s*-\s*(\d{1,2}:\d{2}\s?[AP]M)/i
+  );
+
+  const parsedDays = String(daysPart || "")
+    .split(",")
+    .map((day) => day.trim())
+    .filter((day) => WEEKDAY_OPTIONS.includes(day));
+
+  return {
+    days: parsedDays,
+    openingTime: match?.[1]?.toUpperCase() || "",
+    closingTime: match?.[2]?.toUpperCase() || "",
+  };
+};
+
+const buildRestaurantSchedule = ({
+  operatingDays = [],
+  openingTime = "",
+  closingTime = "",
+}) => {
+  const normalizedDays = Array.isArray(operatingDays)
+    ? operatingDays.filter((day) => WEEKDAY_OPTIONS.includes(day))
+    : [];
+  const normalizedOpeningTime = String(openingTime || "").trim().toUpperCase();
+  const normalizedClosingTime = String(closingTime || "").trim().toUpperCase();
+
+  if (!normalizedOpeningTime || !normalizedClosingTime) {
+    return "";
+  }
+
+  const timeRange = `${normalizedOpeningTime} - ${normalizedClosingTime}`;
+  return normalizedDays.length
+    ? `${normalizedDays.join(", ")} | ${timeRange}`
+    : timeRange;
+};
+
 const mapRestaurantToStoreSettings = (restaurant, fallback = {}) => ({
+  ...(() => {
+    const parsedSchedule = parseRestaurantSchedule(
+      restaurant?.restaurant_open_close_hr
+    );
+    return {
+      storeOperatingDays: parsedSchedule.days,
+      storeOpeningTime: parsedSchedule.openingTime,
+      storeClosingTime: parsedSchedule.closingTime,
+    };
+  })(),
   storeName: restaurant?.restaurant_name || "",
   storeDescription:
     restaurant?.restaurant_description || restaurant?.description || "",
@@ -110,6 +177,9 @@ const VendorSettings = () => {
     storeAddress: storedDraft.storeAddress || "",
     storeLat: storedDraft.storeLat || "",
     storeLng: storedDraft.storeLng || "",
+    storeOperatingDays: storedDraft.storeOperatingDays || [],
+    storeOpeningTime: storedDraft.storeOpeningTime || "",
+    storeClosingTime: storedDraft.storeClosingTime || "",
     storeLogo: storedDraft.storeLogo || "",
     storeLogoFile: null,
     storeBanner: storedDraft.storeBanner || "",
@@ -309,6 +379,15 @@ const VendorSettings = () => {
       formData.append("restaurant_lng", trimmedLng);
     }
 
+    const schedule = buildRestaurantSchedule({
+      operatingDays: storeSettings.storeOperatingDays,
+      openingTime: storeSettings.storeOpeningTime,
+      closingTime: storeSettings.storeClosingTime,
+    });
+    if (schedule) {
+      formData.append("restaurant_open_close_hr", schedule);
+    }
+
     const currency = String(storeSettings.storeCurrency || "")
       .toUpperCase()
       .trim();
@@ -395,6 +474,14 @@ const VendorSettings = () => {
       formData.append("restaurant_website", storeSettings.storeWebsite);
       formData.append("restaurant_lat", String(storeSettings.storeLat || "").trim());
       formData.append("restaurant_lng", String(storeSettings.storeLng || "").trim());
+      formData.append(
+        "restaurant_open_close_hr",
+        buildRestaurantSchedule({
+          operatingDays: storeSettings.storeOperatingDays,
+          openingTime: storeSettings.storeOpeningTime,
+          closingTime: storeSettings.storeClosingTime,
+        })
+      );
       formData.append("restaurant_country", storeSettings.storeCountry || "");
       formData.append(
         "restaurant_currency",
