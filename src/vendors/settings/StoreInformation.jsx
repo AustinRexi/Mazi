@@ -290,6 +290,37 @@ const StoreInformation = ({
 
               <Row gutter={16}>
                 <Col span={12}>
+                  <Form.Item label="Latitude">
+                    <Input
+                      value={storeSettings.storeLat}
+                      onChange={(e) =>
+                        setStoreSettings((current) => ({
+                          ...current,
+                          storeLat: e.target.value,
+                        }))
+                      }
+                      placeholder="e.g. 6.5244"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Longitude">
+                    <Input
+                      value={storeSettings.storeLng}
+                      onChange={(e) =>
+                        setStoreSettings((current) => ({
+                          ...current,
+                          storeLng: e.target.value,
+                        }))
+                      }
+                      placeholder="e.g. 3.3792"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={16}>
+                <Col span={12}>
                   <Form.Item label="Country">
                     <Input
                       value={storeSettings.storeCountry}

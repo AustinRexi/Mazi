@@ -45,6 +45,8 @@ const persistStoreDraft = (key, settings) => {
     storeEmail: settings.storeEmail || "",
     storePhone: settings.storePhone || "",
     storeAddress: settings.storeAddress || "",
+    storeLat: settings.storeLat || "",
+    storeLng: settings.storeLng || "",
     storeWebsite: settings.storeWebsite || "",
     storeLogo: settings.storeLogo || "",
     storeBanner: settings.storeBanner || "",
@@ -72,6 +74,14 @@ const mapRestaurantToStoreSettings = (restaurant, fallback = {}) => ({
   storeEmail: restaurant?.restaurant_email || "",
   storePhone: restaurant?.restaurant_phone || "",
   storeAddress: restaurant?.restaurant_address || "",
+  storeLat:
+    restaurant?.restaurant_lat === null || restaurant?.restaurant_lat === undefined
+      ? ""
+      : String(restaurant.restaurant_lat),
+  storeLng:
+    restaurant?.restaurant_lng === null || restaurant?.restaurant_lng === undefined
+      ? ""
+      : String(restaurant.restaurant_lng),
   storeLogo: buildImageUrl(restaurant?.restaurant_logo || fallback.storeLogo || ""),
   storeBanner: buildImageUrl(
     restaurant?.restaurant_banner || fallback.storeBanner || ""
@@ -98,6 +108,8 @@ const VendorSettings = () => {
     storeEmail: storedDraft.storeEmail || "",
     storePhone: storedDraft.storePhone || "",
     storeAddress: storedDraft.storeAddress || "",
+    storeLat: storedDraft.storeLat || "",
+    storeLng: storedDraft.storeLng || "",
     storeLogo: storedDraft.storeLogo || "",
     storeLogoFile: null,
     storeBanner: storedDraft.storeBanner || "",
@@ -288,6 +300,15 @@ const VendorSettings = () => {
     formData.append("restaurant_phone", storeSettings.storePhone || "");
     formData.append("restaurant_country", storeSettings.storeCountry || "");
 
+    const trimmedLat = String(storeSettings.storeLat || "").trim();
+    const trimmedLng = String(storeSettings.storeLng || "").trim();
+    if (trimmedLat) {
+      formData.append("restaurant_lat", trimmedLat);
+    }
+    if (trimmedLng) {
+      formData.append("restaurant_lng", trimmedLng);
+    }
+
     const currency = String(storeSettings.storeCurrency || "")
       .toUpperCase()
       .trim();
@@ -372,6 +393,8 @@ const VendorSettings = () => {
       formData.append("restaurant_address", storeSettings.storeAddress);
       formData.append("restaurant_description", storeSettings.storeDescription);
       formData.append("restaurant_website", storeSettings.storeWebsite);
+      formData.append("restaurant_lat", String(storeSettings.storeLat || "").trim());
+      formData.append("restaurant_lng", String(storeSettings.storeLng || "").trim());
       formData.append("restaurant_country", storeSettings.storeCountry || "");
       formData.append(
         "restaurant_currency",

@@ -90,6 +90,35 @@ const parseMoney = (value) => {
   return Number.isFinite(amount) ? amount : 0;
 };
 
+const buildVendorName = (entry) => {
+  const directName = String(
+    entry?.vendor_name || entry?.vendor?.name || entry?.vendor?.full_name || ""
+  ).trim();
+  if (directName) {
+    return directName;
+  }
+
+  const firstName =
+    entry?.vendor_firstname ||
+    entry?.vendor_first_name ||
+    entry?.firstname ||
+    entry?.firstName ||
+    entry?.vendor?.firstname ||
+    entry?.vendor?.firstName ||
+    "";
+  const lastName =
+    entry?.vendor_lastname ||
+    entry?.vendor_last_name ||
+    entry?.lastname ||
+    entry?.lastName ||
+    entry?.vendor?.lastname ||
+    entry?.vendor?.lastName ||
+    "";
+
+  const fullName = `${firstName} ${lastName}`.trim();
+  return fullName || "Unknown Vendor";
+};
+
 const parseJoinedDate = (value) => {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
@@ -288,7 +317,7 @@ function Customers() {
               id: entry.id,
               vendorId: entry.vendor_user_id || entry.vendor_id || null,
               name: {
-                title: entry.vendor_name || "Unknown Vendor",
+                title: buildVendorName(entry),
                 icon: resolveProfilePic(entry.restaurant_logo),
               },
               email: entry.vendor_email || entry.restaurant_email || "-",
