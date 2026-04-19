@@ -1,4 +1,5 @@
 import {
+  Alert,
   Card,
   Form,
   Input,
@@ -20,7 +21,7 @@ import {
   PhoneOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
@@ -57,57 +58,87 @@ const StoreInformation = ({
   const navigate = useNavigate();
   const logoInputRef = useRef(null);
   const bannerInputRef = useRef(null);
-  const addressInputRef = useRef(null);
-  const autocompleteRef = useRef(null);
+  const autocompleteContainerRef = useRef(null);
+  const autocompleteElementRef = useRef(null);
+  const [placesError, setPlacesError] = useState("");
 
   useEffect(() => {
-    if (!GOOGLE_MAPS_API_KEY || !addressInputRef.current) {
+    if (!GOOGLE_MAPS_API_KEY || !autocompleteContainerRef.current) {
+      setPlacesError(
+        GOOGLE_MAPS_API_KEY
+          ? ""
+          : "Google Places is not configured. Add VITE_GOOGLE_MAPS_API_KEY to enable address search."
+      );
       return undefined;
     }
 
     let cancelled = false;
 
-    const initializeAutocomplete = () => {
-      if (cancelled || !addressInputRef.current || autocompleteRef.current) {
+    const initializeAutocomplete = async () => {
+      if (
+        cancelled ||
+        !autocompleteContainerRef.current ||
+        autocompleteElementRef.current
+      ) {
         return;
       }
 
-      if (!window.google?.maps?.places?.Autocomplete) {
+      if (!window.google?.maps?.importLibrary) {
         return;
       }
 
-      const autocomplete = new window.google.maps.places.Autocomplete(
-        addressInputRef.current.input,
-        {
-          fields: ["formatted_address", "geometry"],
-          types: ["address"],
+      try {
+        const { PlaceAutocompleteElement } =
+          await window.google.maps.importLibrary("places");
+
+        if (cancelled || !autocompleteContainerRef.current) {
+          return;
         }
-      );
 
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        const formattedAddress = place?.formatted_address || "";
-        const lat = place?.geometry?.location?.lat?.();
-        const lng = place?.geometry?.location?.lng?.();
+        const placeAutocomplete = new PlaceAutocompleteElement();
+        placeAutocomplete.style.width = "100%";
+        placeAutocomplete.style.display = "block";
 
-        setStoreSettings((current) => ({
-          ...current,
-          storeAddress: formattedAddress || current.storeAddress,
-          storeLat:
-            typeof lat === "number" && Number.isFinite(lat)
-              ? String(lat)
-              : current.storeLat,
-          storeLng:
-            typeof lng === "number" && Number.isFinite(lng)
-              ? String(lng)
-              : current.storeLng,
-        }));
-      });
+        placeAutocomplete.addEventListener(
+          "gmp-select",
+          async ({ placePrediction }) => {
+            const place = placePrediction?.toPlace?.();
+            if (!place) {
+              return;
+            }
 
-      autocompleteRef.current = autocomplete;
+            await place.fetchFields({
+              fields: ["formattedAddress", "location"],
+            });
+
+            const lat = place.location?.lat?.();
+            const lng = place.location?.lng?.();
+
+            setStoreSettings((current) => ({
+              ...current,
+              storeAddress: place.formattedAddress || current.storeAddress,
+              storeLat:
+                typeof lat === "number" && Number.isFinite(lat)
+                  ? String(lat)
+                  : current.storeLat,
+              storeLng:
+                typeof lng === "number" && Number.isFinite(lng)
+                  ? String(lng)
+                  : current.storeLng,
+            }));
+          }
+        );
+
+        autocompleteContainerRef.current.innerHTML = "";
+        autocompleteContainerRef.current.appendChild(placeAutocomplete);
+        autocompleteElementRef.current = placeAutocomplete;
+        setPlacesError("");
+      } catch {
+        setPlacesError("Failed to load Google Places address search.");
+      }
     };
 
-    if (window.google?.maps?.places?.Autocomplete) {
+    if (window.google?.maps?.importLibrary) {
       initializeAutocomplete();
       return () => {
         cancelled = true;
@@ -123,7 +154,7 @@ const StoreInformation = ({
     if (!script) {
       script = document.createElement("script");
       script.id = GOOGLE_MAPS_SCRIPT_ID;
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&loading=async&libraries=places&v=weekly`;
       script.async = true;
       script.defer = true;
       script.addEventListener("load", handleLoad);
@@ -380,17 +411,26 @@ const StoreInformation = ({
               </Row>
 
               <Form.Item label="Business Address">
-                <Input
-                  ref={addressInputRef}
-                  prefix={<EnvironmentOutlined />}
-                  value={storeSettings.storeAddress}
-                  onChange={(e) =>
-                    setStoreSettings((current) => ({
-                      ...current,
-                      storeAddress: e.target.value,
-                    }))
-                  }
-                />
+                <div style={{ display: "grid", gap: 10 }}>
+                  {placesError ? (
+                    <Alert type="warning" showIcon message={placesError} />
+                  ) : null}
+                  <div
+                    ref={autocompleteContainerRef}
+                    style={{ width: "100%", minHeight: 42 }}
+                  />
+                  <Input
+                    prefix={<EnvironmentOutlined />}
+                    value={storeSettings.storeAddress}
+                    onChange={(e) =>
+                      setStoreSettings((current) => ({
+                        ...current,
+                        storeAddress: e.target.value,
+                      }))
+                    }
+                    placeholder="Selected address"
+                  />
+                </div>
               </Form.Item>
 
               <Row gutter={16}>
