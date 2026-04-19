@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import axios from "axios";
 import Pusher from "pusher-js";
-import { Row, Col, message, Card, Spin, Alert } from "antd";
+import { Row, Col, message, Card, Spin, Alert, Button, Space, Tag } from "antd";
 import StatsCards from "./StatsCards";
 import TicketList from "./TicketList";
 import TicketDetails from "./TicketDetails";
@@ -59,6 +59,10 @@ const VendorSupport = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [realtimeStatus, setRealtimeStatus] = useState("disconnected");
+  const [realtimeEnabled, setRealtimeEnabled] = useState(true);
+  const pusherRef = useRef(null);
+  const channelRef = useRef(null);
 
   const token = localStorage.getItem("token");
   const restaurantId = getVendorRestaurantScope();
@@ -156,6 +160,22 @@ const VendorSupport = () => {
 
   useEffect(() => {
     const vendorId = Number(realtimeConfig?.user_id);
+    if (!realtimeEnabled) {
+      setRealtimeStatus("disconnected");
+      if (channelRef.current) {
+        try {
+          channelRef.current.unbind_all();
+        } catch (_) {}
+      }
+      if (pusherRef.current) {
+        try {
+          pusherRef.current.disconnect();
+        } catch (_) {}
+      }
+      channelRef.current = null;
+      pusherRef.current = null;
+      return undefined;
+    }
     if (!token || !Number.isFinite(vendorId) || vendorId <= 0) return undefined;
     const host = String(realtimeConfig?.host || WS_HOST).trim();
     const key = String(realtimeConfig?.key || PUSHER_KEY).trim();
@@ -163,6 +183,7 @@ const VendorSupport = () => {
     const tls = typeof realtimeConfig?.tls === "boolean" ? realtimeConfig.tls : WS_TLS;
     if (!host || !key || !Number.isFinite(port)) return undefined;
 
+    setRealtimeStatus("connecting");
     const pusher = new Pusher(key, {
       wsHost: host,
       wsPort: port,
@@ -174,9 +195,15 @@ const VendorSupport = () => {
       cluster: "mt1",
       authEndpoint: undefined,
     });
+    pusherRef.current = pusher;
+    pusher.connection.bind("connected", () => setRealtimeStatus("connected"));
+    pusher.connection.bind("connecting", () => setRealtimeStatus("connecting"));
+    pusher.connection.bind("disconnected", () => setRealtimeStatus("disconnected"));
+    pusher.connection.bind("error", () => setRealtimeStatus("error"));
 
     const channelName = `vendors.${vendorId}`;
     const channel = pusher.subscribe(channelName);
+    channelRef.current = channel;
 
     const onTicketUpdated = (eventPayload) => {
       try {
@@ -207,8 +234,11 @@ const VendorSupport = () => {
       channel.unbind("SupportTicketUpdated", onTicketUpdated);
       pusher.unsubscribe(channelName);
       pusher.disconnect();
+      channelRef.current = null;
+      pusherRef.current = null;
+      setRealtimeStatus("disconnected");
     };
-  }, [token, realtimeConfig, restaurantId, fetchTickets]);
+  }, [token, realtimeConfig, restaurantId, fetchTickets, realtimeEnabled]);
 
   const handleSendReply = async () => {
     if (!replyMessage.trim() || !selectedTicket || !token) return;
@@ -296,6 +326,38 @@ const VendorSupport = () => {
   return (
     <div style={{ padding: 24 }}>
       {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} /> : null}
+      <Card size="small" style={{ marginBottom: 16 }}>
+        <Space wrap>
+          <span style={{ fontWeight: 600 }}>Realtime:</span>
+          <Tag color={realtimeStatus === "connected" ? "green" : realtimeStatus === "connecting" ? "blue" : realtimeStatus === "error" ? "red" : "default"}>
+            {realtimeStatus.toUpperCase()}
+          </Tag>
+          <Button
+            size="small"
+            onClick={() => setRealtimeEnabled(true)}
+            disabled={realtimeEnabled && realtimeStatus === "connected"}
+          >
+            Connect
+          </Button>
+          <Button
+            size="small"
+            danger
+            onClick={() => setRealtimeEnabled(false)}
+            disabled={!realtimeEnabled}
+          >
+            Disconnect
+          </Button>
+          <Button
+            size="small"
+            onClick={() => {
+              setRealtimeEnabled(false);
+              setTimeout(() => setRealtimeEnabled(true), 150);
+            }}
+          >
+            Reconnect
+          </Button>
+        </Space>
+      </Card>
 
       <StatsCards
         total={stats.total}
