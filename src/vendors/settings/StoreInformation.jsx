@@ -125,6 +125,13 @@ const StoreInformation = ({
   const [placesError, setPlacesError] = useState("");
   const [addressOptions, setAddressOptions] = useState([]);
   const [loadingAddressOptions, setLoadingAddressOptions] = useState(false);
+  const [addressSearchValue, setAddressSearchValue] = useState(
+    storeSettings.storeAddress || ""
+  );
+
+  useEffect(() => {
+    setAddressSearchValue(storeSettings.storeAddress || "");
+  }, [storeSettings.storeAddress]);
 
   useEffect(() => {
     return () => {
@@ -145,14 +152,14 @@ const StoreInformation = ({
   const searchPlaces = async (query) => {
     const trimmedQuery = String(query || "").trim();
 
-    setStoreSettings((current) => ({
-      ...current,
-      storeAddress: query,
-    }));
-
     if (!GOOGLE_MAPS_API_KEY || trimmedQuery.length < 3) {
       setAddressOptions([]);
       setLoadingAddressOptions(false);
+      setPlacesError(
+        GOOGLE_MAPS_API_KEY || trimmedQuery.length === 0
+          ? ""
+          : "Type at least 3 characters to search addresses."
+      );
       return;
     }
 
@@ -160,16 +167,18 @@ const StoreInformation = ({
 
     try {
       const response = await fetch(
-        `https://places.googleapis.com/v1/places:autocomplete?key=${GOOGLE_MAPS_API_KEY}`,
+        "https://places.googleapis.com/v1/places:autocomplete",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
+            "X-Goog-FieldMask":
+              "suggestions.placePrediction.placeId,suggestions.placePrediction.text.text",
           },
           body: JSON.stringify({
             input: trimmedQuery,
-            includedPrimaryTypes: ["street_address"],
-            regionCode: "ng",
+            includedRegionCodes: ["ng"],
           }),
         }
       );
@@ -195,7 +204,9 @@ const StoreInformation = ({
         : [];
 
       setAddressOptions(options);
-      setPlacesError("");
+      setPlacesError(
+        options.length ? "" : "No Google Places matches found for this address."
+      );
     } catch {
       setAddressOptions([]);
       setPlacesError("Failed to load Google Places address search.");
@@ -205,6 +216,12 @@ const StoreInformation = ({
   };
 
   const handleAddressSearch = (value) => {
+    setAddressSearchValue(value);
+    setStoreSettings((current) => ({
+      ...current,
+      storeAddress: value,
+    }));
+
     if (addressSearchTimeoutRef.current) {
       window.clearTimeout(addressSearchTimeoutRef.current);
     }
@@ -224,10 +241,11 @@ const StoreInformation = ({
 
     try {
       const response = await fetch(
-        `https://places.googleapis.com/v1/places/${placeId}?key=${GOOGLE_MAPS_API_KEY}&fields=formattedAddress,location`,
+        `https://places.googleapis.com/v1/places/${placeId}`,
         {
           headers: {
-            "Content-Type": "application/json",
+            "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
+            "X-Goog-FieldMask": "formattedAddress,location",
           },
         }
       );
@@ -241,6 +259,8 @@ const StoreInformation = ({
       const lat = data?.location?.latitude;
       const lng = data?.location?.longitude;
 
+      setAddressSearchValue(formattedAddress);
+      setAddressOptions([]);
       setStoreSettings((current) => ({
         ...current,
         storeAddress: formattedAddress,
@@ -504,10 +524,15 @@ const StoreInformation = ({
 
               <Form.Item label="Business Address">
                 <AutoComplete
-                  value={storeSettings.storeAddress}
+                  value={addressSearchValue}
                   options={addressOptions}
-                  onSearch={handleAddressSearch}
+                  onChange={handleAddressSearch}
                   onSelect={handleAddressSelect}
+                  filterOption={false}
+                  open={
+                    Boolean(addressSearchValue) &&
+                    (loadingAddressOptions || addressOptions.length > 0)
+                  }
                   notFoundContent={
                     loadingAddressOptions ? "Loading addresses..." : "No address found"
                   }
@@ -522,6 +547,14 @@ const StoreInformation = ({
                   }
                   />
                 </AutoComplete>
+                {placesError ? (
+                  <Paragraph
+                    type="warning"
+                    style={{ marginTop: 8, marginBottom: 0 }}
+                  >
+                    {placesError}
+                  </Paragraph>
+                ) : null}
               </Form.Item>
 
               <Row gutter={16}>
