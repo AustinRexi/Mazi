@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
+import Pusher from "pusher-js";
 import { Row, Col, message, Card, Spin, Alert } from "antd";
 import StatsCards from "./StatsCards";
 import TicketList from "./TicketList";
@@ -8,6 +9,15 @@ import { getVendorRestaurantScope } from "../utils/restaurantScope";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
+
+const PUSHER_KEY = import.meta.env.VITE_PUSHER_KEY || "local";
+const WS_HOST =
+  import.meta.env.VITE_WS_HOST ||
+  (window?.location?.hostname === "localhost"
+    ? "127.0.0.1"
+    : window?.location?.hostname || "127.0.0.1");
+const WS_PORT = Number(import.meta.env.VITE_WS_PORT || 6001);
+const WS_TLS = String(import.meta.env.VITE_WS_TLS || "false") === "true";
 
 const toCustomer = (ticket) => {
   const user = ticket?.user || {};
@@ -43,6 +53,34 @@ const mapTicket = (ticket) => ({
     : [],
 });
 
+const decodeJwtPayload = (token) => {
+  try {
+    const payloadPart = token?.split(".")?.[1];
+    if (!payloadPart) return null;
+    const normalized = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(
+      normalized.length + ((4 - (normalized.length % 4)) % 4),
+      "="
+    );
+    return JSON.parse(window.atob(padded));
+  } catch (_) {
+    return null;
+  }
+};
+
+const resolveVendorId = (token) => {
+  const payload = decodeJwtPayload(token);
+  if (!payload || typeof payload !== "object") return null;
+  const candidates = [payload.id, payload.user_id, payload.sub];
+  for (const candidate of candidates) {
+    const parsed = Number(candidate);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+  return null;
+};
+
 const VendorSupport = () => {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -56,6 +94,7 @@ const VendorSupport = () => {
 
   const token = localStorage.getItem("token");
   const restaurantId = getVendorRestaurantScope();
+  const vendorId = useMemo(() => resolveVendorId(token), [token]);
 
   const fetchTickets = useCallback(async () => {
     if (!token) {
@@ -121,6 +160,56 @@ const VendorSupport = () => {
 
     return () => clearTimeout(timeout);
   }, [fetchTickets]);
+
+  useEffect(() => {
+    if (!token || !vendorId) return undefined;
+
+    const pusher = new Pusher(PUSHER_KEY, {
+      wsHost: WS_HOST,
+      wsPort: WS_PORT,
+      wssPort: WS_PORT,
+      forceTLS: WS_TLS,
+      encrypted: WS_TLS,
+      enabledTransports: ["ws", "wss"],
+      disableStats: true,
+      cluster: "mt1",
+      authEndpoint: undefined,
+    });
+
+    const channelName = `vendors.${vendorId}`;
+    const channel = pusher.subscribe(channelName);
+
+    const onTicketUpdated = (eventPayload) => {
+      try {
+        const payload =
+          typeof eventPayload === "string"
+            ? JSON.parse(eventPayload)
+            : eventPayload;
+        if (!payload || typeof payload !== "object") return;
+
+        const updatedTicket = payload.ticket;
+        if (
+          restaurantId &&
+          updatedTicket?.restaurant_id &&
+          String(updatedTicket.restaurant_id) !== String(restaurantId)
+        ) {
+          return;
+        }
+
+        fetchTickets();
+      } catch (_) {
+        fetchTickets();
+      }
+    };
+
+    channel.bind("SupportTicketUpdated", onTicketUpdated);
+
+    return () => {
+      channel.unbind("SupportTicketUpdated", onTicketUpdated);
+      pusher.unsubscribe(channelName);
+      pusher.disconnect();
+    };
+  }, [token, vendorId, restaurantId, fetchTickets]);
 
   const handleSendReply = async () => {
     if (!replyMessage.trim() || !selectedTicket || !token) return;
