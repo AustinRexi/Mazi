@@ -10,14 +10,10 @@ import { getVendorRestaurantScope } from "../utils/restaurantScope";
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
-const PUSHER_KEY = import.meta.env.VITE_PUSHER_KEY || "local";
-const WS_HOST =
-  import.meta.env.VITE_WS_HOST ||
-  (window?.location?.hostname === "localhost"
-    ? "127.0.0.1"
-    : window?.location?.hostname || "127.0.0.1");
-const WS_PORT = Number(import.meta.env.VITE_WS_PORT || 6001);
-const WS_TLS = String(import.meta.env.VITE_WS_TLS || "false") === "true";
+const PUSHER_KEY = import.meta.env.VITE_REVERB_APP_KEY || import.meta.env.VITE_PUSHER_KEY || "";
+const WS_HOST = import.meta.env.VITE_REVERB_HOST || import.meta.env.VITE_WS_HOST || "";
+const WS_PORT = Number(import.meta.env.VITE_REVERB_PORT || import.meta.env.VITE_WS_PORT || 443);
+const WS_TLS = String(import.meta.env.VITE_REVERB_TLS || import.meta.env.VITE_WS_TLS || "true") === "true";
 
 const toCustomer = (ticket) => {
   const user = ticket?.user || {};
@@ -53,34 +49,6 @@ const mapTicket = (ticket) => ({
     : [],
 });
 
-const decodeJwtPayload = (token) => {
-  try {
-    const payloadPart = token?.split(".")?.[1];
-    if (!payloadPart) return null;
-    const normalized = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = normalized.padEnd(
-      normalized.length + ((4 - (normalized.length % 4)) % 4),
-      "="
-    );
-    return JSON.parse(window.atob(padded));
-  } catch (_) {
-    return null;
-  }
-};
-
-const resolveVendorId = (token) => {
-  const payload = decodeJwtPayload(token);
-  if (!payload || typeof payload !== "object") return null;
-  const candidates = [payload.id, payload.user_id, payload.sub];
-  for (const candidate of candidates) {
-    const parsed = Number(candidate);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
-  }
-  return null;
-};
-
 const VendorSupport = () => {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -94,7 +62,7 @@ const VendorSupport = () => {
 
   const token = localStorage.getItem("token");
   const restaurantId = getVendorRestaurantScope();
-  const vendorId = useMemo(() => resolveVendorId(token), [token]);
+  const [realtimeConfig, setRealtimeConfig] = useState(null);
 
   const fetchTickets = useCallback(async () => {
     if (!token) {
@@ -162,14 +130,45 @@ const VendorSupport = () => {
   }, [fetchTickets]);
 
   useEffect(() => {
-    if (!token || !vendorId) return undefined;
+    if (!token) return;
 
-    const pusher = new Pusher(PUSHER_KEY, {
-      wsHost: WS_HOST,
-      wsPort: WS_PORT,
-      wssPort: WS_PORT,
-      forceTLS: WS_TLS,
-      encrypted: WS_TLS,
+    let cancelled = false;
+    const loadRealtimeConfig = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/realtime/config`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+        const data = response?.data?.data;
+        if (!cancelled && data && typeof data === "object") {
+          setRealtimeConfig(data);
+        }
+      } catch (_) {}
+    };
+
+    loadRealtimeConfig();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
+  useEffect(() => {
+    const vendorId = Number(realtimeConfig?.user_id);
+    if (!token || !Number.isFinite(vendorId) || vendorId <= 0) return undefined;
+    const host = String(realtimeConfig?.host || WS_HOST).trim();
+    const key = String(realtimeConfig?.key || PUSHER_KEY).trim();
+    const port = Number(realtimeConfig?.port || WS_PORT || 443);
+    const tls = typeof realtimeConfig?.tls === "boolean" ? realtimeConfig.tls : WS_TLS;
+    if (!host || !key || !Number.isFinite(port)) return undefined;
+
+    const pusher = new Pusher(key, {
+      wsHost: host,
+      wsPort: port,
+      wssPort: port,
+      forceTLS: tls,
+      encrypted: tls,
       enabledTransports: ["ws", "wss"],
       disableStats: true,
       cluster: "mt1",
@@ -209,7 +208,7 @@ const VendorSupport = () => {
       pusher.unsubscribe(channelName);
       pusher.disconnect();
     };
-  }, [token, vendorId, restaurantId, fetchTickets]);
+  }, [token, realtimeConfig, restaurantId, fetchTickets]);
 
   const handleSendReply = async () => {
     if (!replyMessage.trim() || !selectedTicket || !token) return;
