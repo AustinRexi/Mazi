@@ -1,4 +1,5 @@
 import {
+  AutoComplete,
   Card,
   Form,
   Input,
@@ -26,7 +27,6 @@ import dayjs from "dayjs";
 
 const { TextArea } = Input;
 const { Title, Paragraph } = Typography;
-const GOOGLE_MAPS_SCRIPT_ID = "google-maps-places-script";
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 const COUNTRY_TO_CURRENCY = {
   Algeria: "DZD",
@@ -121,97 +121,145 @@ const StoreInformation = ({
   const navigate = useNavigate();
   const logoInputRef = useRef(null);
   const bannerInputRef = useRef(null);
-  const addressInputRef = useRef(null);
-  const autocompleteRef = useRef(null);
+  const addressSearchTimeoutRef = useRef(null);
   const [placesError, setPlacesError] = useState("");
+  const [addressOptions, setAddressOptions] = useState([]);
+  const [loadingAddressOptions, setLoadingAddressOptions] = useState(false);
 
   useEffect(() => {
-    if (!GOOGLE_MAPS_API_KEY || !addressInputRef.current) {
-      setPlacesError(
-        GOOGLE_MAPS_API_KEY
-          ? ""
-          : "Google Places is not configured. Add VITE_GOOGLE_MAPS_API_KEY to enable address search."
-      );
-      return undefined;
-    }
-
-    let cancelled = false;
-
-    const initializeAutocomplete = async () => {
-      if (cancelled || !addressInputRef.current || autocompleteRef.current) {
-        return;
-      }
-
-      if (!window.google?.maps?.places?.Autocomplete) {
-        return;
-      }
-
-      try {
-        const autocomplete = new window.google.maps.places.Autocomplete(
-          addressInputRef.current.input,
-          {
-            fields: ["formatted_address", "geometry"],
-            types: ["address"],
-          }
-        );
-
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          const formattedAddress = place?.formatted_address || "";
-          const lat = place?.geometry?.location?.lat?.();
-          const lng = place?.geometry?.location?.lng?.();
-
-          setStoreSettings((current) => ({
-            ...current,
-            storeAddress: formattedAddress || current.storeAddress,
-            storeLat:
-              typeof lat === "number" && Number.isFinite(lat)
-                ? String(lat)
-                : current.storeLat,
-            storeLng:
-              typeof lng === "number" && Number.isFinite(lng)
-                ? String(lng)
-                : current.storeLng,
-          }));
-        });
-
-        autocompleteRef.current = autocomplete;
-        setPlacesError("");
-      } catch {
-        setPlacesError("Failed to load Google Places address search.");
-      }
-    };
-
-    if (window.google?.maps?.places?.Autocomplete) {
-      initializeAutocomplete();
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    let script = document.getElementById(GOOGLE_MAPS_SCRIPT_ID);
-
-    const handleLoad = () => {
-      initializeAutocomplete();
-    };
-
-    if (!script) {
-      script = document.createElement("script");
-      script.id = GOOGLE_MAPS_SCRIPT_ID;
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&loading=async&libraries=places&v=weekly`;
-      script.async = true;
-      script.defer = true;
-      script.addEventListener("load", handleLoad);
-      document.body.appendChild(script);
-    } else {
-      script.addEventListener("load", handleLoad);
-    }
-
     return () => {
-      cancelled = true;
-      script?.removeEventListener("load", handleLoad);
+      if (addressSearchTimeoutRef.current) {
+        window.clearTimeout(addressSearchTimeoutRef.current);
+      }
     };
-  }, [setStoreSettings]);
+  }, []);
+
+  useEffect(() => {
+    setPlacesError(
+      GOOGLE_MAPS_API_KEY
+        ? ""
+        : "Google Places is not configured. Add VITE_GOOGLE_MAPS_API_KEY to enable address search."
+    );
+  }, []);
+
+  const searchPlaces = async (query) => {
+    const trimmedQuery = String(query || "").trim();
+
+    setStoreSettings((current) => ({
+      ...current,
+      storeAddress: query,
+    }));
+
+    if (!GOOGLE_MAPS_API_KEY || trimmedQuery.length < 3) {
+      setAddressOptions([]);
+      setLoadingAddressOptions(false);
+      return;
+    }
+
+    setLoadingAddressOptions(true);
+
+    try {
+      const response = await fetch(
+        `https://places.googleapis.com/v1/places:autocomplete?key=${GOOGLE_MAPS_API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            input: trimmedQuery,
+            includedPrimaryTypes: ["street_address"],
+            regionCode: "ng",
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Autocomplete request failed.");
+      }
+
+      const data = await response.json();
+      const options = Array.isArray(data?.suggestions)
+        ? data.suggestions
+            .map((suggestion) => {
+              const prediction = suggestion.placePrediction;
+              return prediction?.placeId && prediction?.text?.text
+                ? {
+                    value: prediction.text.text,
+                    label: prediction.text.text,
+                    placeId: prediction.placeId,
+                  }
+                : null;
+            })
+            .filter(Boolean)
+        : [];
+
+      setAddressOptions(options);
+      setPlacesError("");
+    } catch {
+      setAddressOptions([]);
+      setPlacesError("Failed to load Google Places address search.");
+    } finally {
+      setLoadingAddressOptions(false);
+    }
+  };
+
+  const handleAddressSearch = (value) => {
+    if (addressSearchTimeoutRef.current) {
+      window.clearTimeout(addressSearchTimeoutRef.current);
+    }
+
+    addressSearchTimeoutRef.current = window.setTimeout(() => {
+      searchPlaces(value);
+    }, 300);
+  };
+
+  const handleAddressSelect = async (_value, option) => {
+    const placeId = option?.placeId;
+    if (!GOOGLE_MAPS_API_KEY || !placeId) {
+      return;
+    }
+
+    setLoadingAddressOptions(true);
+
+    try {
+      const response = await fetch(
+        `https://places.googleapis.com/v1/places/${placeId}?key=${GOOGLE_MAPS_API_KEY}&fields=formattedAddress,location`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Place details request failed.");
+      }
+
+      const data = await response.json();
+      const formattedAddress = data?.formattedAddress || option.value || "";
+      const lat = data?.location?.latitude;
+      const lng = data?.location?.longitude;
+
+      setStoreSettings((current) => ({
+        ...current,
+        storeAddress: formattedAddress,
+        storeLat:
+          typeof lat === "number" && Number.isFinite(lat)
+            ? String(lat)
+            : current.storeLat,
+        storeLng:
+          typeof lng === "number" && Number.isFinite(lng)
+            ? String(lng)
+            : current.storeLng,
+      }));
+      setPlacesError("");
+    } catch {
+      setPlacesError("Failed to fetch selected place details.");
+    } finally {
+      setLoadingAddressOptions(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -455,23 +503,25 @@ const StoreInformation = ({
               </Row>
 
               <Form.Item label="Business Address">
-                <Input
-                  ref={addressInputRef}
-                  prefix={<EnvironmentOutlined />}
-                  status={placesError ? "warning" : ""}
+                <AutoComplete
                   value={storeSettings.storeAddress}
-                  onChange={(e) =>
-                    setStoreSettings((current) => ({
-                      ...current,
-                      storeAddress: e.target.value,
-                    }))
+                  options={addressOptions}
+                  onSearch={handleAddressSearch}
+                  onSelect={handleAddressSelect}
+                  notFoundContent={
+                    loadingAddressOptions ? "Loading addresses..." : "No address found"
                   }
-                  placeholder={
-                    placesError
-                      ? "Google Places not available"
-                      : "Search address"
+                >
+                  <Input
+                    prefix={<EnvironmentOutlined />}
+                    status={placesError ? "warning" : ""}
+                    placeholder={
+                      placesError
+                        ? "Google Places not available"
+                        : "Search address"
                   }
-                />
+                  />
+                </AutoComplete>
               </Form.Item>
 
               <Row gutter={16}>
