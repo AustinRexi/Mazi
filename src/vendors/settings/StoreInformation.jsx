@@ -152,16 +152,17 @@ const StoreInformation = ({
       }
 
       try {
-        const { PlaceAutocompleteElement } =
-          await window.google.maps.importLibrary("places");
+        await window.google.maps.importLibrary("places");
 
         if (cancelled || !autocompleteContainerRef.current) {
           return;
         }
 
-        const placeAutocomplete = new PlaceAutocompleteElement();
+        const placeAutocomplete =
+          new window.google.maps.places.PlaceAutocompleteElement();
         placeAutocomplete.style.width = "100%";
         placeAutocomplete.style.display = "block";
+        placeAutocomplete.setAttribute("placeholder", "Search address");
 
         placeAutocomplete.addEventListener(
           "gmp-select",
