@@ -124,8 +124,8 @@ function VendorWishlist() {
 
       const endpointCandidates = [
         `${API_BASE_URL}/vendor/wishlists`,
-        `${API_BASE_URL}/vendor/wishlist`,
         `${API_BASE_URL}/vendor/product-wishlists`,
+        `${API_BASE_URL}/vendor/wishlist`,
       ];
 
       const query = new URLSearchParams();
@@ -141,7 +141,13 @@ function VendorWishlist() {
           lastError = null;
           break;
         } catch (requestError) {
+          const status = requestError?.response?.status;
+          if (status === 404) {
+            // Keep trying fallback endpoints for backward compatibility.
+            continue;
+          }
           lastError = requestError;
+          break;
         }
       }
 
