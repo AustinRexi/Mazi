@@ -68,9 +68,21 @@ const mergeNotificationSettings = (restaurantSettings, fallback) => ({
   ...(restaurantSettings || {}),
 });
 
-const mergeBusinessSettings = (restaurantSettings, fallback) => ({
+const mergeBusinessSettings = (restaurantSettings, fallback, restaurant = null) => ({
   ...fallback,
   ...(restaurantSettings || {}),
+  website:
+    restaurant?.website ||
+    restaurant?.restaurant_website ||
+    restaurantSettings?.website ||
+    fallback?.website ||
+    "",
+  description:
+    restaurant?.description ||
+    restaurant?.restaurant_description ||
+    restaurantSettings?.description ||
+    fallback?.description ||
+    "",
 });
 
 const parseRestaurantSchedule = (value) => {
@@ -257,7 +269,11 @@ const VendorSettings = () => {
             )
           );
           setBusinessSettings((current) =>
-            mergeBusinessSettings(restaurant.restaurant_business_settings, current)
+            mergeBusinessSettings(
+              restaurant.restaurant_business_settings,
+              current,
+              restaurant
+            )
           );
           persistStoreDraft(storeDraftKey, nextSettings);
         }
@@ -297,7 +313,11 @@ const VendorSettings = () => {
       )
     );
     setBusinessSettings((current) =>
-      mergeBusinessSettings(selectedRestaurant.restaurant_business_settings, current)
+      mergeBusinessSettings(
+        selectedRestaurant.restaurant_business_settings,
+        current,
+        selectedRestaurant
+      )
     );
     persistStoreDraft(storeDraftKey, nextSettings);
   }, [selectedRestaurantId, restaurants, storeDraftKey]);
@@ -345,7 +365,8 @@ const VendorSettings = () => {
     setBusinessSettings((current) =>
       mergeBusinessSettings(
         refreshedRestaurant.restaurant_business_settings,
-        current
+        current,
+        refreshedRestaurant
       )
     );
     persistStoreDraft(storeDraftKey, nextSettings);
@@ -470,8 +491,8 @@ const VendorSettings = () => {
       formData.append("restaurant_email", storeSettings.storeEmail);
       formData.append("restaurant_phone", storeSettings.storePhone);
       formData.append("restaurant_address", storeSettings.storeAddress);
-      formData.append("restaurant_description", storeSettings.storeDescription);
-      formData.append("restaurant_website", storeSettings.storeWebsite);
+      formData.append("description", storeSettings.storeDescription);
+      formData.append("website", storeSettings.storeWebsite);
       formData.append("restaurant_lat", String(storeSettings.storeLat || "").trim());
       formData.append("restaurant_lng", String(storeSettings.storeLng || "").trim());
       formData.append(
