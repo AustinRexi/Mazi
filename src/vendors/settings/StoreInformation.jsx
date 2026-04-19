@@ -29,6 +29,70 @@ const { TextArea } = Input;
 const { Title, Paragraph } = Typography;
 const GOOGLE_MAPS_SCRIPT_ID = "google-maps-places-script";
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+const COUNTRY_TO_CURRENCY = {
+  Algeria: "DZD",
+  Argentina: "ARS",
+  Australia: "AUD",
+  Austria: "EUR",
+  Belgium: "EUR",
+  Brazil: "BRL",
+  Canada: "CAD",
+  China: "CNY",
+  Denmark: "DKK",
+  Egypt: "EGP",
+  Ethiopia: "ETB",
+  Finland: "EUR",
+  France: "EUR",
+  Germany: "EUR",
+  Ghana: "GHS",
+  India: "INR",
+  Indonesia: "IDR",
+  Ireland: "EUR",
+  Italy: "EUR",
+  Japan: "JPY",
+  Kenya: "KES",
+  Luxembourg: "EUR",
+  Malaysia: "MYR",
+  Morocco: "MAD",
+  Netherlands: "EUR",
+  "New Zealand": "NZD",
+  Nigeria: "NGN",
+  Norway: "NOK",
+  Pakistan: "PKR",
+  Philippines: "PHP",
+  Poland: "PLN",
+  Portugal: "EUR",
+  Rwanda: "RWF",
+  "Saudi Arabia": "SAR",
+  Senegal: "XOF",
+  Singapore: "SGD",
+  "South Africa": "ZAR",
+  Spain: "EUR",
+  Sweden: "SEK",
+  Switzerland: "CHF",
+  Tanzania: "TZS",
+  Thailand: "THB",
+  Tunisia: "TND",
+  Turkey: "TRY",
+  Uganda: "UGX",
+  "United Arab Emirates": "AED",
+  "United Kingdom": "GBP",
+  "United States": "USD",
+  Zambia: "ZMW",
+  Zimbabwe: "USD",
+};
+const COUNTRY_OPTIONS = Object.keys(COUNTRY_TO_CURRENCY)
+  .sort((left, right) => left.localeCompare(right))
+  .map((country) => ({
+    label: country,
+    value: country,
+  }));
+const CURRENCY_OPTIONS = [...new Set(Object.values(COUNTRY_TO_CURRENCY))]
+  .sort()
+  .map((currencyCode) => ({
+    label: currencyCode,
+    value: currencyCode,
+  }));
 const WEEKDAY_OPTIONS = [
   { label: "Mon", value: "Mon" },
   { label: "Tue", value: "Tue" },
@@ -467,30 +531,41 @@ const StoreInformation = ({
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="Country">
-                    <Input
+                    <Select
+                      showSearch
+                      allowClear
+                      optionFilterProp="label"
+                      options={COUNTRY_OPTIONS}
                       value={storeSettings.storeCountry}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setStoreSettings((current) => ({
                           ...current,
-                          storeCountry: e.target.value,
+                          storeCountry: value || "",
+                          storeCurrency:
+                            value && COUNTRY_TO_CURRENCY[value]
+                              ? COUNTRY_TO_CURRENCY[value]
+                              : current.storeCurrency,
                         }))
                       }
-                      placeholder="e.g. Nigeria"
+                      placeholder="Search and select country"
                     />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Currency (ISO code)">
-                    <Input
+                    <Select
+                      showSearch
+                      allowClear
+                      optionFilterProp="label"
+                      options={CURRENCY_OPTIONS}
                       value={storeSettings.storeCurrency}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setStoreSettings((current) => ({
                           ...current,
-                          storeCurrency: e.target.value.toUpperCase(),
+                          storeCurrency: value || "",
                         }))
                       }
-                      maxLength={3}
-                      placeholder="e.g. NGN"
+                      placeholder="Search and select ISO code"
                     />
                   </Form.Item>
                 </Col>
