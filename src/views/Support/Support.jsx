@@ -60,12 +60,6 @@ const SERVICE_OPTIONS = [
   { value: "general", label: "General" },
 ];
 
-const TARGET_OPTIONS = [
-  { value: "all", label: "All Targets" },
-  { value: "admin", label: "Admin" },
-  { value: "vendor", label: "Vendor" },
-];
-
 const getFullName = (person = {}, fallback = "Unknown") => {
   const firstName = person?.firstname || person?.firstName || "";
   const lastName = person?.lastname || person?.lastName || "";
@@ -233,7 +227,6 @@ const Support = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
-  const [targetFilter, setTargetFilter] = useState("all");
   const [serviceFilter, setServiceFilter] = useState("all");
   const [replyMessage, setReplyMessage] = useState("");
   const [loading, setLoading] = useState(true);
@@ -253,7 +246,6 @@ const Support = () => {
       const rows = await fetchAdminSupportTickets({
         status: statusFilter,
         priority: priorityFilter,
-        target: targetFilter,
         search: searchQuery.trim() || undefined,
       });
 
@@ -281,7 +273,7 @@ const Support = () => {
     } finally {
       setLoading(false);
     }
-  }, [priorityFilter, searchQuery, statusFilter, targetFilter]);
+  }, [priorityFilter, searchQuery, statusFilter]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -399,9 +391,6 @@ const Support = () => {
       open,
       inProgress,
       resolved,
-      adminTarget: tickets.filter((ticket) => ticket.ticketTarget === "admin").length,
-      vendorTarget: tickets.filter((ticket) => ticket.ticketTarget === "vendor")
-        .length,
     };
   }, [tickets]);
 
@@ -574,28 +563,12 @@ const Support = () => {
                     ]}
                   />
                   <Select
-                    value={targetFilter}
-                    onChange={setTargetFilter}
-                    style={{ minWidth: 140 }}
-                    options={TARGET_OPTIONS}
-                  />
-                  <Select
                     value={serviceFilter}
                     onChange={setServiceFilter}
                     style={{ minWidth: 140 }}
                     options={SERVICE_OPTIONS}
                   />
                 </Space>
-
-                <Space wrap>
-                  <Tag icon={<SolutionOutlined />} color="blue">
-                    Admin Target: {stats.adminTarget}
-                  </Tag>
-                  <Tag icon={<ShopOutlined />} color="purple">
-                    Vendor Target: {stats.vendorTarget}
-                  </Tag>
-                </Space>
-
                 <div style={{ maxHeight: "70vh", overflowY: "auto" }}>
                   <Space
                     direction="vertical"
