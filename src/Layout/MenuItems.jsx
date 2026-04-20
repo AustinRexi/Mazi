@@ -288,12 +288,12 @@ const adminMenu = [
     activeIcon: chartIcon,
     link: "/Expenses",
   },
-  // {
-  //   name: "Support",
-  //   icon: supportIcon,
-  //   activeIcon: supportfilled,
-  //   link: "/Support",
-  // },
+  {
+    name: "Support",
+    icon: supportIcon,
+    activeIcon: supportfilled,
+    link: "/Support",
+  },
   {
     name: "Settings",
     icon: settingIcon,
