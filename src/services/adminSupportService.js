@@ -34,6 +34,16 @@ export const replyToAdminSupportTicket = async (ticketId, message) => {
   return response.data;
 };
 
+export const sendAdminSupportTyping = async (ticketId, typing) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/admin/support/tickets/${ticketId}/typing`,
+    { typing },
+    { headers: buildHeaders() }
+  );
+
+  return response.data;
+};
+
 export const resolveAdminSupportTicket = async (ticketId) => {
   const response = await axios.patch(
     `${API_BASE_URL}/admin/support/tickets/${ticketId}/resolve`,

@@ -67,6 +67,11 @@ const VendorSupport = () => {
   const token = localStorage.getItem("token");
   const restaurantId = getVendorRestaurantScope();
   const [realtimeConfig, setRealtimeConfig] = useState(null);
+  const [typingByTicket, setTypingByTicket] = useState({});
+  const typingTimeoutsRef = useRef({});
+  const localTypingDebounceRef = useRef(null);
+  const localTypingIdleRef = useRef(null);
+  const localTypingSentRef = useRef({ ticketId: null, active: false });
 
   const fetchTickets = useCallback(async () => {
     if (!token) {
@@ -149,7 +154,9 @@ const VendorSupport = () => {
         if (!cancelled && data && typeof data === "object") {
           setRealtimeConfig(data);
         }
-      } catch (_) {}
+      } catch (_) {
+        // Ignore realtime config fetch failures and keep polling available.
+      }
     };
 
     loadRealtimeConfig();
@@ -165,12 +172,16 @@ const VendorSupport = () => {
       if (channelRef.current) {
         try {
           channelRef.current.unbind_all();
-        } catch (_) {}
+        } catch (_) {
+          // Best-effort cleanup.
+        }
       }
       if (pusherRef.current) {
         try {
           pusherRef.current.disconnect();
-        } catch (_) {}
+        } catch (_) {
+          // Best-effort cleanup.
+        }
       }
       channelRef.current = null;
       pusherRef.current = null;
@@ -205,6 +216,51 @@ const VendorSupport = () => {
     const channel = pusher.subscribe(channelName);
     channelRef.current = channel;
 
+    const onTicketTyping = (eventPayload) => {
+      try {
+        const payload =
+          typeof eventPayload === "string"
+            ? JSON.parse(eventPayload)
+            : eventPayload;
+        if (!payload || typeof payload !== "object") return;
+
+        const ticketId = Number(payload.ticket_id);
+        if (!Number.isFinite(ticketId) || ticketId <= 0) return;
+
+        const senderType = String(payload.sender_type || "").toLowerCase();
+        const senderId = Number(payload.sender_id || 0);
+        if (senderType === "vendor" && Number.isFinite(vendorId) && senderId === vendorId) {
+          return;
+        }
+
+        const typing = Boolean(payload.typing);
+
+        if (typingTimeoutsRef.current[ticketId]) {
+          clearTimeout(typingTimeoutsRef.current[ticketId]);
+        }
+
+        if (typing) {
+          const label = senderType === "admin" ? "Admin support is typing..." : "Customer is typing...";
+          setTypingByTicket((prev) => ({ ...prev, [ticketId]: label }));
+          typingTimeoutsRef.current[ticketId] = setTimeout(() => {
+            setTypingByTicket((prev) => {
+              const next = { ...prev };
+              delete next[ticketId];
+              return next;
+            });
+          }, 4000);
+        } else {
+          setTypingByTicket((prev) => {
+            const next = { ...prev };
+            delete next[ticketId];
+            return next;
+          });
+        }
+      } catch (_) {
+        // Ignore malformed realtime payloads.
+      }
+    };
+
     const onTicketUpdated = (eventPayload) => {
       try {
         const payload =
@@ -229,9 +285,11 @@ const VendorSupport = () => {
     };
 
     channel.bind("SupportTicketUpdated", onTicketUpdated);
+    channel.bind("SupportTicketTyping", onTicketTyping);
 
     return () => {
       channel.unbind("SupportTicketUpdated", onTicketUpdated);
+      channel.unbind("SupportTicketTyping", onTicketTyping);
       pusher.unsubscribe(channelName);
       pusher.disconnect();
       channelRef.current = null;
@@ -257,6 +315,8 @@ const VendorSupport = () => {
       );
 
       setReplyMessage("");
+      await sendVendorTyping(selectedTicket.id, false);
+      localTypingSentRef.current = { ticketId: selectedTicket.id, active: false };
       message.success("Reply sent");
       await fetchTickets();
     } catch (replyError) {
@@ -294,6 +354,80 @@ const VendorSupport = () => {
       setSubmitting(false);
     }
   };
+
+  const sendVendorTyping = useCallback(
+    async (ticketId, typing) => {
+      if (!token || !ticketId) return;
+      try {
+        await axios.post(
+          `${API_BASE_URL}/vendor/support/tickets/${ticketId}/typing`,
+          { typing },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
+      } catch (_) {
+        // Typing events are non-blocking.
+      }
+    },
+    [token]
+  );
+
+  useEffect(() => {
+    const ticketId = selectedTicket?.id;
+    const text = replyMessage.trim();
+
+    if (!ticketId || !token) return undefined;
+
+    if (localTypingSentRef.current.ticketId && localTypingSentRef.current.ticketId !== ticketId && localTypingSentRef.current.active) {
+      sendVendorTyping(localTypingSentRef.current.ticketId, false);
+      localTypingSentRef.current = { ticketId, active: false };
+    }
+
+    if (!text) {
+      if (localTypingSentRef.current.ticketId === ticketId && localTypingSentRef.current.active) {
+        sendVendorTyping(ticketId, false);
+      }
+      localTypingSentRef.current = { ticketId, active: false };
+      if (localTypingDebounceRef.current) clearTimeout(localTypingDebounceRef.current);
+      if (localTypingIdleRef.current) clearTimeout(localTypingIdleRef.current);
+      return undefined;
+    }
+
+    if (localTypingDebounceRef.current) clearTimeout(localTypingDebounceRef.current);
+    if (localTypingIdleRef.current) clearTimeout(localTypingIdleRef.current);
+
+    localTypingDebounceRef.current = setTimeout(() => {
+      if (!(localTypingSentRef.current.ticketId === ticketId && localTypingSentRef.current.active)) {
+        sendVendorTyping(ticketId, true);
+        localTypingSentRef.current = { ticketId, active: true };
+      }
+    }, 250);
+
+    localTypingIdleRef.current = setTimeout(() => {
+      sendVendorTyping(ticketId, false);
+      localTypingSentRef.current = { ticketId, active: false };
+    }, 2000);
+
+    return () => {
+      if (localTypingDebounceRef.current) clearTimeout(localTypingDebounceRef.current);
+      if (localTypingIdleRef.current) clearTimeout(localTypingIdleRef.current);
+    };
+  }, [replyMessage, selectedTicket?.id, token, sendVendorTyping]);
+
+  useEffect(() => {
+    const typingTimeouts = typingTimeoutsRef.current;
+    return () => {
+      const sent = localTypingSentRef.current;
+      if (sent?.ticketId && sent.active) {
+        sendVendorTyping(sent.ticketId, false);
+      }
+      Object.values(typingTimeouts).forEach((timerId) => clearTimeout(timerId));
+    };
+  }, [sendVendorTyping]);
 
   const stats = useMemo(() => {
     const openTickets = tickets.filter((t) => t.status === "open").length;
@@ -390,6 +524,7 @@ const VendorSupport = () => {
               onSendReply={handleSendReply}
               onMarkResolved={markAsResolved}
               isSubmitting={submitting}
+              typingIndicator={typingByTicket[selectedTicket?.id] || ""}
             />
           ) : (
             <Card style={{ textAlign: "center", padding: 50 }}>

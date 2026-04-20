@@ -19,13 +19,11 @@ import {
 } from "antd";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   MessageOutlined,
   ReloadOutlined,
   SearchOutlined,
   SendOutlined,
   ShopOutlined,
-  SolutionOutlined,
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -35,6 +33,7 @@ import {
   fetchRealtimeConfig,
   replyToAdminSupportTicket,
   resolveAdminSupportTicket,
+  sendAdminSupportTyping,
 } from "../../services/adminSupportService";
 
 const { Title, Text, Paragraph } = Typography;
@@ -235,8 +234,13 @@ const Support = () => {
   const [realtimeConfig, setRealtimeConfig] = useState(null);
   const [realtimeEnabled, setRealtimeEnabled] = useState(true);
   const [realtimeStatus, setRealtimeStatus] = useState("disconnected");
+  const [typingByTicket, setTypingByTicket] = useState({});
   const pusherRef = useRef(null);
   const channelRef = useRef(null);
+  const typingTimeoutsRef = useRef({});
+  const localTypingDebounceRef = useRef(null);
+  const localTypingIdleRef = useRef(null);
+  const localTypingSentRef = useRef({ ticketId: null, active: false });
 
   const fetchTickets = useCallback(async () => {
     try {
@@ -292,7 +296,9 @@ const Support = () => {
         if (!cancelled) {
           setRealtimeConfig(nextConfig);
         }
-      } catch (_) {}
+      } catch (_) {
+        // Ignore realtime config fetch errors and allow manual reconnect.
+      }
     };
 
     loadRealtimeConfig();
@@ -308,12 +314,16 @@ const Support = () => {
       if (channelRef.current) {
         try {
           channelRef.current.unbind_all();
-        } catch (_) {}
+        } catch (_) {
+          // Best-effort cleanup.
+        }
       }
       if (pusherRef.current) {
         try {
           pusherRef.current.disconnect();
-        } catch (_) {}
+        } catch (_) {
+          // Best-effort cleanup.
+        }
       }
       channelRef.current = null;
       pusherRef.current = null;
@@ -353,14 +363,62 @@ const Support = () => {
     const channel = pusher.subscribe("admins");
     channelRef.current = channel;
 
+    const onTicketTyping = (eventPayload) => {
+      try {
+        const payload =
+          typeof eventPayload === "string"
+            ? JSON.parse(eventPayload)
+            : eventPayload;
+        if (!payload || typeof payload !== "object") return;
+
+        const ticketId = Number(payload.ticket_id);
+        if (!Number.isFinite(ticketId) || ticketId <= 0) return;
+
+        const senderType = String(payload.sender_type || "").toLowerCase();
+        const senderId = Number(payload.sender_id || 0);
+        const adminId = Number(realtimeConfig?.user_id || 0);
+        if (senderType === "admin" && adminId > 0 && senderId === adminId) {
+          return;
+        }
+
+        const typing = Boolean(payload.typing);
+
+        if (typingTimeoutsRef.current[ticketId]) {
+          clearTimeout(typingTimeoutsRef.current[ticketId]);
+        }
+
+        if (typing) {
+          const label = senderType === "vendor" ? "Vendor is typing..." : "Customer is typing...";
+          setTypingByTicket((prev) => ({ ...prev, [ticketId]: label }));
+          typingTimeoutsRef.current[ticketId] = setTimeout(() => {
+            setTypingByTicket((prev) => {
+              const next = { ...prev };
+              delete next[ticketId];
+              return next;
+            });
+          }, 4000);
+        } else {
+          setTypingByTicket((prev) => {
+            const next = { ...prev };
+            delete next[ticketId];
+            return next;
+          });
+        }
+      } catch (_) {
+        // Ignore malformed realtime payloads.
+      }
+    };
+
     const onTicketUpdated = () => {
       fetchTickets();
     };
 
     channel.bind("SupportTicketUpdated", onTicketUpdated);
+    channel.bind("SupportTicketTyping", onTicketTyping);
 
     return () => {
       channel.unbind("SupportTicketUpdated", onTicketUpdated);
+      channel.unbind("SupportTicketTyping", onTicketTyping);
       pusher.unsubscribe("admins");
       pusher.disconnect();
       channelRef.current = null;
@@ -368,6 +426,59 @@ const Support = () => {
       setRealtimeStatus("disconnected");
     };
   }, [fetchTickets, realtimeConfig, realtimeEnabled]);
+
+  useEffect(() => {
+    const ticketId = selectedTicket?.id;
+    const text = replyMessage.trim();
+
+    if (!ticketId) return undefined;
+
+    if (localTypingSentRef.current.ticketId && localTypingSentRef.current.ticketId !== ticketId && localTypingSentRef.current.active) {
+      sendAdminSupportTyping(localTypingSentRef.current.ticketId, false).catch(() => {});
+      localTypingSentRef.current = { ticketId, active: false };
+    }
+
+    if (!text) {
+      if (localTypingSentRef.current.ticketId === ticketId && localTypingSentRef.current.active) {
+        sendAdminSupportTyping(ticketId, false).catch(() => {});
+      }
+      localTypingSentRef.current = { ticketId, active: false };
+      if (localTypingDebounceRef.current) clearTimeout(localTypingDebounceRef.current);
+      if (localTypingIdleRef.current) clearTimeout(localTypingIdleRef.current);
+      return undefined;
+    }
+
+    if (localTypingDebounceRef.current) clearTimeout(localTypingDebounceRef.current);
+    if (localTypingIdleRef.current) clearTimeout(localTypingIdleRef.current);
+
+    localTypingDebounceRef.current = setTimeout(() => {
+      if (!(localTypingSentRef.current.ticketId === ticketId && localTypingSentRef.current.active)) {
+        sendAdminSupportTyping(ticketId, true).catch(() => {});
+        localTypingSentRef.current = { ticketId, active: true };
+      }
+    }, 250);
+
+    localTypingIdleRef.current = setTimeout(() => {
+      sendAdminSupportTyping(ticketId, false).catch(() => {});
+      localTypingSentRef.current = { ticketId, active: false };
+    }, 2000);
+
+    return () => {
+      if (localTypingDebounceRef.current) clearTimeout(localTypingDebounceRef.current);
+      if (localTypingIdleRef.current) clearTimeout(localTypingIdleRef.current);
+    };
+  }, [replyMessage, selectedTicket?.id, realtimeConfig?.user_id]);
+
+  useEffect(() => {
+    const typingTimeouts = typingTimeoutsRef.current;
+    return () => {
+      const sent = localTypingSentRef.current;
+      if (sent?.ticketId && sent.active) {
+        sendAdminSupportTyping(sent.ticketId, false).catch(() => {});
+      }
+      Object.values(typingTimeouts).forEach((timerId) => clearTimeout(timerId));
+    };
+  }, []);
 
   const filteredTickets = useMemo(() => {
     if (serviceFilter === "all") {
@@ -402,6 +513,8 @@ const Support = () => {
       await replyToAdminSupportTicket(selectedTicket.id, replyMessage.trim());
       message.success("Reply sent");
       setReplyMessage("");
+      await sendAdminSupportTyping(selectedTicket.id, false);
+      localTypingSentRef.current = { ticketId: selectedTicket.id, active: false };
       await fetchTickets();
     } catch (replyError) {
       message.error(
@@ -814,6 +927,11 @@ const Support = () => {
                         size="middle"
                         style={{ width: "100%" }}
                       >
+                        {typingByTicket[selectedTicket?.id] ? (
+                          <Text type="secondary" style={{ fontStyle: "italic" }}>
+                            {typingByTicket[selectedTicket?.id]}
+                          </Text>
+                        ) : null}
                         <TextArea
                           rows={4}
                           placeholder="Type your reply to the customer..."

@@ -1,5 +1,5 @@
-import React from "react";
 import { Card, Avatar, Typography, Divider, Input, Button, Space } from "antd";
+import PropTypes from "prop-types";
 import {
   UserOutlined,
   SendOutlined,
@@ -15,6 +15,7 @@ const TicketDetails = ({
   replyMessage,
   setReplyMessage,
   isSubmitting = false,
+  typingIndicator = "",
 }) => {
   if (!ticket)
     return (
@@ -85,6 +86,11 @@ const TicketDetails = ({
 
         {ticket.status !== "resolved" && (
           <>
+            {typingIndicator ? (
+              <Text type="secondary" style={{ fontStyle: "italic" }}>
+                {typingIndicator}
+              </Text>
+            ) : null}
             <Divider />
             <Input.TextArea
               rows={3}
@@ -109,3 +115,31 @@ const TicketDetails = ({
 };
 
 export default TicketDetails;
+
+TicketDetails.propTypes = {
+  ticket: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    subject: PropTypes.string,
+    status: PropTypes.string,
+    customer: PropTypes.shape({
+      avatar: PropTypes.string,
+      name: PropTypes.string,
+      email: PropTypes.string,
+    }),
+    messages: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+        sender: PropTypes.string,
+        senderName: PropTypes.string,
+        message: PropTypes.string,
+        timestamp: PropTypes.string,
+      })
+    ),
+  }),
+  onSendReply: PropTypes.func.isRequired,
+  onMarkResolved: PropTypes.func.isRequired,
+  replyMessage: PropTypes.string.isRequired,
+  setReplyMessage: PropTypes.func.isRequired,
+  isSubmitting: PropTypes.bool,
+  typingIndicator: PropTypes.string,
+};
