@@ -1,721 +1,881 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Pusher from "pusher-js";
 import {
-  Table,
-  Button,
-  Input,
-  Card,
-  Badge,
-  Select,
-  Modal,
-  Form,
-  Typography,
+  Alert,
   Avatar,
+  Badge,
+  Button,
+  Card,
+  Col,
+  Empty,
+  Input,
+  Row,
+  Select,
   Space,
+  Spin,
+  Tag,
+  Typography,
   message,
 } from "antd";
 import {
-  SearchOutlined,
-  ClockCircleOutlined,
-  UserOutlined,
-  ShopOutlined,
-  CreditCardOutlined,
-  TruckOutlined,
-  DollarOutlined,
-  SettingOutlined,
-  SendOutlined,
   CheckCircleOutlined,
-  ExclamationCircleOutlined,
+  ClockCircleOutlined,
   MessageOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  EnvironmentOutlined,
-  CodeSandboxOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+  SendOutlined,
+  ShopOutlined,
+  SolutionOutlined,
+  TeamOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
+import StatsCards from "../../vendors/support/StatsCards";
+import {
+  fetchAdminSupportTickets,
+  fetchRealtimeConfig,
+  replyToAdminSupportTicket,
+  resolveAdminSupportTicket,
+} from "../../services/adminSupportService";
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
+const { TextArea } = Input;
 
-const SUPPORT_TICKETS = [
-  {
-    id: "T-2024-001",
-    customer: {
-      name: "John Smith",
-      email: "john.smith@email.com",
-      avatar: "JS",
-    },
-    subject: "Food order missing items - Order #FD-12345",
-    status: "open",
-    priority: "high",
-    category: "food-orders",
-    created: "2024-03-15T10:30:00Z",
-    lastReply: "2024-03-15T14:22:00Z",
-    assignedTo: "Sarah Wilson",
-    messages: 3,
-    description:
-      "I ordered a family meal but received only half the items. Missing: 2 burgers, fries, and drinks. Order was from McDonald's Downtown. Very disappointed as this was for a family gathering.",
-  },
-  {
-    id: "T-2024-002",
-    customer: {
-      name: "Emma Davis",
-      email: "emma.davis@email.com",
-      avatar: "ED",
-    },
-    subject: "Currency exchange rate dispute - TX #CX-78901",
-    status: "in-progress",
-    priority: "medium",
-    category: "currency-exchange",
-    created: "2024-03-14T09:15:00Z",
-    lastReply: "2024-03-15T11:30:00Z",
-    assignedTo: "Mike Johnson",
-    messages: 5,
-    description:
-      "I exchanged $500 USD to EUR but the rate applied was different from what was displayed on the app. The rate shown was 0.92 but I was charged at 0.89. Need clarification and possible refund of the difference.",
-  },
-  {
-    id: "T-2024-003",
-    customer: { name: "Alex Chen", email: "alex.chen@email.com", avatar: "AC" },
-    subject: "Courier package damaged during delivery",
-    status: "resolved",
-    priority: "high",
-    category: "courier-delivery",
-    created: "2024-03-13T16:45:00Z",
-    lastReply: "2024-03-14T08:20:00Z",
-    assignedTo: "Lisa Brown",
-    messages: 4,
-    description:
-      "My package containing fragile electronics was severely damaged during delivery. The box was crushed and the items inside are broken. Package ID: CR-56789. Need immediate compensation.",
-  },
-  {
-    id: "T-2024-004",
-    customer: {
-      name: "Maria Garcia",
-      email: "maria.garcia@email.com",
-      avatar: "MG",
-    },
-    subject: "Food delivery 2 hours late - cold food",
-    status: "open",
-    priority: "high",
-    category: "food-delivery",
-    created: "2024-03-15T13:20:00Z",
-    lastReply: "2024-03-15T13:20:00Z",
-    assignedTo: null,
-    messages: 1,
-    description:
-      "Ordered pizza at 6 PM with estimated delivery of 30 minutes. Food arrived at 8:15 PM completely cold. Driver said there were traffic issues but no communication was provided. Order #FD-67890.",
-  },
-  {
-    id: "T-2024-005",
-    customer: {
-      name: "David Wilson",
-      email: "david.wilson@email.com",
-      avatar: "DW",
-    },
-    subject: "Courier pickup not completed - urgent documents",
-    status: "open",
-    priority: "high",
-    category: "courier-pickup",
-    created: "2024-03-15T11:10:00Z",
-    lastReply: "2024-03-15T11:10:00Z",
-    assignedTo: "Tom Anderson",
-    messages: 1,
-    description:
-      "Scheduled urgent document pickup for 10 AM but courier never showed up. These are time-sensitive legal documents that need to be delivered today. Pickup ID: CR-11223. Please resolve immediately.",
-  },
-  {
-    id: "T-2024-006",
-    customer: {
-      name: "Lisa Zhang",
-      email: "lisa.zhang@email.com",
-      avatar: "LZ",
-    },
-    subject: "Unable to complete currency exchange transaction",
-    status: "in-progress",
-    priority: "medium",
-    category: "currency-exchange",
-    created: "2024-03-14T14:30:00Z",
-    lastReply: "2024-03-15T09:45:00Z",
-    assignedTo: "Mike Johnson",
-    messages: 3,
-    description:
-      "Trying to exchange GBP to JPY but the transaction keeps failing at the final step. My card has sufficient funds and I've tried multiple times. Error code: CX-ERROR-401.",
-  },
-  {
-    id: "T-2024-007",
-    customer: {
-      name: "Ahmed Hassan",
-      email: "ahmed.hassan@email.com",
-      avatar: "AH",
-    },
-    subject: "Restaurant served wrong order entirely",
-    status: "resolved",
-    priority: "medium",
-    category: "food-orders",
-    created: "2024-03-13T19:20:00Z",
-    lastReply: "2024-03-14T10:15:00Z",
-    assignedTo: "Sarah Wilson",
-    messages: 2,
-    description:
-      "Ordered vegetarian pasta but received chicken curry instead. I'm vegetarian for religious reasons. The restaurant (Spice Garden) acknowledged the mistake. Order #FD-44556.",
-  },
-];
-
-const TEAM_MEMBERS = [
-  { id: "1", name: "Sarah Wilson", role: "Food Service Specialist" },
-  { id: "2", name: "Mike Johnson", role: "Currency Exchange Specialist" },
-  { id: "3", name: "Lisa Brown", role: "Courier Operations" },
-  { id: "4", name: "Tom Anderson", role: "Delivery Coordinator" },
-  { id: "5", name: "Rachel Kim", role: "Senior Support Manager" },
-];
-
-const CATEGORIES = [
-  { id: "food-orders", label: "Food Orders", icon: ShopOutlined },
-  { id: "food-delivery", label: "Food Delivery", icon: TruckOutlined },
-  { id: "courier-pickup", label: "Courier Pickup", icon: CodeSandboxOutlined },
-  {
-    id: "courier-delivery",
-    label: "Courier Delivery",
-    icon: EnvironmentOutlined,
-  },
-  { id: "currency-exchange", label: "Currency Exchange", icon: DollarOutlined },
-  { id: "payments", label: "Payments & Billing", icon: CreditCardOutlined },
-  { id: "account", label: "Account Issues", icon: UserOutlined },
-  { id: "technical", label: "Technical Issues", icon: SettingOutlined },
-];
-
-const StatCard = ({ icon: Icon, title, value, color }) => (
-  <Card>
-    <Card.Meta
-      title={
-        <Space>
-          <Icon style={{ color }} /> {title}
-        </Space>
-      }
-      description={
-        <Title level={3} style={{ color }}>
-          {value}
-        </Title>
-      }
-    />
-  </Card>
+const PUSHER_KEY =
+  import.meta.env.VITE_REVERB_APP_KEY || import.meta.env.VITE_PUSHER_KEY || "";
+const WS_HOST = import.meta.env.VITE_REVERB_HOST || import.meta.env.VITE_WS_HOST || "";
+const WS_PORT = Number(
+  import.meta.env.VITE_REVERB_PORT || import.meta.env.VITE_WS_PORT || 443
 );
+const WS_TLS =
+  String(import.meta.env.VITE_REVERB_TLS || import.meta.env.VITE_WS_TLS || "true") ===
+  "true";
+
+const SERVICE_OPTIONS = [
+  { value: "all", label: "All Services" },
+  { value: "food", label: "Food" },
+  { value: "courier", label: "Courier" },
+  { value: "currency", label: "Currency" },
+  { value: "billing", label: "Billing" },
+  { value: "account", label: "Account" },
+  { value: "general", label: "General" },
+];
+
+const TARGET_OPTIONS = [
+  { value: "all", label: "All Targets" },
+  { value: "admin", label: "Admin" },
+  { value: "vendor", label: "Vendor" },
+];
+
+const getFullName = (person = {}, fallback = "Unknown") => {
+  const firstName = person?.firstname || person?.firstName || "";
+  const lastName = person?.lastname || person?.lastName || "";
+  return `${firstName} ${lastName}`.trim() || fallback;
+};
+
+const getInitials = (name) =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "NA";
+
+const inferService = (ticket) => {
+  const haystack = [
+    ticket?.subject,
+    ticket?.description,
+    ticket?.restaurant?.restaurant_name,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  if (
+    haystack.includes("exchange") ||
+    haystack.includes("currency") ||
+    haystack.includes("rate") ||
+    haystack.includes("wallet") ||
+    haystack.includes("payment")
+  ) {
+    return "currency";
+  }
+
+  if (
+    haystack.includes("courier") ||
+    haystack.includes("pickup") ||
+    haystack.includes("package") ||
+    haystack.includes("dispatch")
+  ) {
+    return "courier";
+  }
+
+  if (
+    haystack.includes("bill") ||
+    haystack.includes("billing") ||
+    haystack.includes("charge") ||
+    haystack.includes("refund")
+  ) {
+    return "billing";
+  }
+
+  if (
+    haystack.includes("account") ||
+    haystack.includes("login") ||
+    haystack.includes("password") ||
+    haystack.includes("otp")
+  ) {
+    return "account";
+  }
+
+  if (
+    haystack.includes("food") ||
+    haystack.includes("restaurant") ||
+    haystack.includes("order") ||
+    haystack.includes("delivery") ||
+    ticket?.restaurant?.id
+  ) {
+    return "food";
+  }
+
+  return "general";
+};
+
+const mapTicket = (ticket) => {
+  const customerName = getFullName(ticket?.user, "Customer");
+  const vendorName = getFullName(ticket?.vendor, "Vendor");
+  const service = inferService(ticket);
+
+  return {
+    ...ticket,
+    id: ticket?.id,
+    customer: {
+      name: customerName,
+      email: ticket?.user?.email || "unknown@customer.com",
+      avatar: ticket?.user?.profilePics || null,
+      initials: getInitials(customerName),
+    },
+    vendor: {
+      name: vendorName,
+      email: ticket?.vendor?.email || "",
+    },
+    restaurantName: ticket?.restaurant?.restaurant_name || null,
+    ticketNumber: ticket?.ticket_number || `#${ticket?.id}`,
+    subject: ticket?.subject || "No subject",
+    description: ticket?.description || "",
+    status: ticket?.status || "open",
+    priority: ticket?.priority || "medium",
+    ticketTarget: ticket?.ticket_target || "admin",
+    service,
+    created: ticket?.created_at,
+    lastReplyAt: ticket?.last_reply_at || ticket?.updated_at || ticket?.created_at,
+    messages: Array.isArray(ticket?.messages)
+      ? ticket.messages.map((entry) => ({
+          id: entry.id,
+          senderType: entry.sender_type || "user",
+          senderName:
+            entry.sender_type === "admin"
+              ? "Admin Support"
+              : entry.sender_type === "vendor"
+                ? vendorName
+                : customerName,
+          message: entry.message,
+          timestamp: entry.created_at,
+        }))
+      : [],
+  };
+};
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "open":
+      return "red";
+    case "in-progress":
+      return "gold";
+    case "resolved":
+      return "green";
+    default:
+      return "default";
+  }
+};
+
+const getPriorityColor = (priority) => {
+  switch (priority) {
+    case "high":
+      return "red";
+    case "medium":
+      return "orange";
+    case "low":
+      return "blue";
+    default:
+      return "default";
+  }
+};
+
+const getServiceLabel = (service) =>
+  SERVICE_OPTIONS.find((option) => option.value === service)?.label || "General";
+
+const getRealtimeTagColor = (status) => {
+  switch (status) {
+    case "connected":
+      return "green";
+    case "connecting":
+      return "blue";
+    case "error":
+      return "red";
+    default:
+      return "default";
+  }
+};
 
 const Support = () => {
-  const [tickets, setTickets] = useState(SUPPORT_TICKETS);
+  const [tickets, setTickets] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [targetFilter, setTargetFilter] = useState("all");
+  const [serviceFilter, setServiceFilter] = useState("all");
   const [replyMessage, setReplyMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [realtimeConfig, setRealtimeConfig] = useState(null);
+  const [realtimeEnabled, setRealtimeEnabled] = useState(true);
+  const [realtimeStatus, setRealtimeStatus] = useState("disconnected");
+  const pusherRef = useRef(null);
+  const channelRef = useRef(null);
 
-  const filteredTickets = tickets.filter((ticket) => {
-    const matchesSearch =
-      ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || ticket.status === statusFilter;
-    const matchesPriority =
-      priorityFilter === "all" || ticket.priority === priorityFilter;
-    const matchesCategory =
-      categoryFilter === "all" || ticket.category === categoryFilter;
-    return matchesSearch && matchesStatus && matchesPriority && matchesCategory;
-  });
+  const fetchTickets = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "open":
-        return "red";
-      case "in-progress":
-        return "blue";
-      case "resolved":
-        return "green";
-      default:
-        return "default";
+      const rows = await fetchAdminSupportTickets({
+        status: statusFilter,
+        priority: priorityFilter,
+        target: targetFilter,
+        search: searchQuery.trim() || undefined,
+      });
+
+      const nextTickets = rows.map(mapTicket);
+      setTickets(nextTickets);
+
+      if (!nextTickets.length) {
+        setSelectedTicket(null);
+        return;
+      }
+
+      setSelectedTicket((current) => {
+        if (!current?.id) {
+          return nextTickets[0];
+        }
+
+        return nextTickets.find((ticket) => ticket.id === current.id) || nextTickets[0];
+      });
+    } catch (fetchError) {
+      setError(
+        fetchError.response?.data?.message ||
+          fetchError.message ||
+          "Failed to load support tickets."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [priorityFilter, searchQuery, statusFilter, targetFilter]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchTickets();
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [fetchTickets]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadRealtimeConfig = async () => {
+      try {
+        const nextConfig = await fetchRealtimeConfig();
+        if (!cancelled) {
+          setRealtimeConfig(nextConfig);
+        }
+      } catch (_) {}
+    };
+
+    loadRealtimeConfig();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!realtimeEnabled) {
+      setRealtimeStatus("disconnected");
+      if (channelRef.current) {
+        try {
+          channelRef.current.unbind_all();
+        } catch (_) {}
+      }
+      if (pusherRef.current) {
+        try {
+          pusherRef.current.disconnect();
+        } catch (_) {}
+      }
+      channelRef.current = null;
+      pusherRef.current = null;
+      return undefined;
+    }
+
+    const host = String(realtimeConfig?.host || WS_HOST).trim();
+    const key = String(realtimeConfig?.key || PUSHER_KEY).trim();
+    const port = Number(realtimeConfig?.port || WS_PORT || 443);
+    const tls =
+      typeof realtimeConfig?.tls === "boolean" ? realtimeConfig.tls : WS_TLS;
+
+    if (!host || !key || !Number.isFinite(port)) {
+      return undefined;
+    }
+
+    setRealtimeStatus("connecting");
+
+    const pusher = new Pusher(key, {
+      wsHost: host,
+      wsPort: port,
+      wssPort: port,
+      forceTLS: tls,
+      encrypted: tls,
+      enabledTransports: ["ws", "wss"],
+      disableStats: true,
+      cluster: "mt1",
+      authEndpoint: undefined,
+    });
+
+    pusherRef.current = pusher;
+    pusher.connection.bind("connected", () => setRealtimeStatus("connected"));
+    pusher.connection.bind("connecting", () => setRealtimeStatus("connecting"));
+    pusher.connection.bind("disconnected", () => setRealtimeStatus("disconnected"));
+    pusher.connection.bind("error", () => setRealtimeStatus("error"));
+
+    const channel = pusher.subscribe("admins");
+    channelRef.current = channel;
+
+    const onTicketUpdated = () => {
+      fetchTickets();
+    };
+
+    channel.bind("SupportTicketUpdated", onTicketUpdated);
+
+    return () => {
+      channel.unbind("SupportTicketUpdated", onTicketUpdated);
+      pusher.unsubscribe("admins");
+      pusher.disconnect();
+      channelRef.current = null;
+      pusherRef.current = null;
+      setRealtimeStatus("disconnected");
+    };
+  }, [fetchTickets, realtimeConfig, realtimeEnabled]);
+
+  const filteredTickets = useMemo(() => {
+    if (serviceFilter === "all") {
+      return tickets;
+    }
+
+    return tickets.filter((ticket) => ticket.service === serviceFilter);
+  }, [serviceFilter, tickets]);
+
+  const stats = useMemo(() => {
+    const open = tickets.filter((ticket) => ticket.status === "open").length;
+    const inProgress = tickets.filter(
+      (ticket) => ticket.status === "in-progress"
+    ).length;
+    const resolved = tickets.filter(
+      (ticket) => ticket.status === "resolved"
+    ).length;
+
+    return {
+      total: tickets.length,
+      open,
+      inProgress,
+      resolved,
+      adminTarget: tickets.filter((ticket) => ticket.ticketTarget === "admin").length,
+      vendorTarget: tickets.filter((ticket) => ticket.ticketTarget === "vendor")
+        .length,
+    };
+  }, [tickets]);
+
+  const handleSendReply = async () => {
+    if (!selectedTicket || !replyMessage.trim()) return;
+
+    try {
+      setSubmitting(true);
+      await replyToAdminSupportTicket(selectedTicket.id, replyMessage.trim());
+      message.success("Reply sent");
+      setReplyMessage("");
+      await fetchTickets();
+    } catch (replyError) {
+      message.error(
+        replyError.response?.data?.message ||
+          replyError.message ||
+          "Failed to send reply."
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "high":
-        return "red";
-      case "medium":
-        return "blue";
-      case "low":
-        return "green";
-      default:
-        return "default";
+  const handleResolve = async () => {
+    if (!selectedTicket) return;
+
+    try {
+      setSubmitting(true);
+      await resolveAdminSupportTicket(selectedTicket.id);
+      message.success("Ticket marked as resolved");
+      await fetchTickets();
+    } catch (resolveError) {
+      message.error(
+        resolveError.response?.data?.message ||
+          resolveError.message ||
+          "Failed to resolve ticket."
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const getCategoryIcon = (category) => {
-    const categoryData = CATEGORIES.find((cat) => cat.id === category);
-    const Icon = categoryData?.icon || MessageOutlined;
-    return <Icon />;
-  };
-
-  const handleAssignTicket = (ticketId, assigneeId) => {
-    const assignee = TEAM_MEMBERS.find((member) => member.id === assigneeId);
-    setTickets(
-      tickets.map((ticket) =>
-        ticket.id === ticketId
-          ? { ...ticket, assignedTo: assignee?.name || null }
-          : ticket
-      )
+  if (loading && !tickets.length && !error) {
+    return (
+      <div
+        style={{
+          height: "70vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Spin size="large" tip="Loading support tickets..." />
+      </div>
     );
-    message.success("Ticket assigned successfully");
-  };
-
-  const handleStatusChange = (ticketId, newStatus) => {
-    setTickets(
-      tickets.map((ticket) =>
-        ticket.id === ticketId ? { ...ticket, status: newStatus } : ticket
-      )
-    );
-    message.success("Ticket status updated");
-  };
-
-  const handleSendReply = () => {
-    if (!replyMessage.trim()) return;
-    message.success("Reply sent successfully");
-    setReplyMessage("");
-  };
-
-  const totalTickets = tickets.length;
-  const openTickets = tickets.filter((t) => t.status === "open").length;
-  const inProgressTickets = tickets.filter(
-    (t) => t.status === "in-progress"
-  ).length;
-  const resolvedTickets = tickets.filter((t) => t.status === "resolved").length;
-  const foodTickets = tickets.filter((t) =>
-    t.category.startsWith("food")
-  ).length;
-  const courierTickets = tickets.filter((t) =>
-    t.category.startsWith("courier")
-  ).length;
-  const currencyTickets = tickets.filter(
-    (t) => t.category === "currency-exchange"
-  ).length;
-
-  const statCards = [
-    {
-      icon: MessageOutlined,
-      title: "Total Tickets",
-      value: totalTickets,
-      color: undefined,
-    },
-    {
-      icon: ExclamationCircleOutlined,
-      title: "Open",
-      value: openTickets,
-      color: "red",
-    },
-    {
-      icon: ClockCircleOutlined,
-      title: "In Progress",
-      value: inProgressTickets,
-      color: "#1890ff",
-    },
-    {
-      icon: CheckCircleOutlined,
-      title: "Resolved",
-      value: resolvedTickets,
-      color: "green",
-    },
-    {
-      icon: ShopOutlined,
-      title: "Food",
-      value: foodTickets,
-      color: "#fa8c16",
-    },
-    {
-      icon: CodeSandboxOutlined,
-      title: "Courier",
-      value: courierTickets,
-      color: "#1890ff",
-    },
-  ];
-
-  const columns = [
-    {
-      title: "Customer",
-      dataIndex: "customer",
-      width: 200,
-      render: (customer) => (
-        <Space>
-          <Avatar>{customer.avatar}</Avatar>
-          <div>
-            <div>{customer.name}</div>
-            <Text type="secondary">{customer.email}</Text>
-          </div>
-        </Space>
-      ),
-    },
-    {
-      title: "Subject",
-      dataIndex: "subject",
-      width: 250,
-      render: (subject, record) => (
-        <div>
-          <div style={{ whiteSpace: "normal", wordBreak: "break-word" }}>
-            {subject}
-          </div>
-          <Text type="secondary">{record.id}</Text>
-        </div>
-      ),
-    },
-    {
-      title: "Service",
-      dataIndex: "category",
-      width: 150,
-      render: (category) => {
-        const categoryData = CATEGORIES.find((cat) => cat.id === category);
-        return (
-          <Space>
-            {getCategoryIcon(category)}
-            <span>{categoryData?.label}</span>
-          </Space>
-        );
-      },
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      width: 120,
-      render: (status) => (
-        <Badge color={getStatusColor(status)}>{status.replace("-", " ")}</Badge>
-      ),
-    },
-    {
-      title: "Priority",
-      dataIndex: "priority",
-      width: 120,
-      render: (priority) => (
-        <Badge color={getPriorityColor(priority)}>{priority}</Badge>
-      ),
-    },
-    {
-      title: "Assigned To",
-      dataIndex: "assignedTo",
-      width: 150,
-      render: (assignedTo) => assignedTo || <Badge>Unassigned</Badge>,
-    },
-    {
-      title: "Created",
-      dataIndex: "created",
-      width: 120,
-      render: (created) => new Date(created).toLocaleDateString(),
-    },
-    {
-      title: "Messages",
-      dataIndex: "messages",
-      width: 100,
-      render: (messages) => (
-        <Space>
-          <MessageOutlined />
-          <span>{messages}</span>
-        </Space>
-      ),
-    },
-    {
-      title: "Actions",
-      width: 250,
-      render: (_, record) => (
-        <Space wrap>
-          <Button
-            type="link"
-            onClick={() => {
-              setSelectedTicket(record);
-              setIsModalOpen(true);
-            }}
-          >
-            View
-          </Button>
-          <Select
-            placeholder="Assign"
-            style={{ width: 100 }}
-            onChange={(value) => handleAssignTicket(record.id, value)}
-          >
-            {TEAM_MEMBERS.map((member) => (
-              <Select.Option key={member.id} value={member.id}>
-                {member.name}
-              </Select.Option>
-            ))}
-          </Select>
-          <Select
-            placeholder="Status"
-            style={{ width: 100 }}
-            onChange={(value) => handleStatusChange(record.id, value)}
-          >
-            <Select.Option value="open">Open</Select.Option>
-            <Select.Option value="in-progress">In Progress</Select.Option>
-            <Select.Option value="resolved">Resolved</Select.Option>
-          </Select>
-        </Space>
-      ),
-    },
-  ];
+  }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", padding: "16px" }}>
-      <Title
-        level={3}
-        style={{
-          fontWeight: 400,
-          fontSize: 24,
-          fontFamily: "NeueHaasDisplayBold",
-        }}
+    <div style={{ padding: 24 }}>
+      <Space
+        direction="vertical"
+        size="large"
+        style={{ width: "100%" }}
       >
-        Support{" "}
-      </Title>
-      <Text type="secondary">
-        Manage customer support for food delivery, courier services, and
-        currency exchange
-      </Text>
+        <div>
+          <Title
+            level={3}
+            style={{ marginBottom: 4, fontFamily: "NeueHaasDisplayBold" }}
+          >
+            Support
+          </Title>
+          <Text type="secondary">
+            Monitor customer tickets, respond as admin support, and close issues
+            from one place.
+          </Text>
+        </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-          gap: "10px",
-          margin: "16px 0",
-          overflowX: "auto",
-        }}
-      >
-        {statCards.map((card, index) => (
-          <StatCard
-            key={index}
-            icon={card.icon}
-            title={card.title}
-            value={card.value}
-            color={card.color}
+        {error ? (
+          <Alert
+            type="error"
+            showIcon
+            message={error}
+            action={
+              <Button size="small" onClick={fetchTickets}>
+                Retry
+              </Button>
+            }
           />
-        ))}
-      </div>
+        ) : null}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "16px",
-          marginBottom: "24px",
-          overflowX: "auto",
-        }}
-      >
-        <Card>
-          <Card.Meta
-            title={
-              <Space>
-                <ShopOutlined style={{ color: "#fa8c16" }} /> Food Services
-              </Space>
-            }
-            description={
-              <>
-                <Title level={3} style={{ color: "#fa8c16" }}>
-                  {foodTickets}
-                </Title>
-                <Text type="secondary">Orders & Delivery Issues</Text>
-              </>
-            }
-          />
-        </Card>
-        <Card>
-          <Card.Meta
-            title={
-              <Space>
-                <CodeSandboxOutlined style={{ color: "#1890ff" }} /> Courier
-                Services
-              </Space>
-            }
-            description={
-              <>
-                <Title level={3} style={{ color: "#1890ff" }}>
-                  {courierTickets}
-                </Title>
-                <Text type="secondary">Pickup & Delivery Issues</Text>
-              </>
-            }
-          />
-        </Card>
-        <Card>
-          <Card.Meta
-            title={
-              <Space>
-                <DollarOutlined style={{ color: "#52c41a" }} /> Currency
-                Exchange
-              </Space>
-            }
-            description={
-              <>
-                <Title level={3} style={{ color: "#52c41a" }}>
-                  {currencyTickets}
-                </Title>
-                <Text type="secondary">Exchange & Transaction Issues</Text>
-              </>
-            }
-          />
-        </Card>
-      </div>
-
-      <Card>
-        <Space direction="vertical" size="large" style={{ width: "100%" }}>
-          <Space wrap style={{ overflowX: "auto", paddingBottom: "8px" }}>
-            <Input
-              prefix={<SearchOutlined />}
-              placeholder="Search tickets, customers, or issues..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ minWidth: 200, maxWidth: 300 }}
-            />
-            <Select
-              value={categoryFilter}
-              onChange={setCategoryFilter}
-              style={{ minWidth: 140, maxWidth: 180 }}
-              placeholder="Service Category"
+        <Card size="small">
+          <Space wrap>
+            <Text strong>Realtime</Text>
+            <Tag color={getRealtimeTagColor(realtimeStatus)}>
+              {realtimeStatus.toUpperCase()}
+            </Tag>
+            <Button size="small" onClick={fetchTickets} icon={<ReloadOutlined />}>
+              Refresh
+            </Button>
+            <Button
+              size="small"
+              onClick={() => setRealtimeEnabled(true)}
+              disabled={realtimeEnabled && realtimeStatus === "connected"}
             >
-              <Select.Option value="all">All Services</Select.Option>
-              {CATEGORIES.map((category) => (
-                <Select.Option key={category.id} value={category.id}>
-                  {category.label}
-                </Select.Option>
-              ))}
-            </Select>
-            <Select
-              value={statusFilter}
-              onChange={setStatusFilter}
-              style={{ minWidth: 120, maxWidth: 140 }}
-              placeholder="Status"
+              Connect
+            </Button>
+            <Button
+              size="small"
+              danger
+              onClick={() => setRealtimeEnabled(false)}
+              disabled={!realtimeEnabled}
             >
-              <Select.Option value="all">All Status</Select.Option>
-              <Select.Option value="open">Open</Select.Option>
-              <Select.Option value="in-progress">In Progress</Select.Option>
-              <Select.Option value="resolved">Resolved</Select.Option>
-            </Select>
-            <Select
-              value={priorityFilter}
-              onChange={setPriorityFilter}
-              style={{ minWidth: 120, maxWidth: 140 }}
-              placeholder="Priority"
+              Disconnect
+            </Button>
+            <Button
+              size="small"
+              onClick={() => {
+                setRealtimeEnabled(false);
+                setTimeout(() => setRealtimeEnabled(true), 150);
+              }}
             >
-              <Select.Option value="all">All Priority</Select.Option>
-              <Select.Option value="high">High</Select.Option>
-              <Select.Option value="medium">Medium</Select.Option>
-              <Select.Option value="low">Low</Select.Option>
-            </Select>
+              Reconnect
+            </Button>
           </Space>
-          <div style={{ overflowX: "auto" }}>
-            <Table
-              columns={columns}
-              dataSource={filteredTickets}
-              rowKey="id"
-              pagination={false}
-              scroll={{ x: 1200 }}
-            />
-          </div>
-        </Space>
-      </Card>
+        </Card>
 
-      <Modal
-        title={selectedTicket?.subject}
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-        width="90%"
-        style={{ maxWidth: 800 }}
-      >
-        {selectedTicket && (
-          <Space direction="vertical" size="large" style={{ width: "100%" }}>
-            <Space wrap>
-              <Text>{selectedTicket.id}</Text>
-              <Badge color={getStatusColor(selectedTicket.status)}>
-                {selectedTicket.status.replace("-", " ")}
-              </Badge>
-              <Badge color={getPriorityColor(selectedTicket.priority)}>
-                {selectedTicket.priority} priority
-              </Badge>
-            </Space>
+        <StatsCards
+          total={stats.total}
+          open={stats.open}
+          inProgress={stats.inProgress}
+          resolved={stats.resolved}
+        />
+
+        <Row gutter={[16, 16]}>
+          <Col xs={24} md={12}>
             <Card>
-              <Card.Meta
-                avatar={<Avatar icon={<UserOutlined />} />}
-                title={selectedTicket.customer.name}
-                description={
-                  <Space wrap>
-                    <MailOutlined />
-                    <Text>{selectedTicket.customer.email}</Text>
-                    <Button type="primary" icon={<MailOutlined />}>
-                      Email
-                    </Button>
-                    <Button type="primary" icon={<PhoneOutlined />}>
-                      Call
-                    </Button>
-                  </Space>
-                }
-              />
-            </Card>
-            <Card>
-              <Card.Meta
-                title="Original Message"
-                description={
-                  <>
-                    <Text>
-                      Created on{" "}
-                      {new Date(selectedTicket.created).toLocaleString()}
-                    </Text>
-                    <p style={{ whiteSpace: "pre-wrap" }}>
-                      {selectedTicket.description}
-                    </p>
-                  </>
-                }
-              />
-            </Card>
-            <Card>
-              <Card.Meta
-                title="Send Reply"
-                description={
-                  <Form layout="vertical">
-                    <Form.Item>
-                      <Input.TextArea
-                        value={replyMessage}
-                        onChange={(e) => setReplyMessage(e.target.value)}
-                        placeholder="Type your reply to the customer..."
-                        rows={4}
-                      />
-                    </Form.Item>
-                    <Form.Item>
-                      <Space wrap>
-                        <Select
-                          placeholder="Change status"
-                          style={{ width: 140 }}
-                          onChange={(value) =>
-                            handleStatusChange(selectedTicket.id, value)
-                          }
+              <Space
+                direction="vertical"
+                size="middle"
+                style={{ width: "100%" }}
+              >
+                <Space wrap style={{ width: "100%" }}>
+                  <Input
+                    prefix={<SearchOutlined />}
+                    placeholder="Search subject, ticket number, customer, vendor..."
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    style={{ minWidth: 260, flex: 1 }}
+                  />
+                  <Select
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    style={{ minWidth: 140 }}
+                    options={[
+                      { value: "all", label: "All Status" },
+                      { value: "open", label: "Open" },
+                      { value: "in-progress", label: "In Progress" },
+                      { value: "resolved", label: "Resolved" },
+                    ]}
+                  />
+                  <Select
+                    value={priorityFilter}
+                    onChange={setPriorityFilter}
+                    style={{ minWidth: 140 }}
+                    options={[
+                      { value: "all", label: "All Priority" },
+                      { value: "high", label: "High" },
+                      { value: "medium", label: "Medium" },
+                      { value: "low", label: "Low" },
+                    ]}
+                  />
+                  <Select
+                    value={targetFilter}
+                    onChange={setTargetFilter}
+                    style={{ minWidth: 140 }}
+                    options={TARGET_OPTIONS}
+                  />
+                  <Select
+                    value={serviceFilter}
+                    onChange={setServiceFilter}
+                    style={{ minWidth: 140 }}
+                    options={SERVICE_OPTIONS}
+                  />
+                </Space>
+
+                <Space wrap>
+                  <Tag icon={<SolutionOutlined />} color="blue">
+                    Admin Target: {stats.adminTarget}
+                  </Tag>
+                  <Tag icon={<ShopOutlined />} color="purple">
+                    Vendor Target: {stats.vendorTarget}
+                  </Tag>
+                </Space>
+
+                <div style={{ maxHeight: "70vh", overflowY: "auto" }}>
+                  <Space
+                    direction="vertical"
+                    size="middle"
+                    style={{ width: "100%" }}
+                  >
+                    {filteredTickets.length ? (
+                      filteredTickets.map((ticket) => (
+                        <Card
+                          key={ticket.id}
+                          hoverable
+                          onClick={() => setSelectedTicket(ticket)}
+                          style={{
+                            borderColor:
+                              selectedTicket?.id === ticket.id ? "#1677ff" : "#f0f0f0",
+                            background:
+                              selectedTicket?.id === ticket.id ? "#f5faff" : "#fff",
+                          }}
+                          bodyStyle={{ padding: 16 }}
                         >
-                          <Select.Option value="open">Open</Select.Option>
-                          <Select.Option value="in-progress">
-                            In Progress
-                          </Select.Option>
-                          <Select.Option value="resolved">
-                            Resolved
-                          </Select.Option>
-                        </Select>
+                          <Space
+                            direction="vertical"
+                            size="small"
+                            style={{ width: "100%" }}
+                          >
+                            <Space align="start" style={{ width: "100%" }}>
+                              <Avatar
+                                src={ticket.customer.avatar}
+                                icon={<UserOutlined />}
+                              >
+                                {!ticket.customer.avatar
+                                  ? ticket.customer.initials
+                                  : null}
+                              </Avatar>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <Space
+                                  style={{
+                                    width: "100%",
+                                    justifyContent: "space-between",
+                                  }}
+                                  align="start"
+                                >
+                                  <div style={{ minWidth: 0 }}>
+                                    <Text strong>{ticket.customer.name}</Text>
+                                    <div>
+                                      <Text type="secondary">{ticket.ticketNumber}</Text>
+                                    </div>
+                                  </div>
+                                  <Text type="secondary">
+                                    {ticket.created
+                                      ? new Date(ticket.created).toLocaleDateString()
+                                      : "Unknown date"}
+                                  </Text>
+                                </Space>
+                                <Paragraph
+                                  ellipsis={{ rows: 2 }}
+                                  style={{ margin: "8px 0 0" }}
+                                >
+                                  {ticket.subject}
+                                </Paragraph>
+                              </div>
+                            </Space>
+
+                            <Space wrap>
+                              <Tag color={getStatusColor(ticket.status)}>
+                                {ticket.status}
+                              </Tag>
+                              <Tag color={getPriorityColor(ticket.priority)}>
+                                {ticket.priority}
+                              </Tag>
+                              <Tag>{ticket.ticketTarget}</Tag>
+                              <Tag>{getServiceLabel(ticket.service)}</Tag>
+                            </Space>
+
+                            <Space wrap style={{ justifyContent: "space-between" }}>
+                              <Text type="secondary">
+                                <MessageOutlined /> {ticket.messages.length} messages
+                              </Text>
+                              {ticket.restaurantName ? (
+                                <Text type="secondary">
+                                  <ShopOutlined /> {ticket.restaurantName}
+                                </Text>
+                              ) : null}
+                            </Space>
+                          </Space>
+                        </Card>
+                      ))
+                    ) : (
+                      <Card>
+                        <Empty description="No tickets match the current filters." />
+                      </Card>
+                    )}
+                  </Space>
+                </div>
+              </Space>
+            </Card>
+          </Col>
+
+          <Col xs={24} md={12}>
+            {selectedTicket ? (
+              <Card
+                title={selectedTicket.subject}
+                extra={
+                  selectedTicket.status !== "resolved" ? (
+                    <Button
+                      type="primary"
+                      icon={<CheckCircleOutlined />}
+                      onClick={handleResolve}
+                      loading={submitting}
+                    >
+                      Mark Resolved
+                    </Button>
+                  ) : null
+                }
+              >
+                <Space
+                  direction="vertical"
+                  size="large"
+                  style={{ width: "100%" }}
+                >
+                  <Space wrap>
+                    <Badge color={getStatusColor(selectedTicket.status)} />
+                    <Text>{selectedTicket.status}</Text>
+                    <Badge color={getPriorityColor(selectedTicket.priority)} />
+                    <Text>{selectedTicket.priority} priority</Text>
+                    <Tag>{selectedTicket.ticketTarget}</Tag>
+                    <Tag>{getServiceLabel(selectedTicket.service)}</Tag>
+                  </Space>
+
+                  <Card size="small" style={{ background: "#fafafa" }}>
+                    <Space align="start">
+                      <Avatar
+                        src={selectedTicket.customer.avatar}
+                        icon={<UserOutlined />}
+                      >
+                        {!selectedTicket.customer.avatar
+                          ? selectedTicket.customer.initials
+                          : null}
+                      </Avatar>
+                      <div>
+                        <Text strong>{selectedTicket.customer.name}</Text>
+                        <div>
+                          <Text type="secondary">
+                            {selectedTicket.customer.email}
+                          </Text>
+                        </div>
+                        <div>
+                          <Text type="secondary">
+                            Ticket: {selectedTicket.ticketNumber}
+                          </Text>
+                        </div>
+                      </div>
+                    </Space>
+                  </Card>
+
+                  <Row gutter={[12, 12]}>
+                    <Col xs={24} sm={12}>
+                      <Card size="small">
+                        <Space>
+                          <TeamOutlined />
+                          <div>
+                            <Text strong>Vendor</Text>
+                            <div>
+                              <Text type="secondary">
+                                {selectedTicket.vendor.name}
+                              </Text>
+                            </div>
+                          </div>
+                        </Space>
+                      </Card>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <Card size="small">
+                        <Space>
+                          <ShopOutlined />
+                          <div>
+                            <Text strong>Restaurant</Text>
+                            <div>
+                              <Text type="secondary">
+                                {selectedTicket.restaurantName || "Not linked"}
+                              </Text>
+                            </div>
+                          </div>
+                        </Space>
+                      </Card>
+                    </Col>
+                  </Row>
+
+                  <Card size="small" title="Original Description">
+                    <Paragraph style={{ whiteSpace: "pre-wrap", marginBottom: 0 }}>
+                      {selectedTicket.description || "No description provided."}
+                    </Paragraph>
+                  </Card>
+
+                  <Card size="small" title="Conversation">
+                    <div style={{ maxHeight: 340, overflowY: "auto" }}>
+                      <Space
+                        direction="vertical"
+                        size="middle"
+                        style={{ width: "100%" }}
+                      >
+                        {selectedTicket.messages.map((entry) => {
+                          const isAdmin = entry.senderType === "admin";
+                          return (
+                            <div
+                              key={entry.id}
+                              style={{
+                                display: "flex",
+                                justifyContent: isAdmin ? "flex-end" : "flex-start",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  maxWidth: "85%",
+                                  background: isAdmin ? "#e6f4ff" : "#fafafa",
+                                  borderRadius: 12,
+                                  padding: 12,
+                                }}
+                              >
+                                <Text strong>{entry.senderName}</Text>
+                                <Paragraph
+                                  style={{ margin: "4px 0 8px", whiteSpace: "pre-wrap" }}
+                                >
+                                  {entry.message}
+                                </Paragraph>
+                                <Text type="secondary">
+                                  {entry.timestamp
+                                    ? new Date(entry.timestamp).toLocaleString()
+                                    : "Unknown time"}
+                                </Text>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </Space>
+                    </div>
+                  </Card>
+
+                  {selectedTicket.status !== "resolved" ? (
+                    <Card size="small" title="Reply">
+                      <Space
+                        direction="vertical"
+                        size="middle"
+                        style={{ width: "100%" }}
+                      >
+                        <TextArea
+                          rows={4}
+                          placeholder="Type your reply to the customer..."
+                          value={replyMessage}
+                          onChange={(event) => setReplyMessage(event.target.value)}
+                        />
                         <Button
                           type="primary"
                           icon={<SendOutlined />}
                           onClick={handleSendReply}
+                          disabled={!replyMessage.trim()}
+                          loading={submitting}
                         >
                           Send Reply
                         </Button>
                       </Space>
-                    </Form.Item>
-                  </Form>
-                }
-              />
-            </Card>
-          </Space>
-        )}
-      </Modal>
+                    </Card>
+                  ) : (
+                    <Alert
+                      type="success"
+                      showIcon
+                      icon={<CheckCircleOutlined />}
+                      message="This ticket has been resolved."
+                    />
+                  )}
+                </Space>
+              </Card>
+            ) : (
+              <Card>
+                <Empty description="Select a ticket to view its details." />
+              </Card>
+            )}
+          </Col>
+        </Row>
+      </Space>
     </div>
   );
 };
