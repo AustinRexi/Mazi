@@ -4,9 +4,17 @@ import {
   UserOutlined,
   SendOutlined,
   CheckCircleOutlined,
+  PaperClipOutlined,
 } from "@ant-design/icons";
 
 const { Text, Paragraph } = Typography;
+
+const isImageAttachment = (msg) => {
+  const mime = String(msg?.attachmentMime || "").toLowerCase();
+  if (mime.startsWith("image/")) return true;
+  const url = String(msg?.attachmentUrl || "").toLowerCase();
+  return [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"].some((ext) => url.includes(ext));
+};
 
 const TicketDetails = ({
   ticket,
@@ -14,6 +22,8 @@ const TicketDetails = ({
   onMarkResolved,
   replyMessage,
   setReplyMessage,
+  replyAttachment,
+  setReplyAttachment,
   isSubmitting = false,
   typingIndicator = "",
 }) => {
@@ -76,6 +86,23 @@ const TicketDetails = ({
               >
                 <Text strong>{msg.senderName}</Text>
                 <Paragraph style={{ marginBottom: 4 }}>{msg.message}</Paragraph>
+                {msg.attachmentUrl ? (
+                  <div style={{ marginBottom: 8 }}>
+                    {isImageAttachment(msg) ? (
+                      <a href={msg.attachmentUrl} target="_blank" rel="noreferrer">
+                        <img
+                          src={msg.attachmentUrl}
+                          alt={msg.attachmentName || "attachment"}
+                          style={{ maxWidth: 220, borderRadius: 8, border: "1px solid #f0f0f0" }}
+                        />
+                      </a>
+                    ) : (
+                      <a href={msg.attachmentUrl} target="_blank" rel="noreferrer">
+                        <PaperClipOutlined /> {msg.attachmentName || "View attachment"}
+                      </a>
+                    )}
+                  </div>
+                ) : null}
                 <Text type="secondary" style={{ fontSize: 12 }}>
                   {new Date(msg.timestamp).toLocaleString()}
                 </Text>
@@ -98,11 +125,21 @@ const TicketDetails = ({
               value={replyMessage}
               onChange={(e) => setReplyMessage(e.target.value)}
             />
+            <input
+              type="file"
+              onChange={(event) => {
+                const file = event.target.files?.[0] || null;
+                setReplyAttachment(file);
+              }}
+            />
+            {replyAttachment ? (
+              <Text type="secondary">Attachment: {replyAttachment.name}</Text>
+            ) : null}
             <Button
               type="primary"
               icon={<SendOutlined />}
               onClick={onSendReply}
-              disabled={!replyMessage.trim()}
+              disabled={!replyMessage.trim() && !replyAttachment}
               loading={isSubmitting}
             >
               Send Reply
@@ -132,6 +169,9 @@ TicketDetails.propTypes = {
         sender: PropTypes.string,
         senderName: PropTypes.string,
         message: PropTypes.string,
+        attachmentUrl: PropTypes.string,
+        attachmentName: PropTypes.string,
+        attachmentMime: PropTypes.string,
         timestamp: PropTypes.string,
       })
     ),
@@ -140,6 +180,11 @@ TicketDetails.propTypes = {
   onMarkResolved: PropTypes.func.isRequired,
   replyMessage: PropTypes.string.isRequired,
   setReplyMessage: PropTypes.func.isRequired,
+  replyAttachment: PropTypes.oneOfType([
+    PropTypes.shape({ name: PropTypes.string }),
+    PropTypes.oneOf([null]),
+  ]),
+  setReplyAttachment: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool,
   typingIndicator: PropTypes.string,
 };

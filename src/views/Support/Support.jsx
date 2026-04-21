@@ -20,6 +20,7 @@ import {
 import {
   CheckCircleOutlined,
   MessageOutlined,
+  PaperClipOutlined,
   ReloadOutlined,
   SearchOutlined,
   SendOutlined,
@@ -172,6 +173,9 @@ const mapTicket = (ticket) => {
                 ? vendorName
                 : customerName,
           message: entry.message,
+          attachmentUrl: entry.attachment_url || "",
+          attachmentName: entry.attachment_name || "",
+          attachmentMime: entry.attachment_mime || "",
           timestamp: entry.created_at,
         }))
       : [],
@@ -220,6 +224,13 @@ const getRealtimeTagColor = (status) => {
   }
 };
 
+const isImageAttachment = (entry) => {
+  const mime = String(entry?.attachmentMime || "").toLowerCase();
+  if (mime.startsWith("image/")) return true;
+  const url = String(entry?.attachmentUrl || "").toLowerCase();
+  return [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"].some((ext) => url.includes(ext));
+};
+
 const Support = () => {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -228,6 +239,7 @@ const Support = () => {
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [serviceFilter, setServiceFilter] = useState("all");
   const [replyMessage, setReplyMessage] = useState("");
+  const [replyAttachment, setReplyAttachment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -487,6 +499,10 @@ const Support = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setReplyAttachment(null);
+  }, [selectedTicket?.id]);
+
   const filteredTickets = useMemo(() => {
     if (serviceFilter === "all") {
       return tickets;
@@ -513,13 +529,18 @@ const Support = () => {
   }, [tickets]);
 
   const handleSendReply = async () => {
-    if (!selectedTicket || !replyMessage.trim()) return;
+    if (!selectedTicket || (!replyMessage.trim() && !replyAttachment)) return;
 
     try {
       setSubmitting(true);
-      await replyToAdminSupportTicket(selectedTicket.id, replyMessage.trim());
+      await replyToAdminSupportTicket(
+        selectedTicket.id,
+        replyMessage.trim(),
+        replyAttachment
+      );
       message.success("Reply sent");
       setReplyMessage("");
+      setReplyAttachment(null);
       await sendAdminSupportTyping(selectedTicket.id, false);
       localTypingSentRef.current = { ticketId: selectedTicket.id, active: false };
       await fetchTickets();
@@ -914,6 +935,27 @@ const Support = () => {
                                 >
                                   {entry.message}
                                 </Paragraph>
+                                {entry.attachmentUrl ? (
+                                  <div style={{ marginBottom: 8 }}>
+                                    {isImageAttachment(entry) ? (
+                                      <a href={entry.attachmentUrl} target="_blank" rel="noreferrer">
+                                        <img
+                                          src={entry.attachmentUrl}
+                                          alt={entry.attachmentName || "attachment"}
+                                          style={{
+                                            maxWidth: 220,
+                                            borderRadius: 8,
+                                            border: "1px solid #f0f0f0",
+                                          }}
+                                        />
+                                      </a>
+                                    ) : (
+                                      <a href={entry.attachmentUrl} target="_blank" rel="noreferrer">
+                                        <PaperClipOutlined /> {entry.attachmentName || "View attachment"}
+                                      </a>
+                                    )}
+                                  </div>
+                                ) : null}
                                 <Text type="secondary">
                                   {entry.timestamp
                                     ? new Date(entry.timestamp).toLocaleString()
@@ -945,11 +987,23 @@ const Support = () => {
                           value={replyMessage}
                           onChange={(event) => setReplyMessage(event.target.value)}
                         />
+                        <input
+                          type="file"
+                          onChange={(event) => {
+                            const file = event.target.files?.[0] || null;
+                            setReplyAttachment(file);
+                          }}
+                        />
+                        {replyAttachment ? (
+                          <Text type="secondary">
+                            Attachment: {replyAttachment.name}
+                          </Text>
+                        ) : null}
                         <Button
                           type="primary"
                           icon={<SendOutlined />}
                           onClick={handleSendReply}
-                          disabled={!replyMessage.trim()}
+                          disabled={!replyMessage.trim() && !replyAttachment}
                           loading={submitting}
                         >
                           Send Reply

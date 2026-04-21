@@ -24,11 +24,24 @@ export const fetchAdminSupportTickets = async (params = {}) => {
   return response.data?.data || [];
 };
 
-export const replyToAdminSupportTicket = async (ticketId, message) => {
+export const replyToAdminSupportTicket = async (ticketId, message, attachmentFile = null) => {
+  const payload = new FormData();
+  if ((message || "").trim()) {
+    payload.append("message", message.trim());
+  }
+  if (attachmentFile) {
+    payload.append("attachment", attachmentFile);
+  }
+
   const response = await axios.post(
     `${API_BASE_URL}/admin/support/tickets/${ticketId}/messages`,
-    { message },
-    { headers: buildHeaders() }
+    payload,
+    {
+      headers: {
+        ...buildHeaders(),
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
 
   return response.data;

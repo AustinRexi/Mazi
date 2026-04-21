@@ -40,6 +40,9 @@ const mapTicket = (ticket) => ({
         id: msg.id,
         sender: msg.sender_type === "vendor" ? "vendor" : "customer",
         message: msg.message,
+        attachmentUrl: msg.attachment_url || "",
+        attachmentName: msg.attachment_name || "",
+        attachmentMime: msg.attachment_mime || "",
         timestamp: msg.created_at,
         senderName:
           msg.sender_type === "vendor"
@@ -56,6 +59,7 @@ const VendorSupport = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [replyMessage, setReplyMessage] = useState("");
+  const [replyAttachment, setReplyAttachment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -306,22 +310,31 @@ const VendorSupport = () => {
   }, [token, realtimeConfig, restaurantId, fetchTickets, realtimeEnabled]);
 
   const handleSendReply = async () => {
-    if (!replyMessage.trim() || !selectedTicket || !token) return;
+    if ((!replyMessage.trim() && !replyAttachment) || !selectedTicket || !token) return;
 
     try {
       setSubmitting(true);
+      const payload = new FormData();
+      if (replyMessage.trim()) {
+        payload.append("message", replyMessage.trim());
+      }
+      if (replyAttachment) {
+        payload.append("attachment", replyAttachment);
+      }
       await axios.post(
         `${API_BASE_URL}/vendor/support/tickets/${selectedTicket.id}/messages`,
-        { message: replyMessage.trim() },
+        payload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
       setReplyMessage("");
+      setReplyAttachment(null);
       await sendVendorTyping(selectedTicket.id, false);
       localTypingSentRef.current = { ticketId: selectedTicket.id, active: false };
       message.success("Reply sent");
@@ -436,6 +449,10 @@ const VendorSupport = () => {
     };
   }, [sendVendorTyping]);
 
+  useEffect(() => {
+    setReplyAttachment(null);
+  }, [selectedTicket?.id]);
+
   const stats = useMemo(() => {
     const openTickets = tickets.filter((t) => t.status === "open").length;
     const inProgressTickets = tickets.filter((t) => t.status === "in-progress").length;
@@ -532,6 +549,8 @@ const VendorSupport = () => {
               onMarkResolved={markAsResolved}
               isSubmitting={submitting}
               typingIndicator={typingByTicket[selectedTicket?.id] || ""}
+              replyAttachment={replyAttachment}
+              setReplyAttachment={setReplyAttachment}
             />
           ) : (
             <Card style={{ textAlign: "center", padding: 50 }}>
