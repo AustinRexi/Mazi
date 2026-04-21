@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, Card, Form, InputNumber, message } from "antd";
+import { Alert, Button, Card, Form, InputNumber, Tooltip, Space, message } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import {
   fetchDistributionSettings,
   updateDistributionSettings,
@@ -10,6 +11,15 @@ function DistributionSettings() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const renderInfoLabel = (title, description) => (
+    <Space size={6}>
+      <span>{title}</span>
+      <Tooltip title={description} trigger={["hover", "click"]}>
+        <InfoCircleOutlined style={{ color: "#1677ff", cursor: "pointer" }} />
+      </Tooltip>
+    </Space>
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -154,7 +164,10 @@ function DistributionSettings() {
           </Form.Item>
 
           <Form.Item
-            label="Delivery Base Fee"
+            label={renderInfoLabel(
+              "Delivery Base Fee",
+              "Flat starting charge added to every delivery."
+            )}
             name="delivery_base_fee"
             rules={[{ required: true, message: "Delivery base fee is required." }]}
           >
@@ -162,7 +175,10 @@ function DistributionSettings() {
           </Form.Item>
 
           <Form.Item
-            label="Delivery Price Per Km"
+            label={renderInfoLabel(
+              "Delivery Price Per Km",
+              "Variable charge per kilometer traveled."
+            )}
             name="delivery_price_per_km"
             rules={[{ required: true, message: "Delivery price per km is required." }]}
           >
@@ -170,7 +186,10 @@ function DistributionSettings() {
           </Form.Item>
 
           <Form.Item
-            label="Delivery Minimum Fee"
+            label={renderInfoLabel(
+              "Delivery Minimum Fee",
+              "Floor value. Final delivery fee cannot go below this."
+            )}
             name="delivery_min_fee"
             rules={[{ required: true, message: "Delivery minimum fee is required." }]}
           >
@@ -178,7 +197,10 @@ function DistributionSettings() {
           </Form.Item>
 
           <Form.Item
-            label="Delivery Speed (km/h)"
+            label={renderInfoLabel(
+              "Delivery Speed (km/h)",
+              "Assumed rider speed used to estimate ETA."
+            )}
             name="delivery_speed_kmh"
             rules={[{ required: true, message: "Delivery speed is required." }]}
           >
@@ -186,7 +208,10 @@ function DistributionSettings() {
           </Form.Item>
 
           <Form.Item
-            label="Delivery Max Radius (km) — 0 disables"
+            label={renderInfoLabel(
+              "Delivery Max Radius (km) — 0 disables",
+              "Maximum service distance from restaurant to customer. 0 means no radius limit."
+            )}
             name="delivery_max_radius_km"
             rules={[{ required: true, message: "Delivery max radius is required." }]}
           >
@@ -194,7 +219,10 @@ function DistributionSettings() {
           </Form.Item>
 
           <Form.Item
-            label="Delivery Surge Multiplier"
+            label={renderInfoLabel(
+              "Delivery Surge Multiplier",
+              "Multiplier applied to fee during surge hours. Example: 1.5 = 50% increase."
+            )}
             name="delivery_surge_multiplier"
             rules={[{ required: true, message: "Delivery surge multiplier is required." }]}
           >
@@ -202,14 +230,20 @@ function DistributionSettings() {
           </Form.Item>
 
           <Form.Item
-            label="Surge Start Hour (0-23, optional)"
+            label={renderInfoLabel(
+              "Surge Start Hour (0-23, optional)",
+              "Hour surge pricing starts, in 24-hour format."
+            )}
             name="delivery_surge_start_hour"
           >
             <InputNumber min={0} max={23} step={1} precision={0} style={{ width: "100%" }} />
           </Form.Item>
 
           <Form.Item
-            label="Surge End Hour (0-23, optional)"
+            label={renderInfoLabel(
+              "Surge End Hour (0-23, optional)",
+              "Hour surge pricing ends, in 24-hour format."
+            )}
             name="delivery_surge_end_hour"
           >
             <InputNumber min={0} max={23} step={1} precision={0} style={{ width: "100%" }} />
