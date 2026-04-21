@@ -31,6 +31,10 @@ function DistributionSettings() {
           vendor_product_percentage: Number(data?.vendor_product_percentage || 0),
           referral_percentage: Number(data?.referral_percentage || 0),
           withdrawal_threshold: Number(data?.withdrawal_threshold || 0),
+          delivery_base_fee: Number(data?.delivery_base_fee || 0),
+          delivery_price_per_km: Number(data?.delivery_price_per_km || 0),
+          delivery_min_fee: Number(data?.delivery_min_fee || 0),
+          delivery_speed_kmh: Number(data?.delivery_speed_kmh || 0),
         });
       } catch (requestError) {
         if (!mounted) {
@@ -135,6 +139,38 @@ function DistributionSettings() {
             rules={[{ required: true, message: "Withdrawal threshold is required." }]}
           >
             <InputNumber min={0} step={0.01} precision={2} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Delivery Base Fee"
+            name="delivery_base_fee"
+            rules={[{ required: true, message: "Delivery base fee is required." }]}
+          >
+            <InputNumber min={0} step={0.01} precision={2} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Delivery Price Per Km"
+            name="delivery_price_per_km"
+            rules={[{ required: true, message: "Delivery price per km is required." }]}
+          >
+            <InputNumber min={0} step={0.01} precision={2} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Delivery Minimum Fee"
+            name="delivery_min_fee"
+            rules={[{ required: true, message: "Delivery minimum fee is required." }]}
+          >
+            <InputNumber min={0} step={0.01} precision={2} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Delivery Speed (km/h)"
+            name="delivery_speed_kmh"
+            rules={[{ required: true, message: "Delivery speed is required." }]}
+          >
+            <InputNumber min={0.01} step={0.01} precision={2} style={{ width: "100%" }} />
           </Form.Item>
 
           <Button type="primary" loading={saving} onClick={handleSubmit}>
