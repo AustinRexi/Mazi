@@ -35,6 +35,18 @@ function DistributionSettings() {
           delivery_price_per_km: Number(data?.delivery_price_per_km || 0),
           delivery_min_fee: Number(data?.delivery_min_fee || 0),
           delivery_speed_kmh: Number(data?.delivery_speed_kmh || 0),
+          delivery_max_radius_km: Number(data?.delivery_max_radius_km || 0),
+          delivery_surge_multiplier: Number(data?.delivery_surge_multiplier || 1),
+          delivery_surge_start_hour:
+            data?.delivery_surge_start_hour === null ||
+            data?.delivery_surge_start_hour === undefined
+              ? null
+              : Number(data?.delivery_surge_start_hour),
+          delivery_surge_end_hour:
+            data?.delivery_surge_end_hour === null ||
+            data?.delivery_surge_end_hour === undefined
+              ? null
+              : Number(data?.delivery_surge_end_hour),
         });
       } catch (requestError) {
         if (!mounted) {
@@ -171,6 +183,36 @@ function DistributionSettings() {
             rules={[{ required: true, message: "Delivery speed is required." }]}
           >
             <InputNumber min={0.01} step={0.01} precision={2} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Delivery Max Radius (km) — 0 disables"
+            name="delivery_max_radius_km"
+            rules={[{ required: true, message: "Delivery max radius is required." }]}
+          >
+            <InputNumber min={0} step={0.01} precision={2} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Delivery Surge Multiplier"
+            name="delivery_surge_multiplier"
+            rules={[{ required: true, message: "Delivery surge multiplier is required." }]}
+          >
+            <InputNumber min={1} step={0.01} precision={2} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Surge Start Hour (0-23, optional)"
+            name="delivery_surge_start_hour"
+          >
+            <InputNumber min={0} max={23} step={1} precision={0} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Surge End Hour (0-23, optional)"
+            name="delivery_surge_end_hour"
+          >
+            <InputNumber min={0} max={23} step={1} precision={0} style={{ width: "100%" }} />
           </Form.Item>
 
           <Button type="primary" loading={saving} onClick={handleSubmit}>
