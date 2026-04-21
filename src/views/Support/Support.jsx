@@ -365,10 +365,16 @@ const Support = () => {
 
     const onTicketTyping = (eventPayload) => {
       try {
-        const payload =
+        const payloadCandidate =
           typeof eventPayload === "string"
             ? JSON.parse(eventPayload)
             : eventPayload;
+        const payload =
+          payloadCandidate && typeof payloadCandidate?.data === "string"
+            ? JSON.parse(payloadCandidate.data)
+            : payloadCandidate && payloadCandidate?.data && typeof payloadCandidate.data === "object"
+              ? payloadCandidate.data
+              : payloadCandidate;
         if (!payload || typeof payload !== "object") return;
 
         const ticketId = Number(payload.ticket_id);
@@ -414,11 +420,12 @@ const Support = () => {
     };
 
     channel.bind("SupportTicketUpdated", onTicketUpdated);
-    channel.bind("SupportTicketTyping", onTicketTyping);
+    const typingEvents = ["SupportTicketTyping", ".SupportTicketTyping", "App\\Events\\SupportTicketTyping"];
+    typingEvents.forEach((eventName) => channel.bind(eventName, onTicketTyping));
 
     return () => {
       channel.unbind("SupportTicketUpdated", onTicketUpdated);
-      channel.unbind("SupportTicketTyping", onTicketTyping);
+      typingEvents.forEach((eventName) => channel.unbind(eventName, onTicketTyping));
       pusher.unsubscribe("admins");
       pusher.disconnect();
       channelRef.current = null;
