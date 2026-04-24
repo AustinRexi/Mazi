@@ -44,6 +44,7 @@ import VendorDrinks from "./vendors/drinks";
 import VendorOrder from "./vendors/orders";
 import VendorAnalytics from "./vendors/analytics";
 import VendorWishlist from "./vendors/wishlist";
+import VendorReviews from "./vendors/reviews";
 import HomeRoute from "./Components/protectedroute/HomeRoute";
 
 const router = createHashRouter([
@@ -95,6 +96,7 @@ const router = createHashRouter([
       { path: "vendors/drinks", element: <VendorDrinks /> },
       { path: "vendors/orders", element: <VendorOrder /> },
       { path: "vendors/wishlist", element: <VendorWishlist /> },
+      { path: "vendors/reviews", element: <VendorReviews /> },
       { path: "vendors/analytics", element: <VendorAnalytics /> },
       { path: "vendors/wallet", element: <VendorWallet /> },
       { path: "vendors/support", element: <VendorSupport /> },

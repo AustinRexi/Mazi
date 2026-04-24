@@ -340,6 +340,12 @@ const vendorMenu = [
     link: "/vendors/wishlist",
   },
   {
+    name: "Reviews",
+    icon: supportIcon,
+    activeIcon: supportfilled,
+    link: "/vendors/reviews",
+  },
+  {
     name: "Wallet",
     icon: walletIcon,
     activeIcon: walletfilled,
