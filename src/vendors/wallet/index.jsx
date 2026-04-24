@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { Alert, Button, Card, Col, Row, Select, Spin, message } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import BalanceCards from "./BalanceCards";
 import EarningsChart from "./EarningsChart";
 import TransactionTable from "./TransactionTable";
@@ -124,6 +125,7 @@ const buildEarningsData = (transactions) => {
 };
 
 const VendorWallet = () => {
+  const navigate = useNavigate();
   const currencyCode = useVendorCurrencyCode();
   const [transactions, setTransactions] = useState([]);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(
@@ -326,6 +328,11 @@ const VendorWallet = () => {
 
   return (
     <div style={{ padding: 24 }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+        <Button onClick={() => navigate("/vendors/wallet/withdrawals")}>
+          View Withdrawal History
+        </Button>
+      </div>
       <BalanceCards
         availableBalance={availableBalance}
         pendingBalance={pendingBalance}

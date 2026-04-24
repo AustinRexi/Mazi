@@ -5,10 +5,12 @@ import {
   Row,
   Col,
   Spin,
+  Button,
   message,
 } from "antd"; // Import Ant Design components
 import { TruckOutlined, CoffeeOutlined, SwapOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import WithdrawModal from "../../vendors/wallet/WithdrawModal";
 
 import Header from "./Header";
@@ -168,6 +170,7 @@ const ensureChartHasVisibleTotals = (series, fallbackTotal) => {
 };
 
 const Wallet = () => {
+  const navigate = useNavigate();
   const [selectedPeriod, setSelectedPeriod] = useState("7days");
   const [selectedService, setSelectedService] = useState("all");
   const { currencyCode } = useAdminCountryCurrency();
@@ -592,6 +595,11 @@ const Wallet = () => {
           <Row justify="center">
             <Col xs={24} sm={22} md={20} lg={24} xl={24}>
               <Space direction="vertical" size="large" style={{ width: "100%" }}>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button onClick={() => navigate("/Wallet/withdrawals")}>
+                    View Withdrawal History
+                  </Button>
+                </div>
                 <Header
                   selectedPeriod={selectedPeriod}
                   setSelectedPeriod={setSelectedPeriod}

@@ -27,6 +27,7 @@ import StoreDetails from "./views/Customers/StoreDetails";
 import Settings from "./views/Settings/Settings";
 import Support from "./views/Support/Support";
 import Wallet from "./views/Wallet/index";
+import AdminWithdrawalHistory from "./views/Wallet/AdminWithdrawalHistory";
 import Expenses from "./views/Expenses";
 import CurrencyExchange from "./views/CurrencyExchange/CurrencyExchange";
 import Courier from "./views/Courier/Courier";
@@ -37,6 +38,7 @@ import CongratulationsCard from "./Components/Product/CongratulationsCard";
 // Vendor Views
 import VendorDashboard from "./vendors/dashboard";
 import VendorWallet from "./vendors/wallet";
+import VendorWithdrawalHistory from "./vendors/wallet/WithdrawalHistory";
 import VendorSupport from "./vendors/support";
 import VendorSettings from "./vendors/settings";
 import VendorProduct from "./vendors/product";
@@ -68,6 +70,7 @@ const router = createHashRouter([
       { path: "Courier", element: <Courier /> },
       { path: "Courier/:id", element: <CourierDetails /> },
       { path: "Wallet", element: <Wallet /> },
+      { path: "Wallet/withdrawals", element: <AdminWithdrawalHistory /> },
       { path: "Expenses", element: <Expenses /> },
       { path: "Support", element: <Support /> },
       { path: "Settings", element: <Settings /> },
@@ -99,6 +102,7 @@ const router = createHashRouter([
       { path: "vendors/reviews", element: <VendorReviews /> },
       { path: "vendors/analytics", element: <VendorAnalytics /> },
       { path: "vendors/wallet", element: <VendorWallet /> },
+      { path: "vendors/wallet/withdrawals", element: <VendorWithdrawalHistory /> },
       { path: "vendors/support", element: <VendorSupport /> },
       { path: "vendors/settings", element: <VendorSettings /> },
     ],
