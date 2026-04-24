@@ -30,6 +30,10 @@ const toCustomer = (ticket) => {
 const mapTicket = (ticket) => ({
   ...ticket,
   id: ticket?.id,
+  unreadMessagesCount: Number(ticket?.unread_messages_count || 0),
+  hasUnreadReply:
+    Boolean(ticket?.has_unread_reply) ||
+    Number(ticket?.unread_messages_count || 0) > 0,
   customer: toCustomer(ticket),
   subject: ticket?.subject || "No subject",
   status: ticket?.status || "open",
@@ -133,6 +137,55 @@ const VendorSupport = () => {
       setLoading(false);
     }
   }, [token, statusFilter, priorityFilter, searchQuery, restaurantId, selectedTicket?.id]);
+
+  const handleSelectTicket = useCallback(
+    async (ticket) => {
+      if (!ticket?.id || !token) {
+        setSelectedTicket(ticket || null);
+        return;
+      }
+
+      try {
+        const params = {};
+        if (restaurantId) {
+          params.restaurant_id = restaurantId;
+        }
+
+        const response = await axios.get(
+          `${API_BASE_URL}/vendor/support/tickets/${ticket.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+            params,
+          }
+        );
+
+        const mapped = mapTicket(response.data?.data || ticket);
+        const nextSelected = {
+          ...mapped,
+          unreadMessagesCount: 0,
+          hasUnreadReply: false,
+        };
+
+        setSelectedTicket(nextSelected);
+        setTickets((current) =>
+          current.map((row) =>
+            row.id === nextSelected.id ? { ...row, ...nextSelected } : row
+          )
+        );
+        fetchTickets();
+      } catch (selectError) {
+        setSelectedTicket(ticket);
+        message.error(
+          selectError.response?.data?.message ||
+            "Failed to load latest ticket messages."
+        );
+      }
+    },
+    [token, restaurantId, fetchTickets]
+  );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -529,7 +582,7 @@ const VendorSupport = () => {
           <TicketList
             tickets={tickets}
             selectedTicket={selectedTicket}
-            onSelect={setSelectedTicket}
+            onSelect={handleSelectTicket}
             searchQuery={searchQuery}
             onSearch={setSearchQuery}
             statusFilter={statusFilter}

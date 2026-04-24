@@ -30,6 +30,7 @@ import {
 } from "@ant-design/icons";
 import StatsCards from "../../vendors/support/StatsCards";
 import {
+  fetchAdminSupportTicket,
   fetchAdminSupportTickets,
   fetchRealtimeConfig,
   replyToAdminSupportTicket,
@@ -142,6 +143,10 @@ const mapTicket = (ticket) => {
   return {
     ...ticket,
     id: ticket?.id,
+    unreadMessagesCount: Number(ticket?.unread_messages_count || 0),
+    hasUnreadReply:
+      Boolean(ticket?.has_unread_reply) ||
+      Number(ticket?.unread_messages_count || 0) > 0,
     customer: {
       name: customerName,
       email: ticket?.user?.email || "unknown@customer.com",
@@ -253,6 +258,7 @@ const Support = () => {
   const localTypingDebounceRef = useRef(null);
   const localTypingIdleRef = useRef(null);
   const localTypingSentRef = useRef({ ticketId: null, active: false });
+  const conversationContainerRef = useRef(null);
 
   const fetchTickets = useCallback(async () => {
     try {
@@ -290,6 +296,41 @@ const Support = () => {
       setLoading(false);
     }
   }, [priorityFilter, searchQuery, statusFilter]);
+
+  const handleSelectTicket = useCallback(
+    async (ticket) => {
+      if (!ticket?.id) {
+        setSelectedTicket(null);
+        return;
+      }
+
+      try {
+        const latest = await fetchAdminSupportTicket(ticket.id);
+        const mapped = mapTicket(latest || ticket);
+        const nextSelected = {
+          ...mapped,
+          unreadMessagesCount: 0,
+          hasUnreadReply: false,
+        };
+
+        setSelectedTicket(nextSelected);
+        setTickets((current) =>
+          current.map((row) =>
+            row.id === nextSelected.id ? { ...row, ...nextSelected } : row
+          )
+        );
+        fetchTickets();
+      } catch (selectError) {
+        setSelectedTicket(ticket);
+        message.error(
+          selectError.response?.data?.message ||
+            selectError.message ||
+            "Failed to load latest ticket messages."
+        );
+      }
+    },
+    [fetchTickets]
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -502,6 +543,12 @@ const Support = () => {
   useEffect(() => {
     setReplyAttachment(null);
   }, [selectedTicket?.id]);
+
+  useEffect(() => {
+    if (!conversationContainerRef.current) return;
+    conversationContainerRef.current.scrollTop =
+      conversationContainerRef.current.scrollHeight;
+  }, [selectedTicket?.id, selectedTicket?.messages?.length]);
 
   const filteredTickets = useMemo(() => {
     if (serviceFilter === "all") {
@@ -721,7 +768,7 @@ const Support = () => {
                         <Card
                           key={ticket.id}
                           hoverable
-                          onClick={() => setSelectedTicket(ticket)}
+                          onClick={() => handleSelectTicket(ticket)}
                           style={{
                             borderColor:
                               selectedTicket?.id === ticket.id ? "#1677ff" : "#f0f0f0",
@@ -756,6 +803,14 @@ const Support = () => {
                                     <Text strong>{ticket.customer.name}</Text>
                                     <div>
                                       <Text type="secondary">{ticket.ticketNumber}</Text>
+                                      {ticket.hasUnreadReply ? (
+                                        <Tag color="red" style={{ marginLeft: 8 }}>
+                                          NEW
+                                          {ticket.unreadMessagesCount > 0
+                                            ? ` (${ticket.unreadMessagesCount})`
+                                            : ""}
+                                        </Tag>
+                                      ) : null}
                                     </div>
                                   </div>
                                   <Text type="secondary">
@@ -905,7 +960,10 @@ const Support = () => {
                   </Card>
 
                   <Card size="small" title="Conversation">
-                    <div style={{ maxHeight: 340, overflowY: "auto" }}>
+                    <div
+                      ref={conversationContainerRef}
+                      style={{ maxHeight: 340, overflowY: "auto" }}
+                    >
                       <Space
                         direction="vertical"
                         size="middle"

@@ -111,6 +111,14 @@ const TicketList = ({
                 <Tag color={getPriorityColor(ticket.priority)}>
                   {ticket.priority}
                 </Tag>
+                {ticket.hasUnreadReply ? (
+                  <Tag color="red">
+                    NEW
+                    {ticket.unreadMessagesCount > 0
+                      ? ` (${ticket.unreadMessagesCount})`
+                      : ""}
+                  </Tag>
+                ) : null}
               </div>
             </Space>
             <Space

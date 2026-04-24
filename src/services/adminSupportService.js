@@ -24,6 +24,17 @@ export const fetchAdminSupportTickets = async (params = {}) => {
   return response.data?.data || [];
 };
 
+export const fetchAdminSupportTicket = async (ticketId) => {
+  const response = await axios.get(
+    `${API_BASE_URL}/admin/support/tickets/${ticketId}`,
+    {
+      headers: buildHeaders(),
+    }
+  );
+
+  return response.data?.data || null;
+};
+
 export const replyToAdminSupportTicket = async (ticketId, message, attachmentFile = null) => {
   const payload = new FormData();
   if ((message || "").trim()) {

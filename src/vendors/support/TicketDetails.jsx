@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Card, Avatar, Typography, Divider, Input, Button, Space } from "antd";
 import PropTypes from "prop-types";
 import {
@@ -27,6 +28,14 @@ const TicketDetails = ({
   isSubmitting = false,
   typingIndicator = "",
 }) => {
+  const messagesContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (!messagesContainerRef.current) return;
+    messagesContainerRef.current.scrollTop =
+      messagesContainerRef.current.scrollHeight;
+  }, [ticket?.id, ticket?.messages?.length]);
+
   if (!ticket)
     return (
       <Card>
@@ -65,7 +74,7 @@ const TicketDetails = ({
           </Space>
         </Card>
 
-        <div style={{ maxHeight: 300, overflowY: "auto" }}>
+        <div ref={messagesContainerRef} style={{ maxHeight: 300, overflowY: "auto" }}>
           {ticket.messages.map((msg) => (
             <div
               key={msg.id}
