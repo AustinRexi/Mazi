@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Modal, Form, Input, Button, Typography, Select, message } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Button,
+  Typography,
+  Select,
+  Checkbox,
+  message,
+} from "antd";
 import { DollarOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 
@@ -14,10 +23,13 @@ const WithdrawModal = ({
   availableBalance,
   onWithdraw,
   withdrawing,
+  endpointPrefix = "/vendor/wallet",
 }) => {
   const [form] = Form.useForm();
   const [banks, setBanks] = useState([]);
+  const [beneficiaries, setBeneficiaries] = useState([]);
   const [loadingBanks, setLoadingBanks] = useState(false);
+  const [loadingBeneficiaries, setLoadingBeneficiaries] = useState(false);
   const [resolving, setResolving] = useState(false);
 
   const bankCode = Form.useWatch("bank_code", form);
@@ -28,26 +40,50 @@ const WithdrawModal = ({
     [bankCode, accountNumber]
   );
 
+  const syncBankName = (nextBankCode) => {
+    const selected = banks.find((bank) => String(bank.code) === String(nextBankCode));
+    form.setFieldValue("bank_name", selected?.name || "");
+  };
+
+  const applyBeneficiary = (beneficiaryId) => {
+    const selected = beneficiaries.find(
+      (item) => String(item.id) === String(beneficiaryId)
+    );
+
+    if (!selected) {
+      return;
+    }
+
+    form.setFieldsValue({
+      beneficiary_id: selected.id,
+      bank_code: selected.bank_code || undefined,
+      bank_name: selected.bank_name || "",
+      account_number: selected.account_number || "",
+      account_name: selected.account_name || "",
+    });
+  };
+
   const handleWithdraw = async (values) => {
     await onWithdraw(values, form);
   };
 
   useEffect(() => {
-    const fetchBanks = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
+    const token = localStorage.getItem("token");
+    if (!isModalOpen || !token) {
+      return;
+    }
 
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    };
+
+    const fetchBanks = async () => {
       try {
         setLoadingBanks(true);
-        const response = await axios.get(`${API_BASE_URL}/vendor/wallet/banks`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
+        const response = await axios.get(`${API_BASE_URL}${endpointPrefix}/banks`, {
+          headers,
         });
-
         setBanks(response.data?.data || []);
       } catch (error) {
         message.error(
@@ -58,12 +94,32 @@ const WithdrawModal = ({
       }
     };
 
-    if (isModalOpen) {
-      fetchBanks();
-    }
-  }, [isModalOpen]);
+    const fetchBeneficiaries = async () => {
+      try {
+        setLoadingBeneficiaries(true);
+        const response = await axios.get(
+          `${API_BASE_URL}${endpointPrefix}/beneficiaries`,
+          { headers }
+        );
+        setBeneficiaries(response.data?.data || []);
+      } catch (error) {
+        setBeneficiaries([]);
+      } finally {
+        setLoadingBeneficiaries(false);
+      }
+    };
+
+    fetchBanks();
+    fetchBeneficiaries();
+  }, [endpointPrefix, isModalOpen]);
 
   useEffect(() => {
+    if (!isModalOpen) {
+      form.resetFields();
+      form.setFieldValue("save_as_beneficiary", true);
+      return;
+    }
+
     if (!canResolve) {
       form.setFieldValue("account_name", "");
       return;
@@ -77,7 +133,7 @@ const WithdrawModal = ({
 
       try {
         setResolving(true);
-        const response = await axios.get(`${API_BASE_URL}/vendor/wallet/resolve`, {
+        const response = await axios.get(`${API_BASE_URL}${endpointPrefix}/resolve`, {
           params: {
             bank_code: bankCode,
             account_number: accountNumber,
@@ -100,7 +156,7 @@ const WithdrawModal = ({
     };
 
     resolveAccount();
-  }, [accountNumber, bankCode, canResolve, form]);
+  }, [accountNumber, bankCode, canResolve, endpointPrefix, form, isModalOpen]);
 
   return (
     <Modal
@@ -109,7 +165,29 @@ const WithdrawModal = ({
       onCancel={() => setIsModalOpen(false)}
       footer={null}
     >
-      <Form form={form} layout="vertical" onFinish={handleWithdraw}>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleWithdraw}
+        initialValues={{ save_as_beneficiary: true }}
+      >
+        <Form.Item name="beneficiary_id" label="Saved Beneficiary">
+          <Select
+            allowClear
+            showSearch
+            placeholder="Select saved beneficiary"
+            loading={loadingBeneficiaries}
+            optionFilterProp="label"
+            onChange={applyBeneficiary}
+            options={beneficiaries.map((item) => ({
+              value: item.id,
+              label: `${item.account_name || "Beneficiary"} - ${
+                item.bank_name || "Bank"
+              } (${item.account_number_masked || item.account_number || ""})`,
+            }))}
+          />
+        </Form.Item>
+
         <Form.Item
           name="amount"
           label="Amount"
@@ -162,6 +240,7 @@ const WithdrawModal = ({
             placeholder="Select bank"
             loading={loadingBanks}
             optionFilterProp="children"
+            onChange={syncBankName}
             filterOption={(input, option) =>
               String(option?.children || "")
                 .toLowerCase()
@@ -176,6 +255,10 @@ const WithdrawModal = ({
           </Select>
         </Form.Item>
 
+        <Form.Item name="bank_name" hidden>
+          <Input />
+        </Form.Item>
+
         <Form.Item name="account_name" label="Account Name">
           <Input
             placeholder={resolving ? "Resolving account name..." : "John Doe"}
@@ -184,7 +267,11 @@ const WithdrawModal = ({
         </Form.Item>
 
         <Form.Item name="description" label="Description (Optional)">
-          <Input placeholder="Vendor wallet withdrawal" />
+          <Input placeholder="Wallet withdrawal" />
+        </Form.Item>
+
+        <Form.Item name="save_as_beneficiary" valuePropName="checked">
+          <Checkbox>Save as beneficiary</Checkbox>
         </Form.Item>
 
         <Form.Item

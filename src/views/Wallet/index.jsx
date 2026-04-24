@@ -547,20 +547,22 @@ const Wallet = () => {
   const handleAdminWithdraw = async (values, form) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      message.error("You need to log in as a vendor to withdraw.");
+      message.error("You need to log in as an admin to withdraw.");
       return;
     }
 
     try {
       setWithdrawing(true);
       await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api"}/vendor/wallet/withdraw`,
+        `${import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api"}/admin/wallet/withdraw`,
         {
           amount: Number(values.amount),
           bank_code: values.bank_code,
           account_number: values.account_number,
           account_name: values.account_name,
+          bank_name: values.bank_name,
           description: values.description,
+          save_as_beneficiary: Boolean(values.save_as_beneficiary),
           transaction_pin: values.transaction_pin,
         },
         {
@@ -629,6 +631,7 @@ const Wallet = () => {
         availableBalance={Number(financialSummary.totalRevenue || 0)}
         onWithdraw={handleAdminWithdraw}
         withdrawing={withdrawing}
+        endpointPrefix="/admin/wallet"
       />
     </Layout>
   );

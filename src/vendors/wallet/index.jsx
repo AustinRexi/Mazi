@@ -261,7 +261,9 @@ const VendorWallet = () => {
           bank_code: values.bank_code,
           account_number: values.account_number,
           account_name: values.account_name,
+          bank_name: values.bank_name,
           description: values.description,
+          save_as_beneficiary: Boolean(values.save_as_beneficiary),
           transaction_pin: values.transaction_pin,
         },
         {
@@ -392,6 +394,7 @@ const VendorWallet = () => {
         availableBalance={availableBalance}
         onWithdraw={handleWithdraw}
         withdrawing={withdrawing}
+        endpointPrefix="/vendor/wallet"
       />
     </div>
   );
