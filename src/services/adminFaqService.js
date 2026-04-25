@@ -32,6 +32,14 @@ export const fetchAdminFaqById = async (id) => {
   return response.data?.data || null;
 };
 
+export const createAdminFaq = async (payload) => {
+  const response = await axios.post(`${API_BASE_URL}/admin/faqs`, payload, {
+    headers: authHeaders(),
+  });
+
+  return response.data?.data || null;
+};
+
 export const updateAdminFaq = async (id, payload) => {
   const response = await axios.put(`${API_BASE_URL}/admin/faqs/${id}`, payload, {
     headers: authHeaders(),

@@ -32,6 +32,14 @@ export const fetchAdminFaqCategoryById = async (id) => {
   return response.data?.data || null;
 };
 
+export const createAdminFaqCategory = async (payload) => {
+  const response = await axios.post(`${API_BASE_URL}/admin/faq-categories`, payload, {
+    headers: authHeaders(),
+  });
+
+  return response.data?.data || null;
+};
+
 export const updateAdminFaqCategory = async (id, payload) => {
   const response = await axios.put(`${API_BASE_URL}/admin/faq-categories/${id}`, payload, {
     headers: authHeaders(),

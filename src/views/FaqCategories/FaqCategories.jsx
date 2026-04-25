@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, Avatar, Button, Form, Input, Modal, Space, Switch, Table, Tag, message } from "antd";
-import { DeleteOutlined, EditOutlined, EyeOutlined, UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 import Search from "../../Components/Product/Search";
 import {
+  createAdminFaqCategory,
   deleteAdminFaqCategory,
   fetchAdminFaqCategories,
   updateAdminFaqCategory,
@@ -74,6 +75,16 @@ function FaqCategories() {
     form.resetFields();
   };
 
+  const openCreateModal = () => {
+    setEditingCategory(null);
+    form.setFieldsValue({
+      category_name: "",
+      category_icon: "",
+      category_status: true,
+    });
+    setIsModalOpen(true);
+  };
+
   const openEditModal = (record) => {
     setEditingCategory(record);
     form.setFieldsValue({
@@ -85,21 +96,23 @@ function FaqCategories() {
   };
 
   const handleSave = async () => {
-    if (!editingCategory?.id) {
-      return;
-    }
-
     try {
       const values = await form.validateFields();
       setSaving(true);
-
-      await updateAdminFaqCategory(editingCategory.id, {
+      const payload = {
         category_name: values.category_name,
         category_icon: values.category_icon || null,
         category_status: values.category_status ? 1 : 0,
-      });
+      };
 
-      message.success("FAQ category updated successfully.");
+      if (editingCategory?.id) {
+        await updateAdminFaqCategory(editingCategory.id, payload);
+        message.success("FAQ category updated successfully.");
+      } else {
+        await createAdminFaqCategory(payload);
+        message.success("FAQ category created successfully.");
+      }
+
       closeModal();
       setReloadKey((current) => current + 1);
     } catch (requestError) {
@@ -222,15 +235,20 @@ function FaqCategories() {
         }}
       >
         <h2 style={{ margin: 0 }}>FAQ Categories</h2>
-        <Search
-          placeholder="Search FAQ categories"
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-          style={{ width: 320, height: 45, marginTop: 0 }}
-        />
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <Search
+            placeholder="Search FAQ categories"
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
+            style={{ width: 320, height: 45, marginTop: 0 }}
+          />
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
+            Add FAQ Category
+          </Button>
+        </div>
       </div>
 
       {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 12 }} /> : null}
@@ -259,11 +277,11 @@ function FaqCategories() {
       />
 
       <Modal
-        title="Edit FAQ Category"
+        title={editingCategory ? "Edit FAQ Category" : "Add FAQ Category"}
         open={isModalOpen}
         onCancel={closeModal}
         onOk={handleSave}
-        okText="Update"
+        okText={editingCategory ? "Update" : "Create"}
         confirmLoading={saving}
       >
         <Form layout="vertical" form={form}>

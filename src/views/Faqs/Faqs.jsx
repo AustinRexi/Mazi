@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, Button, Form, Input, Modal, Select, Space, Table, message } from "antd";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import Search from "../../Components/Product/Search";
 import {
+  createAdminFaq,
   deleteAdminFaq,
   fetchAdminFaqs,
   updateAdminFaq,
@@ -101,6 +102,16 @@ function Faqs() {
     form.resetFields();
   };
 
+  const openCreateModal = () => {
+    setEditingFaq(null);
+    form.setFieldsValue({
+      faq_category_id: undefined,
+      heading: "",
+      body: "",
+    });
+    setIsModalOpen(true);
+  };
+
   const openEditModal = (record) => {
     setEditingFaq(record);
     form.setFieldsValue({
@@ -112,21 +123,23 @@ function Faqs() {
   };
 
   const handleSave = async () => {
-    if (!editingFaq?.id) {
-      return;
-    }
-
     try {
       const values = await form.validateFields();
       setSaving(true);
-
-      await updateAdminFaq(editingFaq.id, {
+      const payload = {
         faq_category_id: Number(values.faq_category_id),
         heading: values.heading,
         body: values.body,
-      });
+      };
 
-      message.success("FAQ updated successfully.");
+      if (editingFaq?.id) {
+        await updateAdminFaq(editingFaq.id, payload);
+        message.success("FAQ updated successfully.");
+      } else {
+        await createAdminFaq(payload);
+        message.success("FAQ created successfully.");
+      }
+
       closeModal();
       setReloadKey((current) => current + 1);
     } catch (requestError) {
@@ -220,15 +233,20 @@ function Faqs() {
         }}
       >
         <h2 style={{ margin: 0 }}>FAQs</h2>
-        <Search
-          placeholder="Search FAQs"
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-          style={{ width: 320, height: 45, marginTop: 0 }}
-        />
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <Search
+            placeholder="Search FAQs"
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
+            style={{ width: 320, height: 45, marginTop: 0 }}
+          />
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
+            Add FAQ
+          </Button>
+        </div>
       </div>
 
       {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 12 }} /> : null}
@@ -256,11 +274,11 @@ function Faqs() {
       />
 
       <Modal
-        title="Edit FAQ"
+        title={editingFaq ? "Edit FAQ" : "Add FAQ"}
         open={isModalOpen}
         onCancel={closeModal}
         onOk={handleSave}
-        okText="Update"
+        okText={editingFaq ? "Update" : "Create"}
         confirmLoading={saving}
         width={700}
       >
