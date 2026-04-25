@@ -60,6 +60,7 @@ const router = createHashRouter([
     children: [
       // 🔵 Admin Routes
       { path: "", element: <HomeRoute /> },
+      { path: "home", element: <HomeRoute /> },
       { path: "admin/dashboard", element: <Board /> },
 
       // { path: "", element: <Board /> },

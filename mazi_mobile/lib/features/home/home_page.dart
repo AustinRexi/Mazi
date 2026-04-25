@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                     }
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
+                      children: const [
                         Expanded(child: _AboutCopy()),
                         SizedBox(width: 18),
                         Expanded(child: _AboutVisual()),
@@ -347,7 +347,7 @@ class _HomePageState extends State<HomePage> {
                         if (mobile) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                            children: const [
                               _FooterBrand(),
                               SizedBox(height: 22),
                               _FooterLinks(title: 'Quick Links', links: ['Home', 'Features', 'Become a Vendor', 'Contact']),
@@ -360,7 +360,7 @@ class _HomePageState extends State<HomePage> {
                         }
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: const [
                             Expanded(flex: 2, child: _FooterBrand()),
                             Expanded(child: _FooterLinks(title: 'Quick Links', links: ['Home', 'Features', 'Become a Vendor', 'Contact'])),
                             Expanded(child: _FooterLinks(title: 'Support', links: ['FAQ', 'Help Center', 'Privacy Policy', 'Terms of Service'])),
@@ -641,7 +641,7 @@ class _FooterBrand extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: const [
         Text('Mazi', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w700)),
         SizedBox(height: 10),
         Text('Your one-stop shop for food and groceries', style: TextStyle(color: Color(0xFFA2ACBE), height: 1.5)),
