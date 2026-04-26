@@ -1,0 +1,356 @@
+.mazi-landing {
+  --bg: #f6fbf9;
+  --card: #f2fbf7;
+  --muted: #5f6b76;
+  --title: #0f1720;
+  --primary: #00a651;
+  --primary-dark: #009048;
+  --footer: #071334;
+  --max: 1160px;
+  background: #ffffff;
+  color: var(--title);
+}
+
+.mazi-wrap {
+  width: min(100% - 32px, var(--max));
+  margin: 0 auto;
+}
+
+.mazi-hero {
+  background: linear-gradient(90deg, #edf9f1 0%, #e8f8f2 100%);
+  text-align: center;
+  padding: 90px 0 84px;
+}
+
+.mazi-hero h1 {
+  margin: 0;
+  font-size: clamp(54px, 10vw, 112px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  font-family: NeueHaasDisplayBold, sans-serif;
+}
+
+.mazi-subtitle {
+  margin: 18px auto 30px;
+  max-width: 760px;
+  color: var(--muted);
+  font-size: clamp(20px, 3vw, 42px);
+  line-height: 1.2;
+}
+
+.mazi-store-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.mazi-store-btn,
+.mazi-store-btn-light {
+  border: 0;
+  border-radius: 16px;
+  font-size: 22px;
+  font-family: NeueHaasDisplayMediu, sans-serif;
+  padding: 16px 24px;
+  min-width: 240px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+}
+
+.mazi-store-btn {
+  color: #ffffff;
+  background: #0a0a0a;
+}
+
+.mazi-store-btn-light {
+  color: #111827;
+  background: #ffffff;
+}
+
+.mazi-vendor-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #009a4d;
+  font-size: 28px;
+  text-decoration: underline;
+  font-family: NeueHaasDisplayMediu, sans-serif;
+}
+
+.mazi-section {
+  padding: 74px 0;
+}
+
+.mazi-section-alt {
+  background: #effaf4;
+}
+
+.mazi-heading {
+  text-align: center;
+  margin-bottom: 34px;
+}
+
+.mazi-heading h2 {
+  margin: 0;
+  font-size: clamp(44px, 5vw, 72px);
+  font-family: NeueHaasDisplayBold, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.mazi-heading p {
+  margin: 14px auto 0;
+  max-width: 760px;
+  color: var(--muted);
+  font-size: clamp(20px, 2.6vw, 36px);
+  line-height: 1.25;
+}
+
+.mazi-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.mazi-pill {
+  background: #ebfaf1;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-size: 28px;
+  color: #31424f;
+  font-family: NeueHaasDisplayMediu, sans-serif;
+  text-align: center;
+}
+
+.mazi-register {
+  text-align: center;
+  margin-top: 34px;
+}
+
+.mazi-register button {
+  border: 0;
+  border-radius: 18px;
+  background: var(--primary);
+  color: #fff;
+  padding: 18px 44px;
+  font-size: 32px;
+  font-family: NeueHaasDisplayBold, sans-serif;
+  box-shadow: 0 10px 22px rgba(0, 151, 73, 0.25);
+  cursor: pointer;
+}
+
+.mazi-card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 26px;
+}
+
+.mazi-card-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: #d7f7e6;
+  color: #00a351;
+  font-size: 30px;
+  margin-bottom: 16px;
+}
+
+.mazi-card h3 {
+  margin: 0;
+  font-size: 42px;
+  font-family: NeueHaasDisplayBold, sans-serif;
+}
+
+.mazi-card p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 31px;
+  line-height: 1.3;
+}
+
+.mazi-about {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.mazi-about-copy {
+  background: #effaf4;
+  border-radius: 22px;
+  padding: 30px;
+}
+
+.mazi-about-copy h3 {
+  margin: 0;
+  font-size: 72px;
+  font-family: NeueHaasDisplayBold, sans-serif;
+}
+
+.mazi-about-copy p {
+  color: #374151;
+  font-size: 39px;
+  line-height: 1.45;
+}
+
+.mazi-about-visual {
+  border-radius: 22px;
+  min-height: 420px;
+  background: linear-gradient(140deg, #9ff2c7, #71e6be);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #ffffff;
+  font-size: 54px;
+  font-family: NeueHaasDisplayBold, sans-serif;
+}
+
+.mazi-reviews .mazi-card {
+  background: #fff;
+  border: 1px solid #e7ece9;
+}
+
+.mazi-stars {
+  color: #00a651;
+  font-size: 26px;
+  letter-spacing: 2px;
+}
+
+.mazi-review-name {
+  margin-top: 20px;
+  font-size: 34px;
+  font-family: NeueHaasDisplayBold, sans-serif;
+}
+
+.mazi-review-role {
+  color: var(--muted);
+  font-size: 27px;
+}
+
+.mazi-faq-list {
+  max-width: 1020px;
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+}
+
+.mazi-faq {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.mazi-faq button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 22px 24px;
+  font-size: 34px;
+  font-family: NeueHaasDisplayBold, sans-serif;
+  cursor: pointer;
+}
+
+.mazi-faq p {
+  padding: 0 24px 24px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 28px;
+  line-height: 1.45;
+}
+
+.mazi-cta {
+  background: linear-gradient(100deg, #00a94f, #00b464);
+  color: #fff;
+  text-align: center;
+  padding: 78px 0;
+}
+
+.mazi-cta h3 {
+  margin: 0;
+  font-size: clamp(46px, 6vw, 94px);
+  line-height: 1.1;
+  font-family: NeueHaasDisplayBold, sans-serif;
+}
+
+.mazi-cta p {
+  margin: 14px 0 24px;
+  font-size: clamp(24px, 3.3vw, 44px);
+}
+
+.mazi-footer {
+  background: var(--footer);
+  color: #d6dbe8;
+  padding: 56px 0 28px;
+}
+
+.mazi-footer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 28px;
+}
+
+.mazi-footer h4 {
+  color: #fff;
+  margin: 0 0 14px;
+  font-size: 34px;
+  font-family: NeueHaasDisplayBold, sans-serif;
+}
+
+.mazi-footer p,
+.mazi-footer li {
+  margin: 0;
+  list-style: none;
+  font-size: 28px;
+  line-height: 1.6;
+}
+
+.mazi-footer ul {
+  margin: 0;
+  padding: 0;
+}
+
+.mazi-footer-line {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  font-size: 24px;
+}
+
+@media (max-width: 1100px) {
+  .mazi-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mazi-about {
+    grid-template-columns: 1fr;
+  }
+
+  .mazi-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .mazi-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .mazi-hero {
+    padding: 64px 0 58px;
+  }
+
+  .mazi-footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mazi-vendor-link {
+    font-size: 22px;
+  }
+
+  .mazi-store-btn,
+  .mazi-store-btn-light {
+    min-width: 100%;
+  }
+}
