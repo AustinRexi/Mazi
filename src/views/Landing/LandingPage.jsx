@@ -105,15 +105,24 @@ const faqs = [
 
 function StoreButton({ platform, light = false }) {
   const isIos = platform === "iOS";
+  const href = isIos
+    ? "https://apps.apple.com"
+    : "https://play.google.com/store";
 
   return (
-    <button className={`mazi-store-btn ${light ? "mazi-store-btn-light" : ""}`}>
+    <a
+      className={`mazi-store-btn ${light ? "mazi-store-btn-light" : ""}`}
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={isIos ? "Download on iOS" : "Get it on Google Play"}
+    >
       <span className="mazi-store-icon">{isIos ? <AppleOutlined /> : <AndroidOutlined />}</span>
       <span>
         <small>{isIos ? "Download on" : "Get it on"}</small>
         <strong>{isIos ? "iOS" : "Google Play"}</strong>
       </span>
-    </button>
+    </a>
   );
 }
 
@@ -130,7 +139,7 @@ export default function LandingPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   return (
-    <div className="mazi-landing">
+    <div className="mazi-landing" id="top">
       <section className="mazi-hero">
         <div className="mazi-wrap">
           <h1>Mazi</h1>
@@ -141,11 +150,13 @@ export default function LandingPage() {
             <StoreButton platform="Android" />
           </div>
 
-          <span className="mazi-vendor-link">Become a Vendor →</span>
+          <a className="mazi-vendor-link" href="#partner">
+            Become a Vendor →
+          </a>
         </div>
       </section>
 
-      <section className="mazi-section">
+      <section className="mazi-section" id="partner">
         <div className="mazi-wrap">
           <SectionTitle
             title="Partner with Mazi"
@@ -169,7 +180,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mazi-section">
+      <section className="mazi-section" id="features">
         <div className="mazi-wrap">
           <SectionTitle
             title="Why Choose Mazi"
@@ -231,7 +242,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mazi-section">
+      <section className="mazi-section" id="faq">
         <div className="mazi-wrap">
           <SectionTitle
             title="Frequently Asked Questions"
@@ -246,12 +257,18 @@ export default function LandingPage() {
                   <button
                     type="button"
                     className="mazi-faq-trigger"
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-panel-${index}`}
                     onClick={() => setOpenFaqIndex(isOpen ? -1 : index)}
                   >
                     <span>{item.q}</span>
                     {isOpen ? <UpOutlined /> : <DownOutlined />}
                   </button>
-                  {isOpen ? <p className="mazi-faq-content">{item.a}</p> : null}
+                  {isOpen ? (
+                    <p id={`faq-panel-${index}`} className="mazi-faq-content">
+                      {item.a}
+                    </p>
+                  ) : null}
                 </article>
               );
             })}
@@ -285,10 +302,18 @@ export default function LandingPage() {
             <div>
               <h5>Quick Links</h5>
               <ul>
-                <li>Home</li>
-                <li>Features</li>
-                <li>Become a Vendor</li>
-                <li>Contact</li>
+                <li>
+                  <a href="#top">Home</a>
+                </li>
+                <li>
+                  <a href="#features">Features</a>
+                </li>
+                <li>
+                  <a href="#partner">Become a Vendor</a>
+                </li>
+                <li>
+                  <a href="#faq">FAQ</a>
+                </li>
               </ul>
             </div>
 
@@ -305,18 +330,18 @@ export default function LandingPage() {
             <div>
               <h5>Follow Us</h5>
               <div className="mazi-socials">
-                <span>
+                <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
                   <FacebookFilled />
-                </span>
-                <span>
+                </a>
+                <a href="https://x.com" target="_blank" rel="noreferrer" aria-label="Twitter/X">
                   <TwitterCircleFilled />
-                </span>
-                <span>
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
                   <InstagramFilled />
-                </span>
-                <span>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
                   <LinkedinFilled />
-                </span>
+                </a>
               </div>
             </div>
           </div>
