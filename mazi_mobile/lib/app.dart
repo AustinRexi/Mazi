@@ -21,7 +21,6 @@ class MaziApp extends StatelessWidget {
           primary: accentColor,
           secondary: accentColor,
           surface: cardColor,
-          background: scaffoldColor,
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: scaffoldColor,

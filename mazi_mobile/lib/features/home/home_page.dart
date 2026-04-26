@@ -157,18 +157,18 @@ class _HomePageState extends State<HomePage> {
                   builder: (context, constraints) {
                     final stack = constraints.maxWidth < 880;
                     if (stack) {
-                      return Column(
+                      return const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           _AboutCopy(),
                           SizedBox(height: 16),
                           _AboutVisual(),
                         ],
                       );
                     }
-                    return Row(
+                    return const Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: const [
+                      children: [
                         Expanded(child: _AboutCopy()),
                         SizedBox(width: 18),
                         Expanded(child: _AboutVisual()),
@@ -345,9 +345,9 @@ class _HomePageState extends State<HomePage> {
                       builder: (context, constraints) {
                         final mobile = constraints.maxWidth < 780;
                         if (mobile) {
-                          return Column(
+                          return const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               _FooterBrand(),
                               SizedBox(height: 22),
                               _FooterLinks(title: 'Quick Links', links: ['Home', 'Features', 'Become a Vendor', 'Contact']),
@@ -358,9 +358,9 @@ class _HomePageState extends State<HomePage> {
                             ],
                           );
                         }
-                        return Row(
+                        return const Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Expanded(flex: 2, child: _FooterBrand()),
                             Expanded(child: _FooterLinks(title: 'Quick Links', links: ['Home', 'Features', 'Become a Vendor', 'Contact'])),
                             Expanded(child: _FooterLinks(title: 'Support', links: ['FAQ', 'Help Center', 'Privacy Policy', 'Terms of Service'])),
@@ -639,9 +639,9 @@ class _FooterBrand extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text('Mazi', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w700)),
         SizedBox(height: 10),
         Text('Your one-stop shop for food and groceries', style: TextStyle(color: Color(0xFFA2ACBE), height: 1.5)),
