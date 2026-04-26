@@ -1,5 +1,7 @@
 import "antd/dist/reset.css";
 import { createHashRouter, RouterProvider } from "react-router-dom";
+import { useContext } from "react";
+import { Navigate } from "react-router-dom";
 
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -48,10 +50,24 @@ import VendorAnalytics from "./vendors/analytics";
 import VendorWishlist from "./vendors/wishlist";
 import VendorReviews from "./vendors/reviews";
 import HomeRoute from "./Components/protectedroute/HomeRoute";
+import { AuthContext } from "./context/AuthContext";
+
+function LandingRoute() {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) return <div>Loading...</div>;
+  if (user?.role === "admin") return <Navigate to="/admin/dashboard" replace />;
+  if (user?.role === "vendor") return <Navigate to="/vendors/dashboard" replace />;
+
+  return <Login />;
+}
 
 const router = createHashRouter([
   {
     path: "/",
+    element: <LandingRoute />,
+  },
+  {
     element: (
       <ProtectedRoute>
         <Layout />
@@ -59,7 +75,6 @@ const router = createHashRouter([
     ),
     children: [
       // 🔵 Admin Routes
-      { path: "", element: <HomeRoute /> },
       { path: "home", element: <HomeRoute /> },
       { path: "admin/dashboard", element: <Board /> },
 
