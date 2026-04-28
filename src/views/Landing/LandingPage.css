@@ -463,6 +463,7 @@
   --ink-900: #0b1324;
   --ink-700: #334155;
   --ink-600: #475569;
+  --ink-500: #64748b;
   --line: #dce5df;
   --mint-100: #eefaf4;
   --mint-200: #e6f7ef;
@@ -487,6 +488,10 @@
   color: var(--green-700);
   text-decoration: none;
   font-family: "NeueHaasDisplayMediu", sans-serif;
+}
+
+.mazi-policy-back:hover {
+  color: #04753d;
 }
 
 .mazi-policy-heading {
@@ -515,6 +520,35 @@
   color: var(--ink-600);
   font-size: clamp(1.05rem, 2vw, 1.35rem);
   line-height: 1.6;
+}
+
+.mazi-policy-summary {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mazi-policy-summary-card {
+  border: 1px solid rgba(0, 169, 79, 0.12);
+  border-radius: 20px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.mazi-policy-summary-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.74rem;
+}
+
+.mazi-policy-summary-card strong {
+  font-family: "NeueHaasDisplayBold", sans-serif;
+  font-size: 1.02rem;
 }
 
 .mazi-policy-body {
@@ -550,8 +584,27 @@
   font-size: 0.95rem;
 }
 
+.mazi-policy-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mazi-policy-intro {
+  padding-top: 24px;
+  border-bottom: 1px solid #eef3ef;
+}
+
+.mazi-policy-intro p {
+  margin: 0 0 24px;
+  color: var(--ink-600);
+  font-size: 1.05rem;
+  line-height: 1.72;
+}
+
 .mazi-policy-section {
   padding-top: 26px;
+  scroll-margin-top: 24px;
 }
 
 .mazi-policy-section h2,
@@ -566,6 +619,7 @@
   margin: 18px 0 10px;
   font-family: "NeueHaasDisplayMediu", sans-serif;
   font-size: 1.08rem;
+  color: #17324b;
 }
 
 .mazi-policy-section p,
@@ -598,12 +652,80 @@
   background: linear-gradient(180deg, #f2fbf6 0%, #ffffff 100%);
 }
 
+.mazi-policy-sideblock + .mazi-policy-sideblock {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid #dfeae3;
+}
+
+.mazi-policy-toc {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.mazi-policy-toc li {
+  list-style: none;
+}
+
+.mazi-policy-toc a {
+  color: #24445a;
+  text-decoration: none;
+  line-height: 1.5;
+}
+
+.mazi-policy-toc a:hover {
+  color: var(--green-700);
+}
+
+.mazi-policy-highlight-list {
+  display: grid;
+  gap: 14px;
+}
+
+.mazi-policy-highlight-item {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.mazi-policy-highlight-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--mint-200);
+  color: var(--green-700);
+  font-size: 1.1rem;
+}
+
+.mazi-policy-highlight-item h3 {
+  margin: 0 0 6px;
+  font-family: "NeueHaasDisplayMediu", sans-serif;
+  font-size: 1rem;
+  color: #17324b;
+}
+
+.mazi-policy-highlight-item p {
+  margin: 0;
+  color: var(--ink-600);
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
 .mazi-policy-contact a {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   color: var(--green-700);
   text-decoration: none;
+}
+
+.mazi-policy-contact a:hover {
+  color: #04753d;
 }
 
 @media (max-width: 1024px) {
@@ -626,6 +748,10 @@
 
   .mazi-policy-contact {
     position: static;
+  }
+
+  .mazi-policy-summary {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -678,5 +804,13 @@
   .mazi-policy-contact {
     padding: 22px;
     border-radius: 18px;
+  }
+
+  .mazi-policy-meta {
+    font-size: 0.88rem;
+  }
+
+  .mazi-policy-highlight-item {
+    grid-template-columns: 1fr;
   }
 }
