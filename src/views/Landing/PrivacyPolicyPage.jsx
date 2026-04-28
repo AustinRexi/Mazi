@@ -179,6 +179,14 @@ const highlights = [
 ];
 
 export default function PrivacyPolicyPage() {
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <main className="mazi-policy-page">
       <section className="mazi-policy-hero">
@@ -272,7 +280,13 @@ export default function PrivacyPolicyPage() {
                   <ul className="mazi-policy-toc">
                     {policySections.map((section) => (
                       <li key={section.id}>
-                        <a href={`#${section.id}`}>{section.title}</a>
+                        <button
+                          type="button"
+                          className="mazi-policy-toc-link"
+                          onClick={() => scrollToSection(section.id)}
+                        >
+                          {section.title}
+                        </button>
                       </li>
                     ))}
                   </ul>

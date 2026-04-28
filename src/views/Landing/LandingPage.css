@@ -474,6 +474,7 @@
     linear-gradient(180deg, #f7fbf8 0%, #ffffff 28%);
   color: var(--ink-900);
   min-height: 100vh;
+  padding: 0 0 56px;
   font-family: "NeueHaasDisplayRoman", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -552,7 +553,7 @@
 }
 
 .mazi-policy-body {
-  padding: 24px 0 72px;
+  padding: 24px 0 0;
 }
 
 .mazi-policy-layout {
@@ -669,14 +670,26 @@
   list-style: none;
 }
 
-.mazi-policy-toc a {
+.mazi-policy-toc-link {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
   color: #24445a;
-  text-decoration: none;
+  cursor: pointer;
   line-height: 1.5;
+  font: inherit;
 }
 
-.mazi-policy-toc a:hover {
+.mazi-policy-toc-link:hover {
   color: var(--green-700);
+}
+
+.mazi-policy-toc-link:focus-visible {
+  outline: 3px solid rgba(0, 169, 79, 0.22);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 .mazi-policy-highlight-list {
@@ -798,6 +811,10 @@
 
   .mazi-policy-heading {
     margin-top: 24px;
+  }
+
+  .mazi-policy-page {
+    padding-bottom: 32px;
   }
 
   .mazi-policy-card,
