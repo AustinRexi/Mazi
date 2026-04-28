@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   AppleOutlined,
   AndroidOutlined,
@@ -322,7 +323,9 @@ export default function LandingPage() {
               <ul>
                 <li>FAQ</li>
                 <li>Help Center</li>
-                <li>Privacy Policy</li>
+                <li>
+                  <Link to="/privacy-policy">Privacy Policy</Link>
+                </li>
                 <li>Terms of Service</li>
               </ul>
             </div>
@@ -333,10 +336,20 @@ export default function LandingPage() {
                 <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
                   <FacebookFilled />
                 </a>
-                <a href="https://x.com" target="_blank" rel="noreferrer" aria-label="Twitter/X">
+                <a
+                  href="https://x.com/maziinternatnl?s=21"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Twitter/X"
+                >
                   <TwitterCircleFilled />
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
+                <a
+                  href="https://www.instagram.com/mazi_international_?igsh=MWUzZHBtNzFsc3IxYQ%3D%3D&utm_source=qr"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Instagram"
+                >
                   <InstagramFilled />
                 </a>
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">

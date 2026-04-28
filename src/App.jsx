@@ -52,6 +52,7 @@ import VendorReviews from "./vendors/reviews";
 import HomeRoute from "./Components/protectedroute/HomeRoute";
 import { AuthContext } from "./context/AuthContext";
 import LandingPage from "./views/Landing/LandingPage";
+import PrivacyPolicyPage from "./views/Landing/PrivacyPolicyPage";
 
 function LandingRoute() {
   const { user, loading } = useContext(AuthContext);
@@ -71,6 +72,10 @@ const router = createHashRouter([
   {
     path: "/landing",
     element: <LandingPage />,
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicyPage />,
   },
   {
     element: (

@@ -459,6 +459,153 @@
   font-size: 0.92rem;
 }
 
+.mazi-policy-page {
+  --ink-900: #0b1324;
+  --ink-700: #334155;
+  --ink-600: #475569;
+  --line: #dce5df;
+  --mint-100: #eefaf4;
+  --mint-200: #e6f7ef;
+  --green-600: #00a94f;
+  --green-700: #009348;
+  background:
+    radial-gradient(circle at top left, rgba(0, 169, 79, 0.12), transparent 36%),
+    linear-gradient(180deg, #f7fbf8 0%, #ffffff 28%);
+  color: var(--ink-900);
+  min-height: 100vh;
+  font-family: "NeueHaasDisplayRoman", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.mazi-policy-hero {
+  padding: 56px 0 24px;
+}
+
+.mazi-policy-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--green-700);
+  text-decoration: none;
+  font-family: "NeueHaasDisplayMediu", sans-serif;
+}
+
+.mazi-policy-heading {
+  max-width: 760px;
+  margin-top: 34px;
+}
+
+.mazi-policy-kicker {
+  margin: 0 0 12px;
+  color: var(--green-700);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.82rem;
+}
+
+.mazi-policy-heading h1 {
+  margin: 0;
+  font-family: "NeueHaasDisplayBold", sans-serif;
+  letter-spacing: -0.04em;
+  font-size: clamp(2.8rem, 8vw, 5.4rem);
+  line-height: 0.95;
+}
+
+.mazi-policy-heading p {
+  margin: 16px 0 0;
+  color: var(--ink-600);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  line-height: 1.6;
+}
+
+.mazi-policy-body {
+  padding: 24px 0 72px;
+}
+
+.mazi-policy-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(280px, 0.9fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.mazi-policy-card,
+.mazi-policy-contact {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.06);
+}
+
+.mazi-policy-card {
+  padding: 28px;
+}
+
+.mazi-policy-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e7eeea;
+  color: #597163;
+  font-size: 0.95rem;
+}
+
+.mazi-policy-section {
+  padding-top: 26px;
+}
+
+.mazi-policy-section h2,
+.mazi-policy-contact h2 {
+  margin: 0 0 12px;
+  font-family: "NeueHaasDisplayBold", sans-serif;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+.mazi-policy-group h3 {
+  margin: 18px 0 10px;
+  font-family: "NeueHaasDisplayMediu", sans-serif;
+  font-size: 1.08rem;
+}
+
+.mazi-policy-section p,
+.mazi-policy-section li,
+.mazi-policy-contact p,
+.mazi-policy-contact a {
+  color: #425564;
+  font-size: 1.02rem;
+  line-height: 1.72;
+}
+
+.mazi-policy-section p,
+.mazi-policy-contact p {
+  margin: 0 0 12px;
+}
+
+.mazi-policy-section ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.mazi-policy-section li {
+  margin-bottom: 10px;
+}
+
+.mazi-policy-contact {
+  padding: 24px;
+  position: sticky;
+  top: 24px;
+  background: linear-gradient(180deg, #f2fbf6 0%, #ffffff 100%);
+}
+
+.mazi-policy-contact a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--green-700);
+  text-decoration: none;
+}
+
 @media (max-width: 1024px) {
   .mazi-partner-row,
   .mazi-grid-3 {
@@ -471,6 +618,14 @@
 
   .mazi-footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mazi-policy-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mazi-policy-contact {
+    position: static;
   }
 }
 
@@ -509,5 +664,19 @@
 
   .mazi-cta br {
     display: none;
+  }
+
+  .mazi-policy-hero {
+    padding: 40px 0 18px;
+  }
+
+  .mazi-policy-heading {
+    margin-top: 24px;
+  }
+
+  .mazi-policy-card,
+  .mazi-policy-contact {
+    padding: 22px;
+    border-radius: 18px;
   }
 }
