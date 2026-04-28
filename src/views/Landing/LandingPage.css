@@ -498,6 +498,9 @@
 .mazi-policy-heading {
   max-width: 760px;
   margin-top: 34px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .mazi-policy-kicker {
@@ -528,6 +531,9 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mazi-policy-summary-card {
