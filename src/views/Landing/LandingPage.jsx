@@ -138,6 +138,13 @@ function SectionTitle({ title, subtitle }) {
 
 export default function LandingPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
     <div className="mazi-landing" id="top">
@@ -151,9 +158,13 @@ export default function LandingPage() {
             <StoreButton platform="Android" />
           </div>
 
-          <a className="mazi-vendor-link" href="#partner">
+          <button
+            type="button"
+            className="mazi-vendor-link mazi-link-button"
+            onClick={() => scrollToSection("partner")}
+          >
             Become a Vendor →
-          </a>
+          </button>
         </div>
       </section>
 
@@ -304,16 +315,32 @@ export default function LandingPage() {
               <h5>Quick Links</h5>
               <ul>
                 <li>
-                  <a href="#top">Home</a>
+                  <button type="button" className="mazi-link-button" onClick={() => scrollToSection("top")}>
+                    Home
+                  </button>
                 </li>
                 <li>
-                  <a href="#features">Features</a>
+                  <button
+                    type="button"
+                    className="mazi-link-button"
+                    onClick={() => scrollToSection("features")}
+                  >
+                    Features
+                  </button>
                 </li>
                 <li>
-                  <a href="#partner">Become a Vendor</a>
+                  <button
+                    type="button"
+                    className="mazi-link-button"
+                    onClick={() => scrollToSection("partner")}
+                  >
+                    Become a Vendor
+                  </button>
                 </li>
                 <li>
-                  <a href="#faq">FAQ</a>
+                  <button type="button" className="mazi-link-button" onClick={() => scrollToSection("faq")}>
+                    FAQ
+                  </button>
                 </li>
               </ul>
             </div>
@@ -322,16 +349,22 @@ export default function LandingPage() {
               <h5>Support</h5>
               <ul>
                 <li>
-                  <a href="#faq">FAQ</a>
+                  <button type="button" className="mazi-link-button" onClick={() => scrollToSection("faq")}>
+                    FAQ
+                  </button>
                 </li>
                 <li>
-                  <a href="#faq">Help Center</a>
+                  <button type="button" className="mazi-link-button" onClick={() => scrollToSection("faq")}>
+                    Help Center
+                  </button>
                 </li>
                 <li>
                   <Link to="/privacy-policy">Privacy Policy</Link>
                 </li>
                 <li>
-                  <a href="#top">Terms of Service</a>
+                  <button type="button" className="mazi-link-button" onClick={() => scrollToSection("top")}>
+                    Terms of Service
+                  </button>
                 </li>
               </ul>
             </div>

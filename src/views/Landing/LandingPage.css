@@ -147,6 +147,13 @@
   font-size: clamp(1rem, 1.8vw, 1.45rem);
 }
 
+.mazi-link-button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
 .mazi-partner-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
