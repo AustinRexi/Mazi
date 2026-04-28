@@ -321,12 +321,18 @@ export default function LandingPage() {
             <div>
               <h5>Support</h5>
               <ul>
-                <li>FAQ</li>
-                <li>Help Center</li>
+                <li>
+                  <a href="#faq">FAQ</a>
+                </li>
+                <li>
+                  <a href="#faq">Help Center</a>
+                </li>
                 <li>
                   <Link to="/privacy-policy">Privacy Policy</Link>
                 </li>
-                <li>Terms of Service</li>
+                <li>
+                  <a href="#top">Terms of Service</a>
+                </li>
               </ul>
             </div>
 
