@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Form,
@@ -10,6 +10,7 @@ import {
   Divider,
   Alert,
   message,
+  Modal,
 } from "antd";
 import {
   UserOutlined,
@@ -94,93 +95,150 @@ const SignupPage = ({ onClose }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [locationError, setLocationError] = useState("");
+  const [hasCapturedCoordinates, setHasCapturedCoordinates] = useState(false);
   const [locationData, setLocationData] = useState({
     lat: 0,
     lng: 0,
     country: "",
     location: "",
   });
+  const locationPromptShownRef = useRef(false);
 
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  // Location detection effect
-  useEffect(() => {
-    const fallbackCountryFromLocale = () => {
-      const locale = navigator.language || "";
-      const region = locale.includes("-") ? locale.split("-")[1] : "";
-      return region ? region.toUpperCase() : "";
-    };
+  const fallbackCountryFromLocale = () => {
+    const locale = navigator.language || "";
+    const region = locale.includes("-") ? locale.split("-")[1] : "";
+    return region ? region.toUpperCase() : "";
+  };
 
-    const getCountryName = (countryCode) => {
-      try {
-        if (!countryCode) return "";
-        const displayNames = new Intl.DisplayNames(["en"], { type: "region" });
-        return displayNames.of(countryCode.toUpperCase()) || "";
-      } catch {
-        return countryCode || "";
-      }
-    };
+  const getCountryName = (countryCode) => {
+    try {
+      if (!countryCode) return "";
+      const displayNames = new Intl.DisplayNames(["en"], { type: "region" });
+      return displayNames.of(countryCode.toUpperCase()) || "";
+    } catch {
+      return countryCode || "";
+    }
+  };
 
-    if (!navigator.geolocation) {
-      const fallback = fallbackCountryFromLocale();
-      setLocationData((prev) => ({
-        ...prev,
-        country: getCountryName(fallback) || fallback,
-      }));
+  const openLocationPermissionModal = () => {
+    if (locationPromptShownRef.current) {
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = Number(position.coords.latitude || 0);
-        const lng = Number(position.coords.longitude || 0);
-        let country = "";
-        let location = `${lat},${lng}`;
+    locationPromptShownRef.current = true;
+    Modal.warning({
+      title: "Enable location access",
+      content:
+        "Location access is required to capture your latitude and longitude during vendor signup. Please enable location permission in your browser or device settings, then retry.",
+      okText: "Retry location",
+      onOk: () => {
+        locationPromptShownRef.current = false;
+        requestLocation();
+      },
+      onCancel: () => {
+        locationPromptShownRef.current = false;
+      },
+    });
+  };
 
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
-          );
-          if (response.ok) {
-            const data = await response.json();
-            country = data?.address?.country || "";
-            location =
-              data?.address?.city ||
-              data?.address?.town ||
-              data?.address?.state ||
-              data?.display_name ||
-              location;
+  const requestLocation = async () => {
+    const fallback = fallbackCountryFromLocale();
+    const fallbackCountry = getCountryName(fallback) || fallback;
+
+    if (!navigator.geolocation) {
+      setHasCapturedCoordinates(false);
+      setLocationError(
+        "Location is not supported on this device. Enable location on a supported device to continue."
+      );
+      setLocationData((prev) => ({
+        ...prev,
+        country: fallbackCountry,
+      }));
+      openLocationPermissionModal();
+      return { ok: false, location: null };
+    }
+
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = Number(position.coords.latitude || 0);
+          const lng = Number(position.coords.longitude || 0);
+          let country = "";
+          let location = `${lat},${lng}`;
+
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+            );
+            if (response.ok) {
+              const data = await response.json();
+              country = data?.address?.country || "";
+              location =
+                data?.address?.city ||
+                data?.address?.town ||
+                data?.address?.state ||
+                data?.display_name ||
+                location;
+            }
+          } catch {
+            // Ignore reverse geocode errors
           }
-        } catch {
-          // Ignore reverse geocode errors
-        }
 
-        if (!country) {
-          const fallback = fallbackCountryFromLocale();
-          country = getCountryName(fallback) || fallback;
-        }
+          if (!country) {
+            country = fallbackCountry;
+          }
 
-        setLocationData({
-          lat,
-          lng,
-          country,
-          location,
-        });
-      },
-      () => {
-        const fallback = fallbackCountryFromLocale();
-        setLocationData((prev) => ({
-          ...prev,
-          country: getCountryName(fallback) || fallback,
-        }));
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 300000,
-      },
-    );
+          setLocationError("");
+          setHasCapturedCoordinates(true);
+          setLocationData({
+            lat,
+            lng,
+            country,
+            location,
+          });
+          resolve({
+            ok: true,
+            location: {
+              lat,
+              lng,
+              country,
+              location,
+            },
+          });
+        },
+        (geoError) => {
+          const permissionDenied =
+            geoError?.code === geoError?.PERMISSION_DENIED ||
+            geoError?.code === 1;
+
+          setHasCapturedCoordinates(false);
+          setLocationError(
+            permissionDenied
+              ? "Enable location access to capture your latitude and longitude before creating a vendor account."
+              : "We could not access your current location. Enable location and try again."
+          );
+          setLocationData((prev) => ({
+            ...prev,
+            country: prev.country || fallbackCountry,
+          }));
+          openLocationPermissionModal();
+          resolve({ ok: false, location: null });
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 300000,
+        }
+      );
+    });
+  };
+
+  useEffect(() => {
+    requestLocation();
   }, []);
 
   const handleBackToLogin = () => {
@@ -196,16 +254,31 @@ const SignupPage = ({ onClose }) => {
       setLoading(true);
       setError("");
 
+      let signupLocation = hasCapturedCoordinates ? locationData : null;
+      if (!signupLocation) {
+        const locationResult = await requestLocation();
+        if (locationResult?.ok && locationResult.location) {
+          signupLocation = locationResult.location;
+        }
+      }
+
+      if (!signupLocation) {
+        setError(
+          "Turn on location access and allow the browser to capture your latitude and longitude before signing up."
+        );
+        return;
+      }
+
       const payload = {
         firstname: values.firstName,
         lastname: values.lastName,
         phone: values.phone,
         email: values.email,
         password: values.password,
-        location: locationData.location || "",
-        lat: Number(locationData.lat || 0),
-        lng: Number(locationData.lng || 0),
-        country: locationData.country || "",
+        location: signupLocation.location || "",
+        lat: Number(signupLocation.lat || 0),
+        lng: Number(signupLocation.lng || 0),
+        country: signupLocation.country || "",
       };
 
       const response = await registerVendor(payload);
@@ -308,6 +381,20 @@ const SignupPage = ({ onClose }) => {
             type="error"
             showIcon
             message={error}
+            style={{ marginBottom: 14 }}
+          />
+        ) : null}
+
+        {locationError ? (
+          <Alert
+            type="warning"
+            showIcon
+            message={locationError}
+            action={
+              <Button size="small" type="link" onClick={() => requestLocation()}>
+                Retry
+              </Button>
+            }
             style={{ marginBottom: 14 }}
           />
         ) : null}

@@ -2,7 +2,6 @@ import { Row, Col, Select, Button, Drawer, Menu, Badge, Modal } from "antd";
 import { useState, useEffect, useContext } from "react";
 import { MenuOutlined } from "@ant-design/icons";
 import axios from "axios";
-import avatar from "../utils/icons/avatar.svg"; // Fallback image
 import flag from "../utils/icons/flag.svg";
 import menu from "../utils/icons/menu.svg";
 import logo from "../utils/icons/logo.svg";
@@ -47,6 +46,10 @@ const Navbar = () => {
   const [selectedAdminCountry, setSelectedAdminCountry] = useState(() =>
     getAdminCountryScope()
   );
+  const headerProfileImage =
+    typeof user?.profileImage === "string" && user.profileImage.trim()
+      ? user.profileImage
+      : null;
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 1024);
@@ -287,16 +290,28 @@ const Navbar = () => {
                     <img src={notification} alt="notifications" />
                   </div>
                 </Badge>
-                <img
-                  src={user?.profileImage || avatar}
-                  alt="Profile"
-                  style={{
-                    paddingRight: "2px",
-                    width: "34px",
-                    height: "32px",
-                    borderRadius: "50%",
-                  }}
-                />
+                {headerProfileImage ? (
+                  <img
+                    src={headerProfileImage}
+                    alt="Profile"
+                    style={{
+                      paddingRight: "2px",
+                      width: "34px",
+                      height: "32px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                ) : (
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      width: "34px",
+                      height: "32px",
+                      paddingRight: "2px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                )}
               </div>
             </Col>
           </Row>
@@ -427,16 +442,28 @@ const Navbar = () => {
                     User Management
                   </Button>
                 )}
-                <img
-                  src={user?.profileImage || avatar}
-                  alt="Profile"
-                  style={{
-                    paddingRight: "2px",
-                    width: "34px",
-                    height: "32px",
-                    borderRadius: "50%",
-                  }}
-                />
+                {headerProfileImage ? (
+                  <img
+                    src={headerProfileImage}
+                    alt="Profile"
+                    style={{
+                      paddingRight: "2px",
+                      width: "34px",
+                      height: "32px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                ) : (
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      width: "34px",
+                      height: "32px",
+                      paddingRight: "2px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                )}
               </div>
             </div>
           </Col>
