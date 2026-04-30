@@ -1,15 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Input,
-  Alert,
-  Typography,
-  Form,
-  Row,
-  Col,
-  message,
-} from "antd";
+import { Button, Input, Alert, Typography, Form, message } from "antd";
 import {
   MailOutlined,
   ArrowLeftOutlined,
@@ -32,8 +23,8 @@ export const ForgotPassword = ({ onClose }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const emailValue = Form.useWatch("email", form);
 
   const handleBackToLogin = () => {
@@ -98,6 +89,7 @@ export const ForgotPassword = ({ onClose }) => {
     }
   };
 
+  // Success Screen
   if (resetSuccess) {
     return (
       <div>
@@ -125,7 +117,7 @@ export const ForgotPassword = ({ onClose }) => {
           </Paragraph>
         </div>
 
-        <Button type="primary" block onClick={handleBackToLogin}>
+        <Button type="primary" block size="large" onClick={handleBackToLogin}>
           <ArrowLeftOutlined /> Back to Sign In
         </Button>
       </div>
@@ -134,6 +126,7 @@ export const ForgotPassword = ({ onClose }) => {
 
   return (
     <div>
+      {/* Header */}
       <div style={{ textAlign: "center", paddingBottom: 16 }}>
         <div
           style={{
@@ -157,7 +150,8 @@ export const ForgotPassword = ({ onClose }) => {
         </Paragraph>
       </div>
 
-      {error ? (
+      {/* Error Alert */}
+      {error && (
         <Alert
           style={{ marginBottom: 14 }}
           showIcon
@@ -165,16 +159,17 @@ export const ForgotPassword = ({ onClose }) => {
           icon={<ExclamationCircleOutlined />}
           message={error}
         />
-      ) : null}
+      )}
 
-      {otpSent ? (
+      {/* OTP Sent Alert */}
+      {otpSent && (
         <Alert
           style={{ marginBottom: 14 }}
           showIcon
           type="success"
           message={`OTP sent to ${emailValue || "your email"}.`}
         />
-      ) : null}
+      )}
 
       <Form
         form={form}
@@ -182,109 +177,114 @@ export const ForgotPassword = ({ onClose }) => {
         requiredMark={false}
         onFinish={handleResetPassword}
       >
-        <Row gutter={12}>
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="Email Address"
-              name="email"
-              rules={[
-                { required: true, message: "Please enter your email" },
-                { type: "email", message: "Please enter a valid email" },
-              ]}
-            >
-              <Input
-                size="large"
-                prefix={<MailOutlined />}
-                placeholder="you@example.com"
-              />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="OTP Code"
-              name="otp"
-              rules={[{ required: true, message: "Please enter OTP" }]}
-            >
-              <Input
-                size="large"
-                prefix={<KeyOutlined />}
-                placeholder="6-digit code"
-                maxLength={6}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="New Password"
-              name="password"
-              rules={[
-                { required: true, message: "Please enter new password" },
-                { min: 8, message: "Password must be at least 8 characters" },
-              ]}
-            >
-              <Input.Password
-                size="large"
-                prefix={<LockOutlined />}
-                placeholder="New password"
-              />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="Confirm Password"
-              name="confirmPassword"
-              dependencies={["password"]}
-              rules={[
-                { required: true, message: "Please confirm your password" },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("password") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error("Passwords do not match"));
-                  },
-                }),
-              ]}
-            >
-              <Input.Password
-                size="large"
-                prefix={<LockOutlined />}
-                placeholder="Confirm password"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={12}>
-          <Col xs={24} md={12}>
-            <Button
-              block
-              type="default"
+        {/* Responsive Grid for Input Fields */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 12,
+          }}
+        >
+          <Form.Item
+            label="Email Address"
+            name="email"
+            rules={[
+              { required: true, message: "Please enter your email" },
+              { type: "email", message: "Please enter a valid email" },
+            ]}
+          >
+            <Input
               size="large"
-              loading={isSendingOtp}
-              onClick={handleSendOtp}
-            >
-              {isSendingOtp ? "Sending OTP..." : "Send OTP"}
-            </Button>
-          </Col>
-          <Col xs={24} md={12}>
-            <Button
-              block
-              type="primary"
-              size="large"
-              htmlType="submit"
-              loading={isResetting}
-              style={{ background: "#034147" }}
-            >
-              {isResetting ? "Resetting..." : "Reset Password"}
-            </Button>
-          </Col>
-        </Row>
+              prefix={<MailOutlined />}
+              placeholder="you@example.com"
+            />
+          </Form.Item>
 
-        <div style={{ marginTop: 14, textAlign: "center" }}>
+          <Form.Item
+            label="OTP Code"
+            name="otp"
+            rules={[{ required: true, message: "Please enter OTP" }]}
+          >
+            <Input
+              size="large"
+              prefix={<KeyOutlined />}
+              placeholder="6-digit code"
+              maxLength={6}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="New Password"
+            name="password"
+            rules={[
+              { required: true, message: "Please enter new password" },
+              { min: 8, message: "Password must be at least 8 characters" },
+            ]}
+          >
+            <Input.Password
+              size="large"
+              prefix={<LockOutlined />}
+              placeholder="New password"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Confirm Password"
+            name="confirmPassword"
+            dependencies={["password"]}
+            rules={[
+              { required: true, message: "Please confirm your password" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("Passwords do not match"));
+                },
+              }),
+            ]}
+          >
+            <Input.Password
+              size="large"
+              prefix={<LockOutlined />}
+              placeholder="Confirm password"
+            />
+          </Form.Item>
+        </div>
+
+        {/* Responsive Buttons */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 12,
+            marginTop: 8,
+          }}
+        >
+          <Button
+            block
+            type="default"
+            size="large"
+            loading={isSendingOtp}
+            onClick={handleSendOtp}
+          >
+            {isSendingOtp ? "Sending OTP..." : "Send OTP"}
+          </Button>
+
+          <Button
+            block
+            type="primary"
+            size="large"
+            htmlType="submit"
+            loading={isResetting}
+            style={{ background: "#034147" }}
+          >
+            {isResetting ? "Resetting..." : "Reset Password"}
+          </Button>
+        </div>
+
+        {/* Back to Login Link */}
+        <div style={{ marginTop: 16, textAlign: "center" }}>
           <Text style={{ color: "#667085" }}>Remember your password? </Text>
           <Button
             type="link"
