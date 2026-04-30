@@ -108,6 +108,21 @@ const SignupPage = ({ onClose }) => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
+  const getLocationPermissionState = async () => {
+    if (!navigator.permissions?.query) {
+      return "unknown";
+    }
+
+    try {
+      const result = await navigator.permissions.query({
+        name: "geolocation",
+      });
+      return result.state;
+    } catch {
+      return "unknown";
+    }
+  };
+
   const fallbackCountryFromLocale = () => {
     const locale = navigator.language || "";
     const region = locale.includes("-") ? locale.split("-")[1] : "";
@@ -145,7 +160,7 @@ const SignupPage = ({ onClose }) => {
     });
   };
 
-  const requestLocation = async () => {
+  const requestLocation = async ({ showPermissionModal = true } = {}) => {
     const fallback = fallbackCountryFromLocale();
     const fallbackCountry = getCountryName(fallback) || fallback;
 
@@ -158,7 +173,25 @@ const SignupPage = ({ onClose }) => {
         ...prev,
         country: fallbackCountry,
       }));
-      openLocationPermissionModal();
+      if (showPermissionModal) {
+        openLocationPermissionModal();
+      }
+      return { ok: false, location: null };
+    }
+
+    const permissionState = await getLocationPermissionState();
+    if (permissionState === "denied") {
+      setHasCapturedCoordinates(false);
+      setLocationError(
+        "Enable location access to capture your latitude and longitude before creating a vendor account."
+      );
+      setLocationData((prev) => ({
+        ...prev,
+        country: prev.country || fallbackCountry,
+      }));
+      if (showPermissionModal) {
+        openLocationPermissionModal();
+      }
       return { ok: false, location: null };
     }
 
@@ -219,13 +252,17 @@ const SignupPage = ({ onClose }) => {
           setLocationError(
             permissionDenied
               ? "Enable location access to capture your latitude and longitude before creating a vendor account."
-              : "We could not access your current location. Enable location and try again."
+              : geoError?.code === geoError?.TIMEOUT || geoError?.code === 3
+                ? "We could not get your location in time. Retry once your device has a stronger location signal."
+                : "We could not access your current location. Retry after confirming location services are available on this device."
           );
           setLocationData((prev) => ({
             ...prev,
             country: prev.country || fallbackCountry,
           }));
-          openLocationPermissionModal();
+          if (permissionDenied && showPermissionModal) {
+            openLocationPermissionModal();
+          }
           resolve({ ok: false, location: null });
         },
         {
@@ -238,7 +275,7 @@ const SignupPage = ({ onClose }) => {
   };
 
   useEffect(() => {
-    requestLocation();
+    requestLocation({ showPermissionModal: false });
   }, []);
 
   const handleBackToLogin = () => {
