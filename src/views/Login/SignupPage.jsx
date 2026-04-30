@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Form,
@@ -10,7 +10,6 @@ import {
   Divider,
   Alert,
   message,
-  Modal,
 } from "antd";
 import {
   UserOutlined,
@@ -103,7 +102,6 @@ const SignupPage = ({ onClose }) => {
     country: "",
     location: "",
   });
-  const locationPromptShownRef = useRef(false);
 
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -139,28 +137,7 @@ const SignupPage = ({ onClose }) => {
     }
   };
 
-  const openLocationPermissionModal = () => {
-    if (locationPromptShownRef.current) {
-      return;
-    }
-
-    locationPromptShownRef.current = true;
-    Modal.warning({
-      title: "Enable location access",
-      content:
-        "Location access is required to capture your latitude and longitude during vendor signup. Please enable location permission in your browser or device settings, then retry.",
-      okText: "Retry location",
-      onOk: () => {
-        locationPromptShownRef.current = false;
-        requestLocation();
-      },
-      onCancel: () => {
-        locationPromptShownRef.current = false;
-      },
-    });
-  };
-
-  const requestLocation = async ({ showPermissionModal = true } = {}) => {
+  const requestLocation = async () => {
     const fallback = fallbackCountryFromLocale();
     const fallbackCountry = getCountryName(fallback) || fallback;
 
@@ -173,9 +150,6 @@ const SignupPage = ({ onClose }) => {
         ...prev,
         country: fallbackCountry,
       }));
-      if (showPermissionModal) {
-        openLocationPermissionModal();
-      }
       return { ok: false, location: null };
     }
 
@@ -189,9 +163,6 @@ const SignupPage = ({ onClose }) => {
         ...prev,
         country: prev.country || fallbackCountry,
       }));
-      if (showPermissionModal) {
-        openLocationPermissionModal();
-      }
       return { ok: false, location: null };
     }
 
@@ -260,9 +231,6 @@ const SignupPage = ({ onClose }) => {
             ...prev,
             country: prev.country || fallbackCountry,
           }));
-          if (permissionDenied && showPermissionModal) {
-            openLocationPermissionModal();
-          }
           resolve({ ok: false, location: null });
         },
         {
@@ -275,7 +243,7 @@ const SignupPage = ({ onClose }) => {
   };
 
   useEffect(() => {
-    requestLocation({ showPermissionModal: false });
+    requestLocation();
   }, []);
 
   const handleBackToLogin = () => {
@@ -300,7 +268,7 @@ const SignupPage = ({ onClose }) => {
       }
 
       if (!signupLocation) {
-        setError(
+        setLocationError(
           "Turn on location access and allow the browser to capture your latitude and longitude before signing up."
         );
         return;
@@ -427,6 +395,8 @@ const SignupPage = ({ onClose }) => {
             type="warning"
             showIcon
             message={locationError}
+            closable
+            onClose={() => setLocationError("")}
             action={
               <Button size="small" type="link" onClick={() => requestLocation()}>
                 Retry
