@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { Alert, Button, Card, Spin, Typography } from "antd";
+import { Alert, Button, Card, Grid, Spin, Typography } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import MetricsSection from "../dashboard/MetricsSection";
@@ -12,6 +12,7 @@ import {
 } from "../utils/restaurantScope";
 
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
@@ -101,6 +102,8 @@ const getEntityRestaurantId = (row) =>
 function VendorAnalytics() {
   const currencyCode = useVendorCurrencyCode();
   const navigate = useNavigate();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(() =>
     getVendorRestaurantScope()
   );
@@ -278,11 +281,13 @@ function VendorAnalytics() {
         <div
           style={{
             display: "flex",
+            flexDirection: isMobile ? "column" : "row",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: isMobile ? "stretch" : "center",
+            gap: 16,
           }}
         >
-          <div>
+          <div style={{ width: isMobile ? "100%" : "auto" }}>
             <Title level={4} style={{ marginBottom: 0 }}>
               Store Analytics
             </Title>
@@ -293,6 +298,7 @@ function VendorAnalytics() {
           <Button
             icon={<ArrowLeftOutlined />}
             onClick={() => navigate("/vendors/dashboard")}
+            block={isMobile}
           >
             Back to Dashboard
           </Button>

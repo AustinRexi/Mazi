@@ -47,10 +47,6 @@ function Formpage({ mode = "vendor" }) {
   const loginDescription = isAdminLogin
     ? "Sign in with your admin account to access the admin dashboard."
     : "Please enter your vendor login details to continue.";
-  const alternateLoginPath = isAdminLogin ? "/login" : "/admin/login";
-  const alternateLoginLabel = isAdminLogin
-    ? "Sign in as vendor"
-    : "Sign in as admin";
 
   useEffect(() => {
     setClientReady(true);
@@ -323,35 +319,25 @@ function Formpage({ mode = "vendor" }) {
               }}
             >
               {isAdminLogin
-                ? "Need vendor access instead?"
+                ? ""
                 : "Don't have an account yet? "}
             </p>
-            <Button
-              style={{
-                border: "none",
-                color: "#0b6b6f",
-                fontSize: "15px",
-                lineHeight: "26px",
-                fontFamily: "NeueHaasDisplayLight",
-                paddingInline: 4,
-              }}
-              onClick={
-                isAdminLogin
-                  ? () => navigate(alternateLoginPath)
-                  : showSignupModal
-              }
-            >
-              {isAdminLogin ? alternateLoginLabel : "Sign up"}
-            </Button>
-          </div>
-
-          {isAdminLogin ? (
-            <div style={{ marginTop: 10, textAlign: "center" }}>
-              <Button type="link" onClick={() => navigate(alternateLoginPath)}>
-                {alternateLoginLabel}
+            {!isAdminLogin ? (
+              <Button
+                style={{
+                  border: "none",
+                  color: "#0b6b6f",
+                  fontSize: "15px",
+                  lineHeight: "26px",
+                  fontFamily: "NeueHaasDisplayLight",
+                  paddingInline: 4,
+                }}
+                onClick={showSignupModal}
+              >
+                Sign up
               </Button>
-            </div>
-          ) : null}
+            ) : null}
+          </div>
         </Form>
       </Card>
 
