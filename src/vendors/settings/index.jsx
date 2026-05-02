@@ -219,11 +219,11 @@ const VendorSettings = () => {
 
   const [businessSettings, setBusinessSettings] = useState({
     ...getStoredLocalData(businessSettingsKey, {
-      taxId: "12-3456789",
-      businessLicense: "BL-987654321",
-      returnPolicy: "30-day return policy.",
-      shippingPolicy: "Free shipping on orders over $50.",
-      privacyPolicy: "We protect your personal information.",
+      taxId: "",
+      businessLicense: "",
+      returnPolicy: "",
+      shippingPolicy: "",
+      privacyPolicy: "",
     }),
   });
   const [savingBusiness, setSavingBusiness] = useState(false);

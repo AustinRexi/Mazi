@@ -5,6 +5,9 @@ import App from "./App.jsx";
 import { ConfigProvider } from "antd";
 import themeConfig from "./theme.cofig.js";
 import { AuthProvider } from "./context/AuthContext";
+import { setupAxiosInterceptors } from "./services/setupAxiosInterceptors";
+
+setupAxiosInterceptors();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

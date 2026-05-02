@@ -11,9 +11,9 @@ const ProtectedRoute = ({ children }) => {
     return children;
   }
 
-  const loginPath = location.pathname.startsWith("/admin")
-    ? "/admin/login"
-    : "/login";
+  const loginPath = location.pathname.startsWith("/vendors")
+    ? "/login"
+    : "/admin/login";
 
   return <Navigate to={loginPath} />;
 };

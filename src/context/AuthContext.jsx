@@ -40,6 +40,12 @@
 //   );
 // };
 import { createContext, useState, useEffect } from "react";
+import {
+  AUTH_SESSION_CHANGED_EVENT,
+  clearStoredAuth,
+  getStoredAuth,
+  storeAuth,
+} from "../utils/authSession";
 
 export const AuthContext = createContext();
 
@@ -48,26 +54,37 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    const profileImage = localStorage.getItem("profileImage") || null;
-    if (token && role) {
-      setUser({ token, role, profileImage });
-    }
+    const syncUserFromStorage = () => {
+      const { token, role, profileImage } = getStoredAuth();
+
+      if (token && role) {
+        setUser({ token, role, profileImage });
+        return;
+      }
+
+      setUser(null);
+    };
+
+    syncUserFromStorage();
     setLoading(false);
+
+    window.addEventListener(AUTH_SESSION_CHANGED_EVENT, syncUserFromStorage);
+    window.addEventListener("storage", syncUserFromStorage);
+
+    return () => {
+      window.removeEventListener(AUTH_SESSION_CHANGED_EVENT, syncUserFromStorage);
+      window.removeEventListener("storage", syncUserFromStorage);
+    };
   }, []);
 
   const login = (token, role) => {
-    const profileImage = localStorage.getItem("profileImage") || null;
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", role);
+    const { profileImage } = getStoredAuth();
+    storeAuth({ token, role, profileImage });
     setUser({ token, role, profileImage });
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("profileImage");
+    clearStoredAuth();
     setUser(null);
   };
 

@@ -178,7 +178,6 @@ const StoreInformation = ({
           },
           body: JSON.stringify({
             input: trimmedQuery,
-            includedRegionCodes: ["ng"],
           }),
         }
       );
@@ -592,20 +591,30 @@ const StoreInformation = ({
                 <Col span={12}>
                   <Form.Item label="Country">
                     <Select
+                      mode="tags"
+                      maxCount={1}
                       showSearch
                       allowClear
                       optionFilterProp="label"
                       options={COUNTRY_OPTIONS}
-                      value={storeSettings.storeCountry}
+                      value={
+                        storeSettings.storeCountry ? [storeSettings.storeCountry] : []
+                      }
                       onChange={(value) =>
-                        setStoreSettings((current) => ({
-                          ...current,
-                          storeCountry: value || "",
-                          storeCurrency:
-                            value && COUNTRY_TO_CURRENCY[value]
-                              ? COUNTRY_TO_CURRENCY[value]
-                              : current.storeCurrency,
-                        }))
+                        {
+                          const selectedCountry = Array.isArray(value)
+                            ? value[value.length - 1] || ""
+                            : value || "";
+
+                          setStoreSettings((current) => ({
+                            ...current,
+                            storeCountry: selectedCountry,
+                            storeCurrency:
+                              selectedCountry && COUNTRY_TO_CURRENCY[selectedCountry]
+                                ? COUNTRY_TO_CURRENCY[selectedCountry]
+                                : current.storeCurrency,
+                          }));
+                        }
                       }
                       placeholder="Search and select country"
                     />
