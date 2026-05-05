@@ -158,7 +158,7 @@ const AddProductModal = ({
           </Form.Item>
 
           <Form.Item
-            label="Category"
+            label="Select One or Multiple Categories"
             name="categoryIds"
             rules={[{ required: true, message: "Select at least one category" }]}
           >

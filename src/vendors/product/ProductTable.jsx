@@ -319,7 +319,11 @@ const ProductTable = ({ products, onDelete, onEdit, categories = [] }) => {
           <Form.Item label="Product Name" name="name" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Category" name="categoryIds" rules={[{ required: true }]}>
+          <Form.Item
+            label="Select One or Multiple Categories"
+            name="categoryIds"
+            rules={[{ required: true }]}
+          >
             <Select mode="multiple" placeholder="Select categories">
               {categories.map((category) => (
                 <Option key={category.id} value={category.id}>
