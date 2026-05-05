@@ -58,6 +58,9 @@ const persistStoreDraft = (key, settings) => {
     storeBanner: settings.storeBanner || "",
     storeCountry: settings.storeCountry || "",
     storeCurrency: settings.storeCurrency || "",
+    storeCategoryIds: Array.isArray(settings.storeCategoryIds)
+      ? settings.storeCategoryIds
+      : [],
   };
 
   localStorage.setItem(key, JSON.stringify(draft));
@@ -168,6 +171,13 @@ const mapRestaurantToStoreSettings = (restaurant, fallback = {}) => ({
   storeWebsite: restaurant?.restaurant_website || restaurant?.website || "",
   storeCountry: restaurant?.restaurant_country || "",
   storeCurrency: String(restaurant?.restaurant_currency || "").toUpperCase(),
+  storeCategoryIds: Array.isArray(restaurant?.categories)
+    ? restaurant.categories
+        .map((category) => Number(category?.id))
+        .filter((id) => Number.isFinite(id) && id > 0)
+    : Array.isArray(fallback.storeCategoryIds)
+      ? fallback.storeCategoryIds
+      : [],
   storeLogoFile: null,
   storeBannerFile: null,
 });
@@ -199,7 +209,9 @@ const VendorSettings = () => {
     storeWebsite: storedDraft.storeWebsite || "",
     storeCountry: storedDraft.storeCountry || "",
     storeCurrency: storedDraft.storeCurrency || "",
+    storeCategoryIds: storedDraft.storeCategoryIds || [],
   });
+  const [categoryOptions, setCategoryOptions] = useState([]);
   const [loadingStore, setLoadingStore] = useState(true);
   const [savingStore, setSavingStore] = useState(false);
   const [restaurants, setRestaurants] = useState([]);
@@ -245,14 +257,31 @@ const VendorSettings = () => {
       }
 
       try {
-        const response = await axios.get(`${API_BASE_URL}/vendor/restaurants?limit=100`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
+        const [response, categoriesResponse] = await Promise.all([
+          axios.get(`${API_BASE_URL}/vendor/restaurants?limit=100`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }),
+          axios.get(`${API_BASE_URL}/vendor/categories?all=true`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }),
+        ]);
 
         const restaurantRows = response.data?.data || [];
+        const categoryRows = categoriesResponse.data?.data || [];
+        setCategoryOptions(
+          categoryRows
+            .map((row) => ({
+              label: row.category_name || row.name || "",
+              value: Number(row.id),
+            }))
+            .filter((row) => row.value && row.label)
+        );
         setRestaurants(restaurantRows);
         const restaurant = restaurantRows[0];
         if (restaurant) {
@@ -415,6 +444,13 @@ const VendorSettings = () => {
     if (currency) {
       formData.append("restaurant_currency", currency);
     }
+    formData.append(
+      "category_ids_json",
+      JSON.stringify(storeSettings.storeCategoryIds || [])
+    );
+    storeSettings.storeCategoryIds.forEach((categoryId) => {
+      formData.append("category_ids[]", String(categoryId));
+    });
 
     if (storeSettings.storeBannerFile) {
       formData.append("restaurant_banner", storeSettings.storeBannerFile);
@@ -508,6 +544,13 @@ const VendorSettings = () => {
         "restaurant_currency",
         String(storeSettings.storeCurrency || "").toUpperCase()
       );
+      formData.append(
+        "category_ids_json",
+        JSON.stringify(storeSettings.storeCategoryIds || [])
+      );
+      storeSettings.storeCategoryIds.forEach((categoryId) => {
+        formData.append("category_ids[]", String(categoryId));
+      });
 
       if (storeSettings.storeBannerFile) {
         formData.append("restaurant_banner", storeSettings.storeBannerFile);
@@ -792,6 +835,7 @@ const VendorSettings = () => {
         onSave={handleSaveStore}
         saving={savingStore}
         loading={loadingStore}
+        categoryOptions={categoryOptions}
       />
       <NotificationPreferences
         notifications={notifications}

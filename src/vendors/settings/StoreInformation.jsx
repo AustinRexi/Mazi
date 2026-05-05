@@ -117,6 +117,7 @@ const StoreInformation = ({
   onSave,
   saving,
   loading,
+  categoryOptions = [],
 }) => {
   const navigate = useNavigate();
   const logoInputRef = useRef(null);
@@ -582,6 +583,27 @@ const StoreInformation = ({
                         }))
                       }
                       placeholder="e.g. 3.3792"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Form.Item label="Store Categories">
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      optionFilterProp="label"
+                      options={categoryOptions}
+                      value={storeSettings.storeCategoryIds}
+                      onChange={(value) =>
+                        setStoreSettings((current) => ({
+                          ...current,
+                          storeCategoryIds: value,
+                        }))
+                      }
+                      placeholder="Select categories for this store"
                     />
                   </Form.Item>
                 </Col>

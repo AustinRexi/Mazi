@@ -27,23 +27,45 @@ const normalizeImageUrl = (imagePath) => {
   return `${STORAGE_BASE_URL}/storage/${String(imagePath).replace(/^\/+/, "")}`;
 };
 
+const normalizeCategoryCollection = (item) => {
+  const categories = Array.isArray(item?.categories) ? item.categories : [];
+  const normalized = categories
+    .map((category) => ({
+      id: Number(category?.id),
+      name: category?.category_name || category?.name || "",
+    }))
+    .filter((category) => category.id && category.name);
+
+  if (normalized.length > 0) {
+    return normalized;
+  }
+
+  const fallbackId = item?.category_id || item?.category?.id;
+  const fallbackName = item?.category?.category_name || item?.category?.name || "";
+  return fallbackId && fallbackName
+    ? [{ id: Number(fallbackId), name: fallbackName }]
+    : [];
+};
+
 const normalizeFood = (food) => {
   const foodImagePaths = [
     food.food_images || food.food_image,
     food.food_images2 || food.food_image2,
     food.food_images3 || food.food_image3,
   ].filter(Boolean);
+  const normalizedCategories = normalizeCategoryCollection(food);
 
   return {
     id: `food-${food.id}`,
     resourceId: food.id,
     resourceType: "food",
     restaurantId: food.restaurant_id || food.restaurant?.id || null,
-    categoryId: food.category_id || food.category?.id || null,
+    categoryIds: normalizedCategories.map((category) => category.id),
     name: food.food_name || food.name || "Unnamed Food",
     price: Number(food.food_price || 0),
     stock: null,
-    category: food.category?.category_name || "Food",
+    categories: normalizedCategories,
+    category: normalizedCategories.map((category) => category.name).join(", ") || "Food",
     status: food.stock_status === "out_of_stock" ? "out-of-stock" : "in_stock",
     image: normalizeImageUrl(foodImagePaths[0]),
     images: foodImagePaths.map((path) => normalizeImageUrl(path)),
@@ -54,25 +76,32 @@ const normalizeFood = (food) => {
   };
 };
 
-const normalizeGrocery = (grocery) => ({
-  id: `grocery-${grocery.id}`,
-  resourceId: grocery.id,
-  resourceType: "grocery",
-  restaurantId: grocery.restaurant_id || grocery.restaurant?.id || null,
-  categoryId: grocery.category_id || grocery.category?.id || null,
-  name: grocery.groceries_name || "Unnamed Grocery",
-  price: Number(grocery.groceries_price || 0),
-  stock: Number(grocery.no_in_stock || 0),
-  category: grocery.category?.category_name || "Groceries",
-  status:
-    Number(grocery.no_in_stock || 0) === 0 ? "out-of-stock" : "active",
-  image: normalizeImageUrl(grocery.groceries_images),
-  images: [normalizeImageUrl(grocery.groceries_images)],
-  sales: 0,
-  created: grocery.created_at || "",
-  description: grocery.groceries_description || "",
-  restaurant: grocery.restaurant?.restaurant_name || grocery.restaurant?.name || "",
-});
+const normalizeGrocery = (grocery) => {
+  const normalizedCategories = normalizeCategoryCollection(grocery);
+
+  return {
+    id: `grocery-${grocery.id}`,
+    resourceId: grocery.id,
+    resourceType: "grocery",
+    restaurantId: grocery.restaurant_id || grocery.restaurant?.id || null,
+    categoryIds: normalizedCategories.map((category) => category.id),
+    name: grocery.groceries_name || "Unnamed Grocery",
+    price: Number(grocery.groceries_price || 0),
+    stock: Number(grocery.no_in_stock || 0),
+    categories: normalizedCategories,
+    category:
+      normalizedCategories.map((category) => category.name).join(", ") ||
+      "Groceries",
+    status:
+      Number(grocery.no_in_stock || 0) === 0 ? "out-of-stock" : "active",
+    image: normalizeImageUrl(grocery.groceries_images),
+    images: [normalizeImageUrl(grocery.groceries_images)],
+    sales: 0,
+    created: grocery.created_at || "",
+    description: grocery.groceries_description || "",
+    restaurant: grocery.restaurant?.restaurant_name || grocery.restaurant?.name || "",
+  };
+};
 
 const normalizeProductNameKey = (value) =>
   String(value || "").trim().toLowerCase();
@@ -380,7 +409,9 @@ const VendorProduct = () => {
   const filteredProducts = restaurantProducts.filter((p) => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
     const matchesCategory =
-      categoryFilter === "all" || p.category === categoryFilter;
+      categoryFilter === "all" ||
+      (Array.isArray(p.categories) &&
+        p.categories.some((category) => category.name === categoryFilter));
     const matchesStatus = statusFilter === "all" || p.status === statusFilter;
     return matchesSearch && matchesCategory && matchesStatus;
   });
@@ -411,7 +442,9 @@ const VendorProduct = () => {
         formData.append("food_price", String(payload.price));
         formData.append("stock_status", payload.stockStatus || "in_stock");
         formData.append("restaurant_id", String(payload.restaurantId));
-        formData.append("category_id", String(payload.categoryId));
+        payload.categoryIds.forEach((categoryId) => {
+          formData.append("category_ids[]", String(categoryId));
+        });
 
         const [img1, img2, img3] = payload.foodImages || [];
         if (img1) {
@@ -431,7 +464,9 @@ const VendorProduct = () => {
         formData.append("groceries_price", String(payload.price));
         formData.append("no_in_stock", String(payload.noInStock || 0));
         formData.append("restaurant_id", String(payload.restaurantId));
-        formData.append("category_id", String(payload.categoryId));
+        payload.categoryIds.forEach((categoryId) => {
+          formData.append("category_ids[]", String(categoryId));
+        });
 
         const image = (payload.groceryImage || [])[0];
         if (image) {
@@ -496,7 +531,11 @@ const VendorProduct = () => {
           "stock_status",
           values.status === "out-of-stock" ? "out_of_stock" : "in_stock"
         );
-        formData.append("category_id", String(values.categoryId || product.categoryId));
+        const nextCategoryIds =
+          values.categoryIds?.length > 0 ? values.categoryIds : product.categoryIds || [];
+        nextCategoryIds.forEach((categoryId) => {
+          formData.append("category_ids[]", String(categoryId));
+        });
 
         const resizedFoodImages = await Promise.all(
           (values.foodImages || [])
@@ -527,7 +566,10 @@ const VendorProduct = () => {
           groceries_description: values.description || "",
           groceries_price: Number(values.price),
           no_in_stock: Number(values.stock || 0),
-          category_id: Number(values.categoryId || product.categoryId),
+          category_ids:
+            values.categoryIds?.length > 0
+              ? values.categoryIds.map((categoryId) => Number(categoryId))
+              : (product.categoryIds || []).map((categoryId) => Number(categoryId)),
           restaurant_id: Number(product.restaurantId || 0) || undefined,
         };
 
@@ -537,7 +579,11 @@ const VendorProduct = () => {
           formData.append("groceries_description", values.description || "");
           formData.append("groceries_price", String(Number(values.price)));
           formData.append("no_in_stock", String(Number(values.stock || 0)));
-          formData.append("category_id", String(values.categoryId || product.categoryId));
+          const nextCategoryIds =
+            values.categoryIds?.length > 0 ? values.categoryIds : product.categoryIds || [];
+          nextCategoryIds.forEach((categoryId) => {
+            formData.append("category_ids[]", String(categoryId));
+          });
           if (product.restaurantId) {
             formData.append("restaurant_id", String(product.restaurantId));
           }
@@ -602,7 +648,7 @@ const VendorProduct = () => {
       description: restockProduct.description || "",
       price: Number(restockProduct.price || 0),
       stock: Number(values.stock || 0),
-      categoryId: restockProduct.categoryId,
+      categoryIds: restockProduct.categoryIds,
     });
     setRestockSubmitting(false);
 

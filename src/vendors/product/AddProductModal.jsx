@@ -91,7 +91,7 @@ const AddProductModal = ({
 
     const payload = {
       productType: values.productType,
-      categoryId: values.categoryId,
+      categoryIds: values.categoryIds,
       restaurantId,
       name: values.name,
       description: values.description || "",
@@ -159,10 +159,10 @@ const AddProductModal = ({
 
           <Form.Item
             label="Category"
-            name="categoryId"
-            rules={[{ required: true, message: "Select a category" }]}
+            name="categoryIds"
+            rules={[{ required: true, message: "Select at least one category" }]}
           >
-            <Select placeholder="Select category">
+            <Select mode="multiple" placeholder="Select categories">
               {categories.map((category) => (
                 <Option key={category.id} value={category.id}>
                   {category.name}

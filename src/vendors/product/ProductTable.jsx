@@ -90,7 +90,7 @@ const ProductTable = ({ products, onDelete, onEdit, categories = [] }) => {
     setEditingProduct(record);
     form.setFieldsValue({
       name: record.name,
-      categoryId: record.categoryId || undefined,
+      categoryIds: record.categoryIds || [],
       price: Number(record.price || 0),
       stock:
         record.resourceType === "grocery" ? Number(record.stock || 0) : undefined,
@@ -319,8 +319,8 @@ const ProductTable = ({ products, onDelete, onEdit, categories = [] }) => {
           <Form.Item label="Product Name" name="name" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Category" name="categoryId" rules={[{ required: true }]}>
-            <Select placeholder="Select category">
+          <Form.Item label="Category" name="categoryIds" rules={[{ required: true }]}>
+            <Select mode="multiple" placeholder="Select categories">
               {categories.map((category) => (
                 <Option key={category.id} value={category.id}>
                   {category.name}
