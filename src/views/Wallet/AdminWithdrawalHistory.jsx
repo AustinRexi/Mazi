@@ -1,5 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Button, Card, Space, Spin, Table, Tag, Typography } from "antd";
+import {
+  Alert,
+  Button,
+  Card,
+  Input,
+  Select,
+  Space,
+  Spin,
+  Table,
+  Tag,
+  Typography,
+  Upload,
+  message,
+} from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -32,6 +46,53 @@ const AdminWithdrawalHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [rows, setRows] = useState([]);
+  const [updatingId, setUpdatingId] = useState(null);
+  const [receiptFiles, setReceiptFiles] = useState({});
+  const [notes, setNotes] = useState({});
+
+  const fetchRows = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You need to log in as an admin to view withdrawal history.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+      const response = await axios.get(`${API_BASE_URL}/admin/vendor-withdrawals`, {
+        params: { limit: 100, offset: 0 },
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      });
+      setRows(response.data?.data || []);
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || "Failed to load withdrawal requests.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateWithdrawal = async (record, status) => {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("status", status);
+    if (notes[record.id]) formData.append("admin_note", notes[record.id]);
+    if (receiptFiles[record.id]) formData.append("receipt", receiptFiles[record.id]);
+
+    try {
+      setUpdatingId(record.id);
+      await axios.post(`${API_BASE_URL}/admin/vendor-withdrawals/${record.id}`, formData, {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      });
+      message.success("Withdrawal updated.");
+      await fetchRows();
+    } catch (requestError) {
+      message.error(requestError.response?.data?.message || "Failed to update withdrawal.");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   const escapeCsv = (value) => {
     const text = String(value ?? "");
@@ -81,45 +142,18 @@ const AdminWithdrawalHistory = () => {
     URL.revokeObjectURL(url);
   };
 
-  useEffect(() => {
-    const fetchRows = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setError("You need to log in as an admin to view withdrawal history.");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError("");
-        const response = await axios.get(
-          `${API_BASE_URL}/admin/wallet/withdrawals`,
-          {
-            params: { limit: 100, offset: 0 },
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        setRows(response.data?.data || []);
-      } catch (requestError) {
-        setError(
-          requestError.response?.data?.message ||
-            "Failed to load withdrawal history."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRows();
-  }, []);
+  useEffect(() => { fetchRows(); }, []);
 
   const columns = useMemo(
     () => [
+      {
+        title: "Vendor",
+        key: "vendor",
+        render: (_, record) => {
+          const vendor = record.vendor || {};
+          return `${vendor.firstName || vendor.firstname || ""} ${vendor.lastName || vendor.lastname || ""}`.trim() || vendor.email || `Vendor #${record.vendor_id}`;
+        },
+      },
       {
         title: "Date",
         dataIndex: "created_at",
@@ -151,6 +185,40 @@ const AdminWithdrawalHistory = () => {
         key: "status",
         render: (value) => (
           <Tag color={statusColor(value)}>{String(value || "pending")}</Tag>
+        ),
+      },
+      {
+        title: "Receipt / Update",
+        key: "actions",
+        render: (_, record) => (
+          <Space direction="vertical" size="small">
+            <Select
+              value={record.status}
+              style={{ width: 140 }}
+              loading={updatingId === record.id}
+              onChange={(value) => updateWithdrawal(record, value)}
+              options={["pending", "processing", "completed", "rejected", "failed"].map((value) => ({ value, label: value }))}
+            />
+            <Input
+              size="small"
+              placeholder="Admin note (optional)"
+              value={notes[record.id] || ""}
+              onChange={(event) => setNotes((current) => ({ ...current, [record.id]: event.target.value }))}
+            />
+            <Upload
+              maxCount={1}
+              accept="image/png,image/jpeg,application/pdf"
+              beforeUpload={(file) => {
+                setReceiptFiles((current) => ({ ...current, [record.id]: file }));
+                return false;
+              }}
+              showUploadList={{ showRemoveIcon: true }}
+            >
+              <Button size="small" icon={<UploadOutlined />}>Choose receipt</Button>
+            </Upload>
+            {record.receipt_url ? <a href={record.receipt_url} target="_blank" rel="noreferrer">View receipt</a> : null}
+            <Button size="small" type="primary" loading={updatingId === record.id} onClick={() => updateWithdrawal(record, record.status)}>Save</Button>
+          </Space>
         ),
       },
     ],
