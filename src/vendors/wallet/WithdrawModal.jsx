@@ -295,7 +295,7 @@ const WithdrawModal = ({
         >
           <ExclamationCircleOutlined style={{ color: "#1890ff" }} />{" "}
           <Text type="secondary">
-            Bank transfers take 1–3 business days. PayPal is instant. A small
+            Withdrawals are processed within 24 business hours. A small
             processing fee may apply.
           </Text>
         </div>
