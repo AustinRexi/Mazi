@@ -49,6 +49,7 @@ const AdminWithdrawalHistory = () => {
   const [updatingId, setUpdatingId] = useState(null);
   const [receiptFiles, setReceiptFiles] = useState({});
   const [notes, setNotes] = useState({});
+  const [draftStatuses, setDraftStatuses] = useState({});
 
   const fetchRows = async () => {
     const token = localStorage.getItem("token");
@@ -66,6 +67,13 @@ const AdminWithdrawalHistory = () => {
         headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
       });
       setRows(response.data?.data || []);
+      setDraftStatuses((current) => {
+        const next = { ...current };
+        (response.data?.data || []).forEach((row) => {
+          if (!next[row.id]) next[row.id] = row.status;
+        });
+        return next;
+      });
     } catch (requestError) {
       setError(requestError.response?.data?.message || "Failed to load withdrawal requests.");
     } finally {
@@ -73,10 +81,10 @@ const AdminWithdrawalHistory = () => {
     }
   };
 
-  const updateWithdrawal = async (record, status) => {
+  const updateWithdrawal = async (record) => {
     const token = localStorage.getItem("token");
     const formData = new FormData();
-    formData.append("status", status);
+    formData.append("status", draftStatuses[record.id] || record.status);
     if (notes[record.id]) formData.append("admin_note", notes[record.id]);
     if (receiptFiles[record.id]) formData.append("receipt", receiptFiles[record.id]);
 
@@ -193,10 +201,10 @@ const AdminWithdrawalHistory = () => {
         render: (_, record) => (
           <Space direction="vertical" size="small">
             <Select
-              value={record.status}
+              value={draftStatuses[record.id] || record.status}
               style={{ width: 140 }}
               loading={updatingId === record.id}
-              onChange={(value) => updateWithdrawal(record, value)}
+              onChange={(value) => setDraftStatuses((current) => ({ ...current, [record.id]: value }))}
               options={["pending", "processing", "completed", "rejected", "failed"].map((value) => ({ value, label: value }))}
             />
             <Input
@@ -216,8 +224,20 @@ const AdminWithdrawalHistory = () => {
             >
               <Button size="small" icon={<UploadOutlined />}>Choose receipt</Button>
             </Upload>
-            {record.receipt_url ? <a href={record.receipt_url} target="_blank" rel="noreferrer">View receipt</a> : null}
-            <Button size="small" type="primary" loading={updatingId === record.id} onClick={() => updateWithdrawal(record, record.status)}>Save</Button>
+            {record.receipt_url ? (
+              /\.(png|jpe?g)(?:\?|$)/i.test(record.receipt_url) ? (
+                <a href={record.receipt_url} target="_blank" rel="noreferrer">
+                  <img
+                    src={record.receipt_url}
+                    alt="Payment receipt"
+                    style={{ width: 96, maxHeight: 72, objectFit: "cover", borderRadius: 4, border: "1px solid #d9d9d9" }}
+                  />
+                </a>
+              ) : (
+                <a href={record.receipt_url} target="_blank" rel="noreferrer">View receipt PDF</a>
+              )
+            ) : null}
+            <Button size="small" type="primary" loading={updatingId === record.id} onClick={() => updateWithdrawal(record)}>Save</Button>
           </Space>
         ),
       },
