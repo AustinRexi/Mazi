@@ -1,5 +1,6 @@
 import { Row, Col, Select, Button, Drawer, Menu, Badge, Modal } from "antd";
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { MenuOutlined } from "@ant-design/icons";
 import axios from "axios";
 import flag from "../utils/icons/flag.svg";
@@ -28,6 +29,7 @@ const API_BASE_URL =
 const Navbar = () => {
   const { Option } = Select;
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const currencyCode = useVendorCurrencyCode();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -210,6 +212,7 @@ const Navbar = () => {
             id: notification.id,
             title: data.title || "Notification",
             message: data.message || "You have a new notification.",
+            actionUrl: data.action_url || "/Wallet/withdrawals",
             time: notification.created_at
               ? new Date(notification.created_at).toLocaleString()
               : "-",
@@ -239,16 +242,19 @@ const Navbar = () => {
   // Function to handle opening the notification modal
   const handleOpenNotifications = () => {
     setNotificationModalVisible(true); // Open the notification modal
-    if (user?.role === "admin" && notificationCount > 0) {
-      const token = localStorage.getItem("token");
-      axios.post(`${API_BASE_URL}/admin/notifications/read-all`, null, {
+  };
+
+  const handleAdminNotificationClick = async (item) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(`${API_BASE_URL}/admin/notifications/${item.id}/read`, null, {
         headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-      }).then(() => {
-        setNotificationCount(0);
-        setPendingOrderNotifications([]);
-      }).catch(() => {
-        // Keep the notifications visible if marking them read fails.
       });
+    } finally {
+      setPendingOrderNotifications((current) => current.filter((entry) => entry.id !== item.id));
+      setNotificationCount((current) => Math.max(0, current - 1));
+      setNotificationModalVisible(false);
+      navigate(item.actionUrl || "/Wallet/withdrawals");
     }
   };
 
@@ -556,9 +562,11 @@ const Navbar = () => {
         ) : pendingOrderNotifications.length > 0 ? (
           <div style={{ maxHeight: 320, overflowY: "auto" }}>
             {pendingOrderNotifications.map((item) => (
-              <div key={`${item.id}-${item.time}`} style={{ border: "1px solid #f0f0f0", borderRadius: 8, padding: 10, marginBottom: 10 }}>
-                <div><strong>{item.title}</strong></div>
-                <div>{item.message}</div>
+                <div key={`${item.id}-${item.time}`} style={{ border: "1px solid #f0f0f0", borderRadius: 8, padding: 10, marginBottom: 10 }}>
+                  <div onClick={() => handleAdminNotificationClick(item)} style={{ cursor: "pointer" }}>
+                    <strong>{item.title}</strong>
+                  </div>
+                  <div onClick={() => handleAdminNotificationClick(item)} style={{ cursor: "pointer" }}>{item.message}</div>
                 <div><strong>Time:</strong> {item.time}</div>
               </div>
             ))}
