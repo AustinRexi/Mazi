@@ -200,7 +200,7 @@ const Navbar = () => {
     const fetchAdminNotifications = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_BASE_URL}/admin/notifications?limit=50`, {
+        const response = await axios.get(`${API_BASE_URL}/admin/notifications?limit=50&unread=1`, {
           headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
         });
         if (!mounted) return;
@@ -239,6 +239,17 @@ const Navbar = () => {
   // Function to handle opening the notification modal
   const handleOpenNotifications = () => {
     setNotificationModalVisible(true); // Open the notification modal
+    if (user?.role === "admin" && notificationCount > 0) {
+      const token = localStorage.getItem("token");
+      axios.post(`${API_BASE_URL}/admin/notifications/read-all`, null, {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      }).then(() => {
+        setNotificationCount(0);
+        setPendingOrderNotifications([]);
+      }).catch(() => {
+        // Keep the notifications visible if marking them read fails.
+      });
+    }
   };
 
   // Function to close the notification modal
