@@ -37,6 +37,7 @@ import {
   resolveAdminSupportTicket,
   sendAdminSupportTyping,
 } from "../../services/adminSupportService";
+import { useAdminCountryCurrency } from "../../utils/adminCurrency";
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -237,6 +238,7 @@ const isImageAttachment = (entry) => {
 };
 
 const Support = () => {
+  const { country: adminCountry } = useAdminCountryCurrency();
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -269,6 +271,7 @@ const Support = () => {
         status: statusFilter,
         priority: priorityFilter,
         search: searchQuery.trim() || undefined,
+        country: adminCountry,
       });
 
       const nextTickets = rows.map(mapTicket);
@@ -295,7 +298,7 @@ const Support = () => {
     } finally {
       setLoading(false);
     }
-  }, [priorityFilter, searchQuery, statusFilter]);
+  }, [adminCountry, priorityFilter, searchQuery, statusFilter]);
 
   const handleSelectTicket = useCallback(
     async (ticket) => {

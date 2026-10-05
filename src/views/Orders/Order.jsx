@@ -18,6 +18,7 @@ import paypal from "../../Assets/Ordericons/paypal.svg";
 import pendingIcon from "../../Assets/Ordericons/pendingicon.svg";
 import refundedIcon from "../../Assets/Ordericons/refundedicon.svg";
 import dp from "../../Assets/Ordericons/displayimageicon.svg";
+import { useAdminCountryCurrency } from "../../utils/adminCurrency";
 
 const paymentIconMap = {
   cash: banktransfer,
@@ -179,6 +180,7 @@ const presets = [
 ];
 
 function Order() {
+  const { country: adminCountry } = useAdminCountryCurrency();
   const [isVisible] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [detailsInitialTab, setDetailsInitialTab] = useState("tab1");
@@ -224,6 +226,7 @@ function Order() {
         const result = await fetchAdminOrderCards({
           per_page: pageSize,
           page: currentPage,
+          country: adminCountry,
         });
 
         if (!isMounted) {
@@ -288,7 +291,7 @@ function Order() {
     return () => {
       isMounted = false;
     };
-  }, [currentPage, pageSize]);
+  }, [adminCountry, currentPage, pageSize]);
 
   const iconData = useMemo(
     () =>

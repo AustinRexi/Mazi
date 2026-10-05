@@ -15,6 +15,7 @@ import {
   deleteAdminStore,
   fetchAdminStores,
 } from "../../services/adminStoreService";
+import { useAdminCountryCurrency } from "../../utils/adminCurrency";
 
 const DEFAULT_FILTERS = {
   status: "all",
@@ -198,6 +199,7 @@ const applyCustomerFilters = (items, filters) => {
 };
 
 function Customers() {
+  const { country: adminCountry } = useAdminCountryCurrency();
   const navigate = useNavigate();
   const [activeTabKey, setActiveTabKey] = useState("user");
   const [users, setUsers] = useState([]);
@@ -237,6 +239,7 @@ function Customers() {
           usertype: "user",
           per_page: pageSize,
           page: currentPage,
+          country: adminCountry,
           ...(userSearchQuery.trim() ? { q: userSearchQuery.trim() } : {}),
         });
 
@@ -292,7 +295,7 @@ function Customers() {
     return () => {
       isMounted = false;
     };
-  }, [currentPage, pageSize, userSearchQuery]);
+  }, [adminCountry, currentPage, pageSize, userSearchQuery]);
 
   useEffect(() => {
     let isMounted = true;
@@ -304,6 +307,7 @@ function Customers() {
         const response = await fetchAdminStores({
           per_page: storePageSize,
           page: currentStorePage,
+          country: adminCountry,
           ...(storeSearchQuery.trim() ? { q: storeSearchQuery.trim() } : {}),
         });
 
@@ -356,7 +360,7 @@ function Customers() {
     return () => {
       isMounted = false;
     };
-  }, [currentStorePage, storePageSize, storeSearchQuery, storesReloadKey]);
+  }, [adminCountry, currentStorePage, storePageSize, storeSearchQuery, storesReloadKey]);
 
   const filteredUsers = useMemo(
     () => applyCustomerFilters(users, userFilters),

@@ -15,6 +15,7 @@ import {
 import mail from "../../Assets/Couriericons/mail.svg";
 import phone from "../../Assets/Couriericons/phone.svg";
 import star from "../../Assets/Foodicons/Star.svg";
+import { useAdminCountryCurrency } from "../../utils/adminCurrency";
 
 const getUserCardGridStyles = (width) => {
   const baseStyles = {
@@ -152,6 +153,7 @@ const formatCurrency = (value) => {
 };
 
 const Courier = () => {
+  const { country: adminCountry } = useAdminCountryCurrency();
   const navigate = useNavigate();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [couriers, setCouriers] = useState([]);
@@ -177,6 +179,7 @@ const Courier = () => {
         const response = await fetchAdminUsers({
           usertype: "courier",
           per_page: 200,
+          country: adminCountry,
           ...(searchQuery.trim() ? { q: searchQuery.trim() } : {}),
         });
 
@@ -256,7 +259,7 @@ const Courier = () => {
     return () => {
       isMounted = false;
     };
-  }, [searchQuery]);
+  }, [adminCountry, searchQuery]);
 
   const handleStatusUpdate = async (courierId, statusValue) => {
     try {
