@@ -152,7 +152,7 @@ const VendorWallet = () => {
       setLoading(true);
       setError("");
 
-      const [walletResponse, restaurantResponse, ordersResponse] = await Promise.all([
+      const [walletResponse, restaurantResponse, ordersResponse, withdrawalResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/vendor/wallet?limit=100`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -166,6 +166,12 @@ const VendorWallet = () => {
           },
         }),
         axios.get(`${API_BASE_URL}/vendor/orders?limit=500`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }),
+        axios.get(`${API_BASE_URL}/vendor/wallet/withdrawals?limit=100`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
@@ -203,11 +209,23 @@ const VendorWallet = () => {
         ])
       );
 
-      setTransactions(
-        (walletResponse.data?.data || []).map((entry) =>
-          normalizeTransaction(entry, orderTotalsById)
-        )
+      const walletTransactions = (walletResponse.data?.data || []).map((entry) =>
+        normalizeTransaction(entry, orderTotalsById)
       );
+      const withdrawalTransactions = (withdrawalResponse.data?.data || []).map(
+        (withdrawal) => ({
+          id: `withdrawal-${withdrawal.id || withdrawal.reference}`,
+          type: "withdrawal",
+          description: withdrawal.description || "Withdrawal request",
+          amount: Number(withdrawal.amount || 0),
+          status: withdrawal.status || "pending",
+          date: withdrawal.created_at,
+          orderId: null,
+          orderProductTotal: 0,
+          restaurantId: null,
+        })
+      );
+      setTransactions([...withdrawalTransactions, ...walletTransactions]);
       setWalletBalance(Number(walletResponse.data?.wallet?.amount || 0));
     } catch (fetchError) {
       setError(

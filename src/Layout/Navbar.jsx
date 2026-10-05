@@ -194,6 +194,44 @@ const Navbar = () => {
     };
   }, [user?.role, selectedRestaurantId]);
 
+  useEffect(() => {
+    if (user?.role !== "admin") return;
+    let mounted = true;
+    const fetchAdminNotifications = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${API_BASE_URL}/admin/notifications?limit=50`, {
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        });
+        if (!mounted) return;
+        const items = (response.data?.data || []).map((notification) => {
+          const data = notification.data || {};
+          return {
+            id: notification.id,
+            title: data.title || "Notification",
+            message: data.message || "You have a new notification.",
+            time: notification.created_at
+              ? new Date(notification.created_at).toLocaleString()
+              : "-",
+          };
+        });
+        setNotificationCount(Number(response.data?.unread || 0));
+        setPendingOrderNotifications(items);
+      } catch {
+        if (mounted) {
+          setNotificationCount(0);
+          setPendingOrderNotifications([]);
+        }
+      }
+    };
+    fetchAdminNotifications();
+    const interval = setInterval(fetchAdminNotifications, 15000);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, [user?.role]);
+
   const toggleDrawer = () => {
     setDrawerOpen((prev) => !prev);
   };
@@ -504,9 +542,17 @@ const Navbar = () => {
           ) : (
             <p>No pending orders.</p>
           )
-        ) : (
-          <p>No new notifications</p>
-        )}
+        ) : pendingOrderNotifications.length > 0 ? (
+          <div style={{ maxHeight: 320, overflowY: "auto" }}>
+            {pendingOrderNotifications.map((item) => (
+              <div key={`${item.id}-${item.time}`} style={{ border: "1px solid #f0f0f0", borderRadius: 8, padding: 10, marginBottom: 10 }}>
+                <div><strong>{item.title}</strong></div>
+                <div>{item.message}</div>
+                <div><strong>Time:</strong> {item.time}</div>
+              </div>
+            ))}
+          </div>
+        ) : <p>No new notifications</p>}
       </Modal>
       {/* User Management Modal */}
       <Modal

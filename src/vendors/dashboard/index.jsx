@@ -195,12 +195,13 @@ const VendorDashboard = () => {
         orderQuery.set("restaurant_id", String(effectiveRestaurantId));
       }
 
-      const [ordersResponse, walletResponse, foodsResponse, groceriesResponse] =
+      const [ordersResponse, walletResponse, foodsResponse, groceriesResponse, withdrawalsResponse] =
         await Promise.all([
           axios.get(`${API_BASE_URL}/vendor/orders?${orderQuery.toString()}`, config),
           axios.get(`${API_BASE_URL}/vendor/wallet?limit=100`, config),
           axios.get(`${API_BASE_URL}/vendor/foods?limit=100`, config),
           axios.get(`${API_BASE_URL}/vendor/groceries?limit=100`, config),
+          axios.get(`${API_BASE_URL}/vendor/wallet/withdrawals?limit=100`, config),
         ]);
 
       const orders = (ordersResponse.data?.data || [])
@@ -236,6 +237,13 @@ const VendorDashboard = () => {
           amount: Number(entry.amount || 0),
         })
       );
+      const pendingWithdrawals = (withdrawalsResponse.data?.data || [])
+        .filter((withdrawal) => ["pending", "processing"].includes(String(withdrawal.status || "").toLowerCase()))
+        .map((withdrawal) => ({
+          type: "withdrawal",
+          status: String(withdrawal.status || "pending").toLowerCase(),
+          amount: Number(withdrawal.amount || 0),
+        }));
 
       const foods = (foodsResponse.data?.data || []).filter((item) => {
         if (!effectiveRestaurantId) {
@@ -308,7 +316,7 @@ const VendorDashboard = () => {
         (order) => order.status === "pending"
       ).length;
 
-      const pendingWallet = walletTransactions
+      const pendingWallet = [...walletTransactions, ...pendingWithdrawals]
         .filter((entry) => entry.status === "pending")
         .reduce((sum, entry) => sum + entry.amount, 0);
 
