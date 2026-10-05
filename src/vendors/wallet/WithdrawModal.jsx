@@ -13,7 +13,6 @@ import { DollarOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 const { Text } = Typography;
-const { Option } = Select;
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
@@ -41,9 +40,30 @@ const WithdrawModal = ({
     [bankCode, accountNumber]
   );
 
-  const syncBankName = (nextBankCode) => {
-    const selected = banks.find((bank) => String(bank.code) === String(nextBankCode));
-    form.setFieldValue("bank_name", selected?.name || "");
+  const bankOptions = useMemo(() => {
+    const seen = new Set();
+    return banks.reduce((options, bank, index) => {
+      const name = String(bank?.name || "").trim();
+      if (!name || seen.has(name.toLowerCase())) return options;
+      seen.add(name.toLowerCase());
+      options.push({
+        value: name,
+        label: name,
+        key: `${String(bank.code || "bank")}-${index}`,
+        bankCode: bank.code,
+      });
+      return options;
+    }, []);
+  }, [banks]);
+
+  const syncBank = (bankName) => {
+    const selected = banks.find(
+      (bank) => String(bank?.name || "").trim().toLowerCase() === String(bankName || "").trim().toLowerCase()
+    );
+    form.setFieldsValue({
+      bank_name: bankName,
+      bank_code: selected?.code || "MANUAL",
+    });
   };
 
   const applyBeneficiary = (beneficiaryId) => {
@@ -234,37 +254,29 @@ const WithdrawModal = ({
         </Form.Item>
 
         <Form.Item
-          name="bank_code"
-          label="Bank"
-          rules={[{ required: true, message: "Select a bank" }]}
-        >
-          <Select
-            showSearch
-            placeholder="Select bank"
-            loading={loadingBanks}
-            optionFilterProp="children"
-            onChange={syncBankName}
-            filterOption={(input, option) =>
-              String(option?.children || "")
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-          >
-            {banks.map((bank) => (
-              <Option key={bank.code} value={bank.code}>
-                {bank.name}
-              </Option>
-            ))}
-            <Option value="MANUAL">Other bank (enter bank name manually)</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item
           name="bank_name"
           label="Bank Name"
           rules={[{ required: true, message: "Enter bank name" }]}
         >
-          <Input placeholder="Bank name" />
+          <Select
+            mode="combobox"
+            showSearch
+            allowClear
+            placeholder={loadingBanks ? "Loading banks... or type a bank name" : "Select or type bank name"}
+            loading={loadingBanks}
+            options={bankOptions}
+            filterOption={(input, option) =>
+              String(option?.label || "").toLowerCase().includes(String(input || "").toLowerCase())
+            }
+            onChange={syncBank}
+            onSearch={(value) => {
+              if (value) syncBank(value);
+            }}
+          />
+        </Form.Item>
+
+        <Form.Item name="bank_code" initialValue="MANUAL" hidden>
+          <Input />
         </Form.Item>
 
         <Form.Item name="account_name" label="Account Name">
