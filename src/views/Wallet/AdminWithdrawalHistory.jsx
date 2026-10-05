@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -152,8 +152,7 @@ const AdminWithdrawalHistory = () => {
 
   useEffect(() => { fetchRows(); }, []);
 
-  const columns = useMemo(
-    () => [
+  const columns = [
       {
         title: "Vendor",
         key: "vendor",
@@ -241,9 +240,7 @@ const AdminWithdrawalHistory = () => {
           </Space>
         ),
       },
-    ],
-    []
-  );
+  ];
 
   return (
     <div style={{ padding: 24 }}>
