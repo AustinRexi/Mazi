@@ -23,6 +23,7 @@ const WithdrawModal = ({
   availableBalance,
   onWithdraw,
   withdrawing,
+  currencyCode = "NGN",
   endpointPrefix = "/vendor/wallet",
 }) => {
   const [form] = Form.useForm();
@@ -36,7 +37,7 @@ const WithdrawModal = ({
   const accountNumber = Form.useWatch("account_number", form);
 
   const canResolve = useMemo(
-    () => Boolean(bankCode && String(accountNumber || "").length === 10),
+    () => Boolean(bankCode && bankCode !== "MANUAL" && String(accountNumber || "").length === 10),
     [bankCode, accountNumber]
   );
 
@@ -81,7 +82,9 @@ const WithdrawModal = ({
     const fetchBanks = async () => {
       try {
         setLoadingBanks(true);
+        const country = String(currencyCode).toUpperCase() === "ZAR" ? "south africa" : "nigeria";
         const response = await axios.get(`${API_BASE_URL}${endpointPrefix}/banks`, {
+          params: { country },
           headers,
         });
         setBanks(response.data?.data || []);
@@ -111,7 +114,7 @@ const WithdrawModal = ({
 
     fetchBanks();
     fetchBeneficiaries();
-  }, [endpointPrefix, isModalOpen]);
+  }, [currencyCode, endpointPrefix, isModalOpen]);
 
   useEffect(() => {
     if (!isModalOpen) {
@@ -252,11 +255,16 @@ const WithdrawModal = ({
                 {bank.name}
               </Option>
             ))}
+            <Option value="MANUAL">Other bank (enter bank name manually)</Option>
           </Select>
         </Form.Item>
 
-        <Form.Item name="bank_name" hidden>
-          <Input />
+        <Form.Item
+          name="bank_name"
+          label="Bank Name"
+          rules={[{ required: true, message: "Enter bank name" }]}
+        >
+          <Input placeholder="Bank name" />
         </Form.Item>
 
         <Form.Item name="account_name" label="Account Name">

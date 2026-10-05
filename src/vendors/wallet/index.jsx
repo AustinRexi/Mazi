@@ -419,6 +419,7 @@ const VendorWallet = () => {
         availableBalance={availableBalance}
         onWithdraw={handleWithdraw}
         withdrawing={withdrawing}
+        currencyCode={currencyCode}
         endpointPrefix="/vendor/wallet"
       />
     </div>
