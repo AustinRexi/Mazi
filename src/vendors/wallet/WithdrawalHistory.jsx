@@ -44,6 +44,7 @@ const VendorWithdrawalHistory = () => {
   const downloadCsv = () => {
     const headers = [
       "Date",
+      "Updated Date",
       "Amount",
       "Account Name",
       "Account Number",
@@ -55,6 +56,7 @@ const VendorWithdrawalHistory = () => {
     const lines = rows.map((row) =>
       [
         row.created_at ? new Date(row.created_at).toISOString() : "",
+        row.updated_at ? new Date(row.updated_at).toISOString() : "",
         Number(row.amount || 0).toFixed(2),
         row.account_name || "",
         row.account_number || "",
@@ -121,6 +123,12 @@ const VendorWithdrawalHistory = () => {
   const columns = useMemo(
     () => [
       {
+        title: "Updated",
+        dataIndex: "updated_at",
+        key: "updated_at",
+        render: (value) => value ? new Date(value).toLocaleString("en-NG") : "-",
+      },
+      {
         title: "Date",
         dataIndex: "created_at",
         key: "created_at",
@@ -152,6 +160,25 @@ const VendorWithdrawalHistory = () => {
         render: (value) => (
           <Tag color={statusColor(value)}>{String(value || "pending")}</Tag>
         ),
+      },
+      {
+        title: "Payment Receipt",
+        key: "receipt",
+        render: (_, record) => {
+          if (!record.receipt_url) return "-";
+          if (/\.(png|jpe?g)(?:\?|$)/i.test(record.receipt_url)) {
+            return (
+              <a href={record.receipt_url} target="_blank" rel="noreferrer">
+                <img
+                  src={record.receipt_url}
+                  alt="Payment receipt"
+                  style={{ width: 96, maxHeight: 72, objectFit: "cover", borderRadius: 4, border: "1px solid #d9d9d9" }}
+                />
+              </a>
+            );
+          }
+          return <a href={record.receipt_url} target="_blank" rel="noreferrer">View receipt PDF</a>;
+        },
       },
     ],
     []
