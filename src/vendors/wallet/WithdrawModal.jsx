@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Modal,
   Form,
@@ -7,10 +7,10 @@ import {
   Typography,
   Select,
   Checkbox,
-  message,
 } from "antd";
 import { DollarOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 const { Text } = Typography;
 const API_BASE_URL =
@@ -22,49 +22,11 @@ const WithdrawModal = ({
   availableBalance,
   onWithdraw,
   withdrawing,
-  currencyCode = "NGN",
   endpointPrefix = "/vendor/wallet",
 }) => {
   const [form] = Form.useForm();
-  const [banks, setBanks] = useState([]);
   const [beneficiaries, setBeneficiaries] = useState([]);
-  const [loadingBanks, setLoadingBanks] = useState(false);
   const [loadingBeneficiaries, setLoadingBeneficiaries] = useState(false);
-  const [resolving, setResolving] = useState(false);
-
-  const bankCode = Form.useWatch("bank_code", form);
-  const accountNumber = Form.useWatch("account_number", form);
-
-  const canResolve = useMemo(
-    () => Boolean(bankCode && bankCode !== "MANUAL" && String(accountNumber || "").length === 10),
-    [bankCode, accountNumber]
-  );
-
-  const bankOptions = useMemo(() => {
-    const seen = new Set();
-    return banks.reduce((options, bank, index) => {
-      const name = String(bank?.name || "").trim();
-      if (!name || seen.has(name.toLowerCase())) return options;
-      seen.add(name.toLowerCase());
-      options.push({
-        value: name,
-        label: name,
-        key: `${String(bank.code || "bank")}-${index}`,
-        bankCode: bank.code,
-      });
-      return options;
-    }, []);
-  }, [banks]);
-
-  const syncBank = (bankName) => {
-    const selected = banks.find(
-      (bank) => String(bank?.name || "").trim().toLowerCase() === String(bankName || "").trim().toLowerCase()
-    );
-    form.setFieldsValue({
-      bank_name: bankName,
-      bank_code: selected?.code || "MANUAL",
-    });
-  };
 
   const applyBeneficiary = (beneficiaryId) => {
     const selected = beneficiaries.find(
@@ -99,24 +61,6 @@ const WithdrawModal = ({
       Accept: "application/json",
     };
 
-    const fetchBanks = async () => {
-      try {
-        setLoadingBanks(true);
-        const country = String(currencyCode).toUpperCase() === "ZAR" ? "south africa" : "nigeria";
-        const response = await axios.get(`${API_BASE_URL}${endpointPrefix}/banks`, {
-          params: { country },
-          headers,
-        });
-        setBanks(response.data?.data || []);
-      } catch (error) {
-        message.error(
-          error.response?.data?.message || "Failed to load bank list."
-        );
-      } finally {
-        setLoadingBanks(false);
-      }
-    };
-
     const fetchBeneficiaries = async () => {
       try {
         setLoadingBeneficiaries(true);
@@ -132,9 +76,8 @@ const WithdrawModal = ({
       }
     };
 
-    fetchBanks();
     fetchBeneficiaries();
-  }, [currencyCode, endpointPrefix, isModalOpen]);
+  }, [endpointPrefix, isModalOpen]);
 
   useEffect(() => {
     if (!isModalOpen) {
@@ -143,43 +86,7 @@ const WithdrawModal = ({
       return;
     }
 
-    if (!canResolve) {
-      form.setFieldValue("account_name", "");
-      return;
-    }
-
-    const resolveAccount = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
-
-      try {
-        setResolving(true);
-        const response = await axios.get(`${API_BASE_URL}${endpointPrefix}/resolve`, {
-          params: {
-            bank_code: bankCode,
-            account_number: accountNumber,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
-
-        form.setFieldValue(
-          "account_name",
-          response.data?.data?.account_name || form.getFieldValue("account_name")
-        );
-      } catch (error) {
-        form.setFieldValue("account_name", "");
-      } finally {
-        setResolving(false);
-      }
-    };
-
-    resolveAccount();
-  }, [accountNumber, bankCode, canResolve, endpointPrefix, form, isModalOpen]);
+  }, [form, isModalOpen]);
 
   return (
     <Modal
@@ -258,32 +165,19 @@ const WithdrawModal = ({
           label="Bank Name"
           rules={[{ required: true, message: "Enter bank name" }]}
         >
-          <Select
-            mode="combobox"
-            showSearch
-            allowClear
-            placeholder={loadingBanks ? "Loading banks... or type a bank name" : "Select or type bank name"}
-            loading={loadingBanks}
-            options={bankOptions}
-            filterOption={(input, option) =>
-              String(option?.label || "").toLowerCase().includes(String(input || "").toLowerCase())
-            }
-            onChange={syncBank}
-            onSearch={(value) => {
-              if (value) syncBank(value);
-            }}
-          />
+          <Input placeholder="Enter bank name" />
         </Form.Item>
 
         <Form.Item name="bank_code" initialValue="MANUAL" hidden>
           <Input />
         </Form.Item>
 
-        <Form.Item name="account_name" label="Account Name">
-          <Input
-            placeholder={resolving ? "Resolving account name..." : "John Doe"}
-            disabled={resolving}
-          />
+        <Form.Item
+          name="account_name"
+          label="Account Name"
+          rules={[{ required: true, message: "Enter the account name" }]}
+        >
+          <Input placeholder="Name shown on the bank account" />
         </Form.Item>
 
         <Form.Item name="description" label="Description (Optional)">
@@ -315,8 +209,8 @@ const WithdrawModal = ({
         >
           <ExclamationCircleOutlined style={{ color: "#1890ff" }} />{" "}
           <Text type="secondary">
-            Withdrawals are processed within 24 business hours. A small
-            processing fee may apply.
+            The admin will verify these details and send approved withdrawals
+            manually. Confirm the bank information carefully before submitting.
           </Text>
         </div>
 
@@ -326,6 +220,16 @@ const WithdrawModal = ({
       </Form>
     </Modal>
   );
+};
+
+WithdrawModal.propTypes = {
+  isModalOpen: PropTypes.bool.isRequired,
+  setIsModalOpen: PropTypes.func.isRequired,
+  availableBalance: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+  onWithdraw: PropTypes.func.isRequired,
+  withdrawing: PropTypes.bool,
+  endpointPrefix: PropTypes.string,
 };
 
 export default WithdrawModal;
