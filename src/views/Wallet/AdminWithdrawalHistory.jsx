@@ -114,18 +114,24 @@ const getReviewSnapshot = (record = {}) => {
     verification,
     reconciliation: {
       balanceBefore: firstFiniteNumber(
+        reconciliation.before,
         reconciliation.balance_before,
         reconciliation.available_balance,
+        record.wallet_balance_before,
         record.balance_before
       ),
       reserved: firstFiniteNumber(
+        reconciliation.reserved,
         reconciliation.reserved_amount,
         reconciliation.pending_withdrawals,
+        record.amount,
         record.reserved_amount
       ),
       remaining: firstFiniteNumber(
+        reconciliation.after,
         reconciliation.remaining_balance,
         reconciliation.balance_after,
+        record.wallet_balance_after,
         record.balance_after
       ),
     },
@@ -253,14 +259,32 @@ const AdminWithdrawalHistory = () => {
     try {
       setLoading(true);
       setError("");
-      const response = await axios.get(`${API_BASE_URL}/admin/vendor-withdrawals`, {
+      const config = {
         params: { limit: 100, offset: 0 },
         headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-      });
-      const nextRows = Array.isArray(response.data?.data) ? response.data.data : [];
+      };
+      const [vendorResponse, courierResponse] = await Promise.all([
+        axios.get(`${API_BASE_URL}/admin/vendor-withdrawals`, config),
+        axios.get(`${API_BASE_URL}/admin/courier-withdrawals`, config),
+      ]);
+      const vendorRows = Array.isArray(vendorResponse.data?.data)
+        ? vendorResponse.data.data.map((row) => ({ ...row, actor_type: "vendor" }))
+        : [];
+      const courierRows = Array.isArray(courierResponse.data?.data)
+        ? courierResponse.data.data
+        : [];
+      const nextRows = [...vendorRows, ...courierRows].sort(
+        (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
+      );
       setRows(nextRows);
       setSelectedRecord((current) =>
-        current ? nextRows.find((row) => String(row.id) === String(current.id)) || current : null
+        current
+          ? nextRows.find(
+              (row) =>
+                String(row.id) === String(current.id) &&
+                row.actor_type === current.actor_type
+            ) || current
+          : null
       );
     } catch (requestError) {
       setError(requestError.response?.data?.message || "Failed to load withdrawal requests.");
@@ -323,7 +347,10 @@ const AdminWithdrawalHistory = () => {
 
     try {
       setUpdatingId(record.id);
-      await axios.post(`${API_BASE_URL}/admin/vendor-withdrawals/${record.id}`, formData, {
+      const resource = record.actor_type === "courier"
+        ? "courier-withdrawals"
+        : "vendor-withdrawals";
+      await axios.post(`${API_BASE_URL}/admin/${resource}/${record.id}`, formData, {
         headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
       });
       message.success(
@@ -384,7 +411,7 @@ const AdminWithdrawalHistory = () => {
           : "This marks the details as verified. Send the money manually before completing the request."
         : isCompletion
           ? "The request will be completed using the payment reference and receipt you supplied."
-          : "The vendor will see this request as rejected and the reserved balance will be released.",
+          : "The requester will see this as rejected and the reserved balance will be released.",
       okText: isApproval
         ? "Mark Verified"
         : isCompletion
@@ -449,12 +476,14 @@ const AdminWithdrawalHistory = () => {
 
   const columns = [
     {
-      title: "Vendor",
+      title: "Requester",
       key: "vendor",
       render: (_, record) => (
         <Space direction="vertical" size={0}>
           <Text strong>{getVendorName(record)}</Text>
-          <Text type="secondary">{record.vendor?.email || `ID: ${record.vendor_id || "N/A"}`}</Text>
+          <Text type="secondary">
+            {formatStatus(record.actor_type || "vendor")} · {record.vendor?.email || `ID: ${record.vendor_id || "N/A"}`}
+          </Text>
         </Space>
       ),
     },
@@ -529,8 +558,8 @@ const AdminWithdrawalHistory = () => {
         style={{ width: "100%", justifyContent: "space-between", marginBottom: 16 }}
       >
         <div>
-          <Title level={3} style={{ margin: 0 }}>Vendor Withdrawals</Title>
-          <Text type="secondary">Review vendor identity, wallet coverage, and payout destination.</Text>
+          <Title level={3} style={{ margin: 0 }}>Vendor & Courier Withdrawals</Title>
+          <Text type="secondary">Review identity, wallet coverage, and payout destination before manual payment.</Text>
         </div>
         <Space wrap>
           <Button icon={<ReloadOutlined />} onClick={fetchRows} loading={loading}>Refresh</Button>
@@ -574,7 +603,7 @@ const AdminWithdrawalHistory = () => {
         {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} /> : null}
         <Spin spinning={loading}>
           <Table
-            rowKey={(record) => String(record.id)}
+            rowKey={(record) => `${record.actor_type || "vendor"}-${record.id}`}
             columns={columns}
             dataSource={filteredRows}
             pagination={{ pageSize: 10, showSizeChanger: true }}
