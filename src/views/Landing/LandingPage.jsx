@@ -354,17 +354,25 @@ export default function LandingPage() {
                   </button>
                 </li>
                 <li>
-                  <button type="button" className="mazi-link-button" onClick={() => scrollToSection("faq")}>
-                    Help Center
-                  </button>
+                  <a href="mailto:Support@maziinternational.com">Help Center</a>
+                </li>
+                <li>
+                  <Link to="/terms-and-conditions">Terms and Conditions</Link>
                 </li>
                 <li>
                   <Link to="/privacy-policy">Privacy Policy</Link>
                 </li>
                 <li>
-                  <button type="button" className="mazi-link-button" onClick={() => scrollToSection("top")}>
-                    Terms of Service
-                  </button>
+                  <Link to="/refund-policy">Refund Policy</Link>
+                </li>
+                <li>
+                  <Link to="/shipping-policy">Shipping Policy</Link>
+                </li>
+                <li>
+                  <Link to="/delivery-policy">Delivery Policy</Link>
+                </li>
+                <li>
+                  <Link to="/cancellation-policy">Cancellation Policy</Link>
                 </li>
               </ul>
             </div>

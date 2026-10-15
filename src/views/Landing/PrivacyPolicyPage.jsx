@@ -37,7 +37,7 @@ const policySections = [
         bullets: [
           "Name, contact details, and delivery addresses.",
           "Account credentials.",
-          "Payment information processed via secure third-party providers.",
+          "Payment information processed securely by PayFast.",
         ],
       },
       {
@@ -87,7 +87,7 @@ const policySections = [
     ],
     bullets: [
       "Merchants and delivery partners for order fulfilment.",
-      "Payment service providers.",
+      "PayFast and relevant financial institutions for payment processing, refunds, fraud prevention, and reconciliation.",
       "Third-party service providers supporting Platform operations.",
       "Competent authorities where required by law.",
     ],
@@ -237,8 +237,9 @@ export default function PrivacyPolicyPage() {
 
             <div className="mazi-policy-intro">
               <p>
-                This page presents the privacy policy content provided by Mazi in a web-ready
-                format for public access from the landing page.
+                Buyer payments are processed by PayFast. Mazi does not store full card details,
+                but may retain payment references and limited transaction information required
+                to confirm orders, process refunds, prevent fraud, and maintain financial records.
               </p>
             </div>
 

@@ -53,6 +53,8 @@ import HomeRoute from "./Components/protectedroute/HomeRoute";
 import { AuthContext } from "./context/AuthContext";
 import LandingPage from "./views/Landing/LandingPage";
 import PrivacyPolicyPage from "./views/Landing/PrivacyPolicyPage";
+import PolicyPage from "./views/Landing/PolicyPage";
+import { policyPages } from "./views/Landing/policyContent";
 
 function LandingRoute() {
   const { user, loading } = useContext(AuthContext);
@@ -77,6 +79,10 @@ const router = createHashRouter([
     path: "/privacy-policy",
     element: <PrivacyPolicyPage />,
   },
+  ...Object.entries(policyPages).map(([slug, policy]) => ({
+    path: `/${slug}`,
+    element: <PolicyPage policy={policy} />,
+  })),
   {
     element: (
       <ProtectedRoute>
