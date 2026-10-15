@@ -571,7 +571,7 @@
 
 .mazi-policy-layout {
   display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(280px, 0.9fr);
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 2.1fr);
   gap: 24px;
   align-items: start;
 }
@@ -585,7 +585,14 @@
 }
 
 .mazi-policy-card {
+  grid-column: 2;
+  grid-row: 1;
   padding: 28px;
+}
+
+.mazi-policy-aside {
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .mazi-policy-meta {
@@ -770,6 +777,16 @@
 
   .mazi-policy-layout {
     grid-template-columns: 1fr;
+  }
+
+  .mazi-policy-card {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .mazi-policy-aside {
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .mazi-policy-contact {
